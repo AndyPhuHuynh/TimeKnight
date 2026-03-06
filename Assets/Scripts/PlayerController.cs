@@ -22,12 +22,12 @@ public class PlayerController : MonoBehaviour
     // Jump Variables
     [SerializeField] private float _baseJumpForce = 10;
     [SerializeField] private float _holdJumpForce = 2;
-    [SerializeField] private int _holdJumpUpdates = 15;
+    [SerializeField] private int _holdJumpUpdates = 10;
     private Coroutine _jumpCoroutine;
 
     // Grounding Variables
     [SerializeField] private Vector2 _groundCheckDimenisons = new Vector2(0.7f, 0.2f);
-    [SerializeField] private LayerMask _groundLayer;
+    private LayerMask _groundLayer;
     private bool _isGrounded = false;
 
     private void Awake()
@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
         _jumpAction = InputSystem.actions.FindAction("Jump");
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
+        _groundLayer = LayerMask.GetMask("Ground");
     }
 
     // Update gets player input.

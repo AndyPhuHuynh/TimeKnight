@@ -183,8 +183,8 @@ MonoBehaviour:
   _acceleration: 1
   _baseJumpForce: 10
   _holdJumpForce: 2
-  _holdJumpUpdates: 15
-  _groundCheckDimenisons: {x: 0.7, y: 0.2}
+  _holdJumpUpdates: 10
+  _groundCheckDimenisons: {x: 0.68, y: 0.2}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 0
