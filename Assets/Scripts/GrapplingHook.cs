@@ -14,7 +14,5 @@ public class GrapplingHook : MonoBehaviour
     void Update()
     {
         var mouse = Mouse.current.position;
-    
-        Debug.Log(mouse.ReadValue());
     }
 }
