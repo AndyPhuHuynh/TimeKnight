@@ -1,54 +1,24 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TimeKnight.Interaction
 {
-    public readonly struct SelectorButton
-    {
-        public readonly Button Button;
-        public readonly TextMeshProUGUI Text;
-        private readonly CanvasGroup _canvasGroup;
-
-        public SelectorButton(Button button)
-        {
-            Button = button;
-            _canvasGroup = button.GetComponent<CanvasGroup>();
-            Text = button.GetComponentInChildren<TextMeshProUGUI>();
-        }
-        
-        public void Hide()
-        {
-            _canvasGroup.alpha = 0;
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
-        }
-
-        public void Show()
-        {
-            _canvasGroup.alpha = 1;
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
-        }
-    }
-    
     public class SelectorUI : MonoBehaviour
     {
         [SerializeField] private Button selectorButtonPrefab;
         [SerializeField] private GameObject selectorButtonContainer;
         [SerializeField] private GameObject selectorButtonPoolContainer;
-        
-        private readonly Queue<SelectorButton> _buttonPool = new();
+        [SerializeField] private GameObject selectorCursor;
+
+        private SelectorButtonPool _buttonPool;
         private readonly Dictionary<IInteractable, SelectorButton> _buttonMap = new();
+        private readonly List<SelectorButton> _activeButtons = new();
+        private int _activeButtonIndex = -1;
 
         private void Awake()
         {
-            for (int i = 0; i < 5; i++)
-            {
-                var button = Instantiate(selectorButtonPrefab, selectorButtonContainer.transform);
-                ReturnButton(new SelectorButton(button));
-            }
+            _buttonPool = new SelectorButtonPool(selectorButtonPrefab, selectorButtonContainer, selectorButtonPoolContainer);
         }
 
         private void OnValidate()
@@ -58,40 +28,37 @@ namespace TimeKnight.Interaction
             Debug.Assert(selectorButtonPoolContainer != null, $"Missing {nameof(selectorButtonContainer)}", this);
         }
         
-        private SelectorButton GetButton()
-        {
-            return _buttonPool.Count > 0 ? _buttonPool.Dequeue() : new SelectorButton(Instantiate(selectorButtonPrefab));
-        }
-
-        private void ReturnButton(SelectorButton button)
-        {
-            button.Hide();
-            button.Button.transform.SetParent(selectorButtonPoolContainer.transform);
-            button.Button.transform.SetAsFirstSibling();
-            button.Button.onClick.RemoveAllListeners();
-            _buttonPool.Enqueue(button);
-        }
-        
         public void AddInteractable(IInteractable interactable)
         {
-            var button = GetButton();
-            button.Button.transform.SetParent(selectorButtonContainer.transform);
-            button.Button.transform.SetAsLastSibling();
+            var button = _buttonPool.Pool.Get();
             button.Text.text = interactable.InteractionName;
             button.Button.onClick.AddListener(interactable.Interact);
             button.Show();
+            
             _buttonMap[interactable] = button;
-            gameObject.SetActive(true);
+            _activeButtons.Add(button);
+
+            if (_activeButtons.Count <= 1)
+            {
+                
+                gameObject.SetActive(true);
+            }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         }
 
         public void RemoveInteractable(IInteractable interactable)
         {
             if (!_buttonMap.Remove(interactable, out var button)) return;
-            ReturnButton(button);
+            _buttonPool.Pool.Release(button);
+            _activeButtons.Remove(button);
+            
             if (_buttonMap.Count == 0)
             {
                 gameObject.SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         }
     }
 }

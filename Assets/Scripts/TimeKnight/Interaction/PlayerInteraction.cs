@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 namespace TimeKnight.Interaction
 {
     public class PlayerInteraction : MonoBehaviour
     {
         [SerializeField] private GameObject interactionSelectorObject;
-        
+
         private InputAction _interactAction;
         private SelectorUI _activeUI;
         
