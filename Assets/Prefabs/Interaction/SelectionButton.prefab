@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 8974525507685363937}
   - component: {fileID: 891016589898461128}
   - component: {fileID: 185668248636017474}
+  - component: {fileID: -2691546584279163565}
   m_Layer: 5
   m_Name: SelectionButton
   m_TagString: Untagged
@@ -258,3 +259,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!225 &-2691546584279163565
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6585600731228833296}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

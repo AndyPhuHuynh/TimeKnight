@@ -1331,6 +1331,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.UIRoot
   mainCanvas: {fileID: 1470593425}
+--- !u!1 &1692126179
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1692126180}
+  m_Layer: 5
+  m_Name: ButtonPoolContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1692126180
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692126179}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4402015740867783176}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2085433068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,7 +1589,7 @@ GameObject:
   - component: {fileID: 9067263441793723214}
   - component: {fileID: 2573707235996072780}
   m_Layer: 5
-  m_Name: Button Container
+  m_Name: ButtonContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1592,6 +1627,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7160531557671570058}
+  - {fileID: 1692126180}
   m_Father: {fileID: 1470593429}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -1612,7 +1648,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Interaction.UI
   selectorButtonPrefab: {fileID: 185668248636017474, guid: 22f50d3101196154e9aca719a985615b, type: 3}
-  selectorButtonPanel: {fileID: 3127286529741038006}
+  selectorButtonContainer: {fileID: 3127286529741038006}
+  selectorButtonPoolContainer: {fileID: 1692126179}
 --- !u!224 &7160531557671570058
 RectTransform:
   m_ObjectHideFlags: 0
