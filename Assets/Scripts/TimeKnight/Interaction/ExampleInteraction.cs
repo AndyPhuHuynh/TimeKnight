@@ -8,7 +8,7 @@ namespace TimeKnight.Interaction
         public string InteractionName => displayName ?? "ExampleInteraction";
         public void Interact()
         {
-            Debug.Log("Interacting with example object");
+            Debug.Log($"Interacting with example object: {InteractionName}");
         }
     }
 }
