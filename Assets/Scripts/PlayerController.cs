@@ -43,13 +43,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         CheckForGround();
-
-        _jumpPressed = _jumpAction.IsPressed();
-
-        if (_jumpAction.WasPressedThisFrame() && _isGrounded && _jumpCoroutine == null)
-        {
-            _jumpCoroutine = StartCoroutine(ApplyJump());
-        } 
+        CheckForJumpInput();
 
         _currentMovementInput = _moveAction.ReadValue<Vector2>();
     }
@@ -68,25 +62,24 @@ public class PlayerController : MonoBehaviour
         _sr.flipX = _currentMovementInput.x < 0 ? true : false;
     }
 
+    public void CheckForJumpInput()
+    {
+        _jumpPressed = _jumpAction.IsPressed();
+        if (_jumpAction.WasPressedThisFrame()) Debug.Log("Jump Pressed");
+        if (_jumpAction.WasPressedThisFrame() && _isGrounded && _jumpCoroutine == null)
+        {
+            _jumpCoroutine = StartCoroutine(ApplyJump());
+        }
+    }
+
     private IEnumerator ApplyJump()
     {
-
         _rb.linearVelocityY += _baseJumpForce;
-
-        //_rb.AddForce(Vector2.up * _baseJumpForce, ForceMode2D.Impulse);
-        yield return null;
 
         for (int i = 0; i < _holdJumpUpdates; i++)
         {
             if (!_jumpPressed) break;
 
-            // After a couple frames of jumping, if we hit the ground then end jump early.
-            if (i > 2 && _isGrounded)
-            {
-                _rb.linearVelocityY = 0;
-                break;
-            }
-            
             _rb.linearVelocityY += _holdJumpForce;
 
             yield return new WaitForFixedUpdate();  // Keeps synced with physics calculations.
@@ -97,12 +90,39 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovement()
     {
+        if (!_moveAction.enabled) return;
+
         // Calculate move speed by taking the min of the maxMoveSpeed and adding acceleration.
         // Multiplied by absolute value of horizontal input to zero out current speed when released.
         _currentMoveSpeed = Math.Min(_currentMoveSpeed + _acceleration, _maxMoveSpeed) * Math.Abs(_currentMovementInput.x);
 
         // Multiply by horizontal movement again to capture direction of input.
         _rb.linearVelocity = new Vector2(_currentMovementInput.x * _currentMoveSpeed, _rb.linearVelocityY);
+    }
+
+    public IEnumerator PullPlayer(Vector3 otherPosition, float _pullSpeed)
+    {
+        _moveAction.Disable();
+        float previousGravity = _rb.gravityScale;
+        _rb.gravityScale = 0;
+
+
+        while (true)
+        {
+            if (_jumpAction.WasPressedThisFrame())
+            {
+                _rb.gravityScale = previousGravity;
+                _rb.linearVelocity = new Vector2(0, 0);
+                _moveAction.Enable();
+                _jumpCoroutine = StartCoroutine(ApplyJump());
+                break; 
+            }
+
+            Vector2 pullVelocity = ((Vector2)(otherPosition - transform.position)).normalized * _pullSpeed;
+
+            _rb.linearVelocity = pullVelocity;
+            yield return null;
+        }
     }
 
     private void CheckForGround()
