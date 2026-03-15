@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
-namespace TimeKnight.Interaction
+namespace TimeKnight.Core.Interaction
 {
     public class PlayerInteraction : MonoBehaviour
     {

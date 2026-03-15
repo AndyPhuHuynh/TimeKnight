@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TimeKnight.Interaction
+namespace TimeKnight.Core.Interaction
 {
     public class ExampleInteraction : MonoBehaviour, IInteractable
     {

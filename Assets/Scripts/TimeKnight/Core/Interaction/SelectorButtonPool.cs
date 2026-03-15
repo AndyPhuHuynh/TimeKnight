@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using TimeKnight.Extensions;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 
-namespace TimeKnight.Interaction
+namespace TimeKnight.Core.Interaction
 {
     public class SelectorButtonPool
     {
@@ -41,7 +42,7 @@ namespace TimeKnight.Interaction
         {
             var button = Object.Instantiate(_buttonPrefab, _buttonPoolContainer.transform);
             var selectorButton = new SelectorButton(button);
-            selectorButton.Hide();
+            selectorButton.CanvasGroup.SetVisible(false);
             return selectorButton;
         }
 
@@ -53,7 +54,7 @@ namespace TimeKnight.Interaction
 
         private void OnRelease(SelectorButton button)
         {
-            button.Hide();
+            button.CanvasGroup.SetVisible(false);
             button.Button.transform.SetParent(_buttonPoolContainer.transform);
             button.Button.onClick.RemoveAllListeners();
         }
@@ -62,7 +63,6 @@ namespace TimeKnight.Interaction
         {
             Object.Destroy(button.Button.gameObject);
         }
-
         
         private void Prewarm()
         {

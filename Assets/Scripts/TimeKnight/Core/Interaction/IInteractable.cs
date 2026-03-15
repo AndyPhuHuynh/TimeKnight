@@ -1,4 +1,4 @@
-namespace TimeKnight.Interaction
+namespace TimeKnight.Core.Interaction
 {
     public interface IInteractable
     {
