@@ -9,6 +9,7 @@ namespace TimeKnight.Core.Interaction
         public void Interact()
         {
             Debug.Log($"Interacting with example object: {InteractionName}");
+            Destroy(gameObject);
         }
     }
 }

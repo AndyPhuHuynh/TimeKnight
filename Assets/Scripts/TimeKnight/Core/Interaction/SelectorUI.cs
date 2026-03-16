@@ -36,8 +36,7 @@ namespace TimeKnight.Core.Interaction
             _canvasGroup.SetVisible(false);
 
             input.Actions.Interaction.Interact.performed += OnInteract;
-            input.Actions.Interaction.SelectUp.performed += OnSelectUp;
-            input.Actions.Interaction.SelectDown.performed += OnSelectDown;
+            input.Actions.Interaction.Navigate.performed += OnNavigate;
         }
 
         private void OnValidate()
@@ -65,22 +64,25 @@ namespace TimeKnight.Core.Interaction
             
             cursor.transform.position = rightEdgeWorld + new Vector3(20.0f, 0.0f, 0.0f);
         }
-        
-        private void OnSelectUp(InputAction.CallbackContext _)
-        {
-            if (_selectedButton?.Previous == null) return;
-            SetSelectedButton(_selectedButton.Previous);
-        }
-        
-        private void OnSelectDown(InputAction.CallbackContext _)
-        {
-            if (_selectedButton?.Next == null) return;
-            SetSelectedButton(_selectedButton.Next);
-        }
 
         private void OnInteract(InputAction.CallbackContext _)
         {
             _selectedButton?.Value.Button.onClick?.Invoke();
+        }
+
+        private void OnNavigate(InputAction.CallbackContext ctx)
+        {
+            float value = ctx.ReadValue<float>();
+            if (value > 0)
+            {
+                if (_selectedButton?.Previous == null) return;
+                SetSelectedButton(_selectedButton.Previous);
+            }
+            else
+            {
+                if (_selectedButton?.Next == null) return;
+                SetSelectedButton(_selectedButton.Next);
+            }
         }
         
         public void AddInteractable(IInteractable interactable)
