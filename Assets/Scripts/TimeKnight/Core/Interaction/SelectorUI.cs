@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TimeKnight.Core.Dialogue;
 using TimeKnight.Core.Input;
 using TimeKnight.Extensions;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace TimeKnight.Core.Interaction
         private readonly LinkedList<SelectorButton> _activeButtons = new();
         private LinkedListNode<SelectorButton> _selectedButton;
 
+        private bool _interactionAllowed = true;
+        
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -38,7 +41,7 @@ namespace TimeKnight.Core.Interaction
             input.Actions.Interaction.Interact.performed += OnInteract;
             input.Actions.Interaction.Navigate.performed += OnNavigate;
         }
-
+        
         private void OnValidate()
         {
             Debug.Assert(input               != null, $"Missing {nameof(input)}",               this);
@@ -46,6 +49,30 @@ namespace TimeKnight.Core.Interaction
             Debug.Assert(buttonContainer     != null, $"Missing {nameof(buttonContainer)}",     this);
             Debug.Assert(buttonPoolContainer != null, $"Missing {nameof(buttonPoolContainer)}", this);
             Debug.Assert(cursor              != null, $"Missing {nameof(cursor)}",              this);
+        }
+
+        private void OnEnable()
+        {
+            DialogueManager.Instance.OnDialogueStart += DisableInteractions;
+            DialogueManager.Instance.OnDialogueComplete += EnableInteractions;
+        }
+
+        private void OnDisable()
+        {
+            DialogueManager.Instance.OnDialogueStart -= DisableInteractions;
+            DialogueManager.Instance.OnDialogueComplete -= EnableInteractions;
+        }
+
+        private void EnableInteractions()
+        {
+            _interactionAllowed = true;
+            _canvasGroup.SetVisible(!_activeButtons.IsEmpty());
+        }
+
+        private void DisableInteractions()
+        {
+            _interactionAllowed = false;
+            _canvasGroup.SetVisible(false);
         }
 
         private void SetSelectedButton(LinkedListNode<SelectorButton> button)
@@ -67,13 +94,14 @@ namespace TimeKnight.Core.Interaction
 
         private void OnInteract(InputAction.CallbackContext _)
         {
+            if (!_interactionAllowed) return;
             _selectedButton?.Value.Button.onClick?.Invoke();
         }
 
         private void OnNavigate(InputAction.CallbackContext ctx)
         {
-            float value = ctx.ReadValue<float>();
-            if (value > 0)
+            if (!_interactionAllowed) return;
+            if (ctx.ReadValue<float>() > 0)
             {
                 if (_selectedButton?.Previous == null) return;
                 SetSelectedButton(_selectedButton.Previous);
@@ -101,7 +129,10 @@ namespace TimeKnight.Core.Interaction
 
             if (_activeButtons.Count > 1) return;
             SetSelectedButton(_activeButtons.First);
-            _canvasGroup.SetVisible(true);
+            if (_interactionAllowed)
+            {
+                _canvasGroup.SetVisible(true);
+            }
         }
 
         public void RemoveInteractable(IInteractable interactable)
