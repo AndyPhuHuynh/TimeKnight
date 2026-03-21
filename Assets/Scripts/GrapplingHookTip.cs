@@ -30,7 +30,10 @@ public class GrapplingHookTip : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        _parentHook.HookTrigger();
+        if (IsCollisionLayerGround(collision))
+        {
+            _parentHook.HookTrigger();
+        }
     }
 
     private bool IsCollisionLayerGround(Collider2D collision)

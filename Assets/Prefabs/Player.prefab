@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 2548344466080057984}
   - component: {fileID: 6837310045875004360}
   - component: {fileID: 1750267656710825578}
+  - component: {fileID: 5164450689551885510}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -120,7 +121,7 @@ Transform:
   m_GameObject: {fileID: 7994627178333564736}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.211553, y: -0.6526128, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.007, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -271,9 +272,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc7562e4642d724db06d4c63b0b450c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _maxMoveSpeed: 5
-  _acceleration: 1
-  _baseJumpForce: 10
-  _holdJumpForce: 2
-  _holdJumpUpdates: 10
+  maxMoveSpeed: 5
+  acceleration: 1
+  baseJumpForce: 10
+  holdJumpForce: 2
+  holdJumpUpdates: 10
   _groundCheck: {fileID: 6841495374549988156}
+--- !u!114 &5164450689551885510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994627178333564736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f391c9d0c8e30674abddde978235cca3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Interaction.PlayerInteraction
+  interactionUI: {fileID: 0}

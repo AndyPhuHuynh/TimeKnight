@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
 
         _rb.linearVelocityY += baseJumpForce;
 
-        //_rb.AddForce(Vector2.up * _baseJumpForce, ForceMode2D.Impulse);
         yield return null;
 
         for (int i = 0; i < holdJumpUpdates; i++)
