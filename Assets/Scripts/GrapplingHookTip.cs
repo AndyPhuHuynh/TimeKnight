@@ -4,18 +4,17 @@ using UnityEngine.InputSystem;
 public class GrapplingHookTip : MonoBehaviour
 {
     [SerializeField] private GrapplingHook _parentHook;
+    // Reference to fire hook action needed in order to disable it when player is too close to a wall.
     private InputAction _fireHook;
-    private LayerMask _groundLayer;
 
     void Start()
     {
         _fireHook = InputSystem.actions.FindAction("Primary Fire");
-        _groundLayer = LayerMask.GetMask("Ground");
     }
 
     void OnTriggerStay2D(Collider2D collision)
     {
-        if (_groundLayer == collision.gameObject.layer)
+        if (IsCollisionLayerGround(collision))
         {
             _fireHook.Disable();
         }
@@ -23,15 +22,19 @@ public class GrapplingHookTip : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (_groundLayer != collision.gameObject.layer)
+        if (IsCollisionLayerGround(collision))
         {
             _fireHook.Enable();
-
         }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         _parentHook.HookTrigger();
+    }
+
+    private bool IsCollisionLayerGround(Collider2D collision)
+    {
+        return LayerMask.LayerToName(collision.gameObject.layer) == "Ground";
     }
 }

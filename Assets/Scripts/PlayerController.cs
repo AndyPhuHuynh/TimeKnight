@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxMoveSpeed = 5;
     [SerializeField] private float _acceleration = 1;
     private float _currentMoveSpeed = 0;
+    private bool _isBeingPulled = false;
 
     // Jump Variables
     [SerializeField] private float _baseJumpForce = 10;
@@ -26,9 +27,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine _jumpCoroutine;
 
     // Grounding Variables
-    [SerializeField] private Vector2 _groundCheckDimenisons = new Vector2(0.7f, 0.2f);
-    private LayerMask _groundLayer;
-    private bool _isGrounded = false;
+    [SerializeField] private GroundCheck _groundCheck;
 
     private void Awake()
     {
@@ -36,13 +35,11 @@ public class PlayerController : MonoBehaviour
         _jumpAction = InputSystem.actions.FindAction("Jump");
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
-        _groundLayer = LayerMask.GetMask("Ground");
     }
 
     // Update gets player input.
     private void Update()
     {
-        CheckForGround();
         CheckForJumpInput();
 
         _currentMovementInput = _moveAction.ReadValue<Vector2>();
@@ -65,8 +62,8 @@ public class PlayerController : MonoBehaviour
     public void CheckForJumpInput()
     {
         _jumpPressed = _jumpAction.IsPressed();
-        if (_jumpAction.WasPressedThisFrame()) Debug.Log("Jump Pressed");
-        if (_jumpAction.WasPressedThisFrame() && _isGrounded && _jumpCoroutine == null)
+
+        if (_jumpAction.WasPressedThisFrame() && _groundCheck.isGrounded && _jumpCoroutine == null && !_isBeingPulled)
         {
             _jumpCoroutine = StartCoroutine(ApplyJump());
         }
@@ -100,12 +97,12 @@ public class PlayerController : MonoBehaviour
         _rb.linearVelocity = new Vector2(_currentMovementInput.x * _currentMoveSpeed, _rb.linearVelocityY);
     }
 
-    public IEnumerator PullPlayer(Vector3 otherPosition, float _pullSpeed)
+    public IEnumerator PullPlayer(Vector3 targetPosition, float _pullSpeed)
     {
         _moveAction.Disable();
         float previousGravity = _rb.gravityScale;
         _rb.gravityScale = 0;
-
+        _isBeingPulled = true;
 
         while (true)
         {
@@ -115,24 +112,14 @@ public class PlayerController : MonoBehaviour
                 _rb.linearVelocity = new Vector2(0, 0);
                 _moveAction.Enable();
                 _jumpCoroutine = StartCoroutine(ApplyJump());
+                _isBeingPulled = false;
                 break; 
             }
 
-            Vector2 pullVelocity = ((Vector2)(otherPosition - transform.position)).normalized * _pullSpeed;
+            Vector2 pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * _pullSpeed;
 
             _rb.linearVelocity = pullVelocity;
             yield return null;
         }
-    }
-
-    private void CheckForGround()
-    {
-        _isGrounded = Physics2D.BoxCast(transform.position, _groundCheckDimenisons, 0f, -transform.up, 0.1f, _groundLayer);
-    }
-
-    // Used to visualize the CheckForGround box.
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireCube(transform.position, (Vector3)_groundCheckDimenisons);
     }
 }

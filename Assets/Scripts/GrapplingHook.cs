@@ -1,23 +1,28 @@
 using System.Collections;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GrapplingHook : MonoBehaviour
 {
-    private InputAction _fireHook;
+    private SpriteRenderer _sr;
 
+    // Input for firing
+    private InputAction _fireHook;
+    
+    [Header("Hook Tip")]
+    [SerializeField] private Transform tipTransform;
+
+    [Header("Grapple Properties")]
     [SerializeField] private float baseLength = 3.48f;
     [SerializeField] private float maxLength = 10f;
     [SerializeField] private float fireSpeed = 5f;
     [SerializeField] private float retractSpeed = 10f;
-    [SerializeField] private Transform tipTransform;
-    //[SerializeField] private Rigidbody2D playerRigidBody;
-    [SerializeField] private PlayerController playerController;
+    [SerializeField] private float pullSpeed = 10;
 
-    private SpriteRenderer _sr;
-    private float _pullSpeed = 10;
+    // TODO: Initialize this with constructor
+   [SerializeField] private PlayerController playerController;
 
+    // State management
     private Coroutine _fireCoroutine = null;    // Reference to coroutine needed so it can be ended early when hook collides.
     private enum HookState
     {
@@ -26,9 +31,7 @@ public class GrapplingHook : MonoBehaviour
         Retracting,
         Stuck
     }
-
     private HookState _currentState = HookState.Idle;
-
     private Vector3 _collisionPoint;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,70 +48,68 @@ public class GrapplingHook : MonoBehaviour
 
         if (IsStuck())
         {
-            rotateGrapplingHook(_collisionPoint);
+            RotateGrapplingHook(_collisionPoint);
 
-            // Times 2 here is to account for the 0.5 scale currently applied to the chain. Going to change sprite soon to avoid scaling issues like this.
-            float distance = Vector2.Distance(transform.position, _collisionPoint) * 2;
-            updateLength(distance);
+            float distance = Vector2.Distance(transform.position, _collisionPoint);
+            UpdateLength(distance);
         }
-
-        if (IsIdle() && isMouseInbounds(mousePosition))
+        else if (IsIdle() && IsMouseInbounds(mousePosition))
         {
             // Rotate grappling hook to face mouse so it can be fired later.
             // Convert to a world position - Z axis set to 0 because depth doesn't matter for this object.
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
-            rotateGrapplingHook(mouseWorldPos);
+            RotateGrapplingHook(mouseWorldPos);
 
 
             if (_fireHook.WasPressedThisFrame())
             {
-                _fireCoroutine = StartCoroutine(fireGrapplingHook());
+                _fireCoroutine = StartCoroutine(FireGrapplingHook());
             }
         }
     }
 
-    private IEnumerator fireGrapplingHook()
+    private IEnumerator FireGrapplingHook()
     {
         _currentState = HookState.Extending;
         while (_sr.size.x < maxLength)
         {
             float newLength = _sr.size.x + (fireSpeed * Time.deltaTime);
-            updateLength(newLength);
+            UpdateLength(newLength);
             yield return null;
         }
 
-        yield return retractGrapplingHook();
+        yield return RetractGrapplingHook();
 
         _fireCoroutine = null;
     }
 
-    private IEnumerator retractGrapplingHook()
+    private IEnumerator RetractGrapplingHook()
     {
         _currentState = HookState.Retracting;
         while (_sr.size.x > baseLength)
         {
             float newLength = _sr.size.x - (retractSpeed * Time.deltaTime);
-            updateLength(newLength);
+            UpdateLength(newLength);
             yield return null;
         }
-        updateLength(baseLength); // There might be some variance when subtracting length on last frame due to Time.deltaTime, this resets it to base length. 
+        UpdateLength(baseLength); // There might be some variance when subtracting length on last frame due to Time.deltaTime, this resets it to base length. 
         _currentState = HookState.Idle;
     }
 
-    private IEnumerator BeginHookPull(Vector3 otherPosition) 
+    private IEnumerator BeginHookPull(Vector3 otherPosition)
     {
-        yield return StartCoroutine(playerController.PullPlayer(otherPosition, _pullSpeed));
+        yield return StartCoroutine(playerController.PullPlayer(otherPosition, pullSpeed));
 
-        StartCoroutine(retractGrapplingHook());
+        StartCoroutine(RetractGrapplingHook());
     }
 
-    private void updateLength(float newLength)
+    private void UpdateLength(float newLength)
     {
         _sr.size = new Vector2(newLength, _sr.size.y);
         tipTransform.localPosition = new Vector3(newLength, 0f, 0f);
     }
 
-    private bool isMouseInbounds(Vector2 mousePosition)
+    private bool IsMouseInbounds(Vector2 mousePosition)
     {
         if (mousePosition == null) return false;
 
@@ -116,7 +117,7 @@ public class GrapplingHook : MonoBehaviour
         return false;
     }
 
-    private void rotateGrapplingHook(Vector3 otherPosition)
+    private void RotateGrapplingHook(Vector3 otherPosition)
     {
         // Calculate x and y components of the vector, then get the angle using atan2.
         float angle = GetAngleTo(otherPosition);
@@ -145,5 +146,4 @@ public class GrapplingHook : MonoBehaviour
     private bool IsIdle() => _currentState == HookState.Idle;
     private bool IsExtending() => _currentState == HookState.Extending;
     private bool IsStuck() => _currentState == HookState.Stuck;
-    private bool IsRetracting() => _currentState == HookState.Retracting;
 }

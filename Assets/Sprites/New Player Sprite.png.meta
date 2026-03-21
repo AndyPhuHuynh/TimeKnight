@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ad8f08a55bf983a49a1a7c2d69a9017e
+guid: c507c7b053f8d6742b36b57eb70e6df0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1957907319812023177
-    second: hooktip_0
+      213: -2311659948842064771
+    second: Player_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 800
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hooktip_0
+      name: Player_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 384
-        height: 272
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        width: 67
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 983688c7552eb2b10800000000000000
-      internalID: 1957907319812023177
+      spriteID: d7465c336855befd0800000000000000
+      internalID: -2311659948842064771
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c6e891363140aba4b916e4f41c9b451b
+    spriteID: c77a1a22250141843b6595775d9c75fe
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hooktip_0: 1957907319812023177
+      Player_0: -2311659948842064771
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
