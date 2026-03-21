@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TimeKnight.Core.Input;
 using UnityEngine;
 using Yarn.Unity;
@@ -13,12 +12,7 @@ namespace TimeKnight.Core.Dialogue
         [Header("Input")]
         [SerializeField] private InputReader input;
         
-        [Header("Dialogue")]
-        [SerializeField] private DialogueRunner dialogueRunner;
-        
-        public Action OnDialogueStart;
-        public Action OnDialogueComplete;
-
+        private DialogueRunner _dialogueRunner;
         private List<PreviousMapState> _previousInputMapStates;
         
         private void Awake()
@@ -28,18 +22,20 @@ namespace TimeKnight.Core.Dialogue
                 Destroy(gameObject);
             }
             Instance = this;
+            
+            _dialogueRunner = GetComponent<DialogueRunner>();
+            if (_dialogueRunner == null) Debug.LogError("Dialogue runner is null!");
         }
 
         private void Start()
         {
-            dialogueRunner.onDialogueStart!.AddListener(OnDialogueStartFunc);
-            dialogueRunner.onDialogueComplete!.AddListener(OnDialogueCompleteFunc);
+            _dialogueRunner.onDialogueStart!.AddListener(OnDialogueStartFunc);
+            _dialogueRunner.onDialogueComplete!.AddListener(OnDialogueCompleteFunc);
         }
 
         private void OnValidate()
         {
             Debug.Assert(input          != null, $"Missing {nameof(input)}",          this);
-            Debug.Assert(dialogueRunner != null, $"Missing {nameof(dialogueRunner)}", this);
         }
 
         private void OnDialogueStartFunc()
@@ -47,12 +43,12 @@ namespace TimeKnight.Core.Dialogue
             _previousInputMapStates = input.GetMapStates();
             input.EnableOnly(input.Actions.Dialogue);
             
-            OnDialogueStart?.Invoke();
+            DialogueEvents.RaiseStart();
         }
 
         private void OnDialogueCompleteFunc()
         {
-            OnDialogueComplete?.Invoke();
+            DialogueEvents.RaiseComplete();
             
             InputReader.RestoreMapStates(_previousInputMapStates);
             _previousInputMapStates = null;
@@ -60,12 +56,12 @@ namespace TimeKnight.Core.Dialogue
 
         public void PlayDialogue(string dialogue)
         {
-            if (!dialogueRunner.Dialogue.NodeExists(dialogue))
+            if (!_dialogueRunner.Dialogue.NodeExists(dialogue))
             {
                 Debug.LogError($"Dialogue \"{dialogue}\" does not exist");
                 return;
             }
-            dialogueRunner.StartDialogue(dialogue);
+            _dialogueRunner.StartDialogue(dialogue);
         }
     }
 }

@@ -13,6 +13,9 @@ namespace TimeKnight.Core.Interaction
         [Header("Input")] 
         [SerializeField] private InputReader input;
         
+        [Header("Canvas")]
+        [SerializeField] private CanvasGroup canvasGroup;
+        
         [Header("Selector Button")]
         [SerializeField] private Button buttonPrefab;
         [SerializeField] private GameObject buttonContainer;
@@ -21,7 +24,6 @@ namespace TimeKnight.Core.Interaction
         [Header("Selector Cursor")]
         [SerializeField] private GameObject cursor;
 
-        private CanvasGroup _canvasGroup;
         
         private SelectorButtonPool _buttonPool;
         private readonly Dictionary<IInteractable, SelectorButton> _buttonMap = new();
@@ -33,18 +35,14 @@ namespace TimeKnight.Core.Interaction
         
         private void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
             _buttonPool = new SelectorButtonPool(buttonPrefab, buttonContainer, buttonPoolContainer);
-            
-            _canvasGroup.SetVisible(false);
-
-            input.Actions.Interaction.Interact.performed += OnInteract;
-            input.Actions.Interaction.Navigate.performed += OnNavigate;
+            canvasGroup.SetVisible(false);
         }
         
         private void OnValidate()
         {
             Debug.Assert(input               != null, $"Missing {nameof(input)}",               this);
+            Debug.Assert(canvasGroup         != null, $"Missing {nameof(canvasGroup)}",         this);
             Debug.Assert(buttonPrefab        != null, $"Missing {nameof(buttonPrefab)}",        this);
             Debug.Assert(buttonContainer     != null, $"Missing {nameof(buttonContainer)}",     this);
             Debug.Assert(buttonPoolContainer != null, $"Missing {nameof(buttonPoolContainer)}", this);
@@ -53,26 +51,38 @@ namespace TimeKnight.Core.Interaction
 
         private void OnEnable()
         {
-            DialogueManager.Instance.OnDialogueStart += DisableInteractions;
-            DialogueManager.Instance.OnDialogueComplete += EnableInteractions;
+            input.Actions.Interaction.Interact.performed += OnInteract;
+            input.Actions.Interaction.Navigate.performed += OnNavigate;
+
+            InteractionEvents.OnInteractionTriggerEnter += AddInteractable;
+            InteractionEvents.OnInteractionTriggerExit += RemoveInteractable;
+            
+            DialogueEvents.OnDialogueStart += DisableInteractions;
+            DialogueEvents.OnDialogueComplete += EnableInteractions;
         }
 
         private void OnDisable()
         {
-            DialogueManager.Instance.OnDialogueStart -= DisableInteractions;
-            DialogueManager.Instance.OnDialogueComplete -= EnableInteractions;
+            input.Actions.Interaction.Interact.performed -= OnInteract;
+            input.Actions.Interaction.Navigate.performed -= OnNavigate;
+            
+            InteractionEvents.OnInteractionTriggerEnter -= AddInteractable;
+            InteractionEvents.OnInteractionTriggerExit -= RemoveInteractable;
+            
+            DialogueEvents.OnDialogueStart -= DisableInteractions;
+            DialogueEvents.OnDialogueComplete -= EnableInteractions;
         }
 
         private void EnableInteractions()
         {
             _interactionAllowed = true;
-            _canvasGroup.SetVisible(!_activeButtons.IsEmpty());
+            canvasGroup.SetVisible(!_activeButtons.IsEmpty());
         }
 
         private void DisableInteractions()
         {
             _interactionAllowed = false;
-            _canvasGroup.SetVisible(false);
+            canvasGroup.SetVisible(false);
         }
 
         private void SetSelectedButton(LinkedListNode<SelectorButton> button)
@@ -113,8 +123,10 @@ namespace TimeKnight.Core.Interaction
             }
         }
         
-        public void AddInteractable(IInteractable interactable)
+        private void AddInteractable(IInteractable interactable)
         {
+            if (_buttonMap.ContainsKey(interactable)) return;
+            
             var button = _buttonPool.Pool.Get();
             button.Text.text = interactable.InteractionName;
             button.Button.onClick.AddListener(interactable.Interact);
@@ -131,11 +143,11 @@ namespace TimeKnight.Core.Interaction
             SetSelectedButton(_activeButtons.First);
             if (_interactionAllowed)
             {
-                _canvasGroup.SetVisible(true);
+                canvasGroup.SetVisible(true);
             }
         }
 
-        public void RemoveInteractable(IInteractable interactable)
+        private void RemoveInteractable(IInteractable interactable)
         {
             if (!_buttonMap.Remove(interactable, out var button)) return;
             if (_selectedButton != null && _selectedButton.Value == button)
@@ -146,12 +158,12 @@ namespace TimeKnight.Core.Interaction
             _activeButtons.Remove(button);
             
             Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(canvasGroup.transform as RectTransform);
             UpdateCursorPosition();
             
             if (!_buttonMap.IsEmpty()) return;
             _selectedButton = null;
-            _canvasGroup.SetVisible(false);
+            canvasGroup.SetVisible(false);
         }
     }
 }
