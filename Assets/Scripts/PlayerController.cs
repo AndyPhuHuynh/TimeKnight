@@ -68,16 +68,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void CheckForJumpInput()
-    {
-        _jumpPressed = _jumpAction.IsPressed();
-
-        if (_jumpAction.WasPressedThisFrame() && _groundCheck.isGrounded && _jumpCoroutine == null && !_isBeingPulled)
-        {
-            _jumpCoroutine = StartCoroutine(ApplyJump());
-        }
-    }
-
     private IEnumerator ApplyJump()
     {
 
