@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxMoveSpeed = 5;
     [SerializeField] private float acceleration = 1;
     private float _currentMoveSpeed;
+    private bool _isBeingPulled = false;
 
     [Header("Jump")]
     [SerializeField] private float baseJumpForce = 10;
@@ -26,9 +27,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine _jumpCoroutine;
 
     // Grounding Variables
-    [SerializeField] private Vector2 groundCheckDimensions = new(0.7f, 0.2f);
-    private LayerMask _groundLayer;
-    private bool _isGrounded;
+    [SerializeField] private GroundCheck _groundCheck;
 
     private void Awake()
     {
@@ -36,20 +35,12 @@ public class PlayerController : MonoBehaviour
         _jumpAction = InputSystem.actions.FindAction("Jump");
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
-        _groundLayer = LayerMask.GetMask("Ground");
     }
 
     // Update gets player input.
     private void Update()
     {
-        CheckForGround();
-
-        _jumpPressed = _jumpAction.IsPressed();
-
-        if (_jumpAction.WasPressedThisFrame() && _isGrounded && _jumpCoroutine == null)
-        {
-            _jumpCoroutine = StartCoroutine(ApplyJump());
-        } 
+        CheckForJumpInput();
 
         _currentMovementInput = _moveAction.ReadValue<Vector2>();
     }
@@ -67,6 +58,16 @@ public class PlayerController : MonoBehaviour
         _sr.flipX = _currentMovementInput.x < 0;
     }
 
+    public void CheckForJumpInput()
+    {
+        _jumpPressed = _jumpAction.IsPressed();
+
+        if (_jumpAction.WasPressedThisFrame() && _groundCheck.isGrounded && _jumpCoroutine == null && !_isBeingPulled)
+        {
+            _jumpCoroutine = StartCoroutine(ApplyJump());
+        }
+    }
+
     private IEnumerator ApplyJump()
     {
 
@@ -79,13 +80,6 @@ public class PlayerController : MonoBehaviour
         {
             if (!_jumpPressed) break;
 
-            // After a couple frames of jumping, if we hit the ground then end jump early.
-            if (i > 2 && _isGrounded)
-            {
-                _rb.linearVelocityY = 0;
-                break;
-            }
-            
             _rb.linearVelocityY += holdJumpForce;
 
             yield return new WaitForFixedUpdate();  // Keeps synced with physics calculations.
@@ -96,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovement()
     {
+        if (!_moveAction.enabled) return;
+
         // Calculate move speed by taking the min of the maxMoveSpeed and adding acceleration.
         // Multiplied by absolute value of horizontal input to zero out current speed when released.
         _currentMoveSpeed = Math.Min(_currentMoveSpeed + acceleration, maxMoveSpeed) * Math.Abs(_currentMovementInput.x);
@@ -104,14 +100,29 @@ public class PlayerController : MonoBehaviour
         _rb.linearVelocity = new Vector2(_currentMovementInput.x * _currentMoveSpeed, _rb.linearVelocityY);
     }
 
-    private void CheckForGround()
+    public IEnumerator PullPlayer(Vector3 targetPosition, float _pullSpeed)
     {
-        _isGrounded = Physics2D.BoxCast(transform.position, groundCheckDimensions, 0f, -transform.up, 0.1f, _groundLayer);
-    }
+        _moveAction.Disable();
+        float previousGravity = _rb.gravityScale;
+        _rb.gravityScale = 0;
+        _isBeingPulled = true;
 
-    // Used to visualize the CheckForGround box.
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireCube(transform.position, groundCheckDimensions);
+        while (true)
+        {
+            if (_jumpAction.WasPressedThisFrame())
+            {
+                _rb.gravityScale = previousGravity;
+                _rb.linearVelocity = new Vector2(0, 0);
+                _moveAction.Enable();
+                _jumpCoroutine = StartCoroutine(ApplyJump());
+                _isBeingPulled = false;
+                break; 
+            }
+
+            Vector2 pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * _pullSpeed;
+
+            _rb.linearVelocity = pullVelocity;
+            yield return null;
+        }
     }
 }
