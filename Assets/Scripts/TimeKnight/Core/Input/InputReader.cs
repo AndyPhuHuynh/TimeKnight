@@ -41,12 +41,10 @@ namespace TimeKnight.Core.Input
             {
                 if (map == mapToEnable)
                 {
-                    Debug.Log($"{map.name} is enabled");
                     map.Enable();
                 }
                 else
                 {
-                    Debug.Log($"{map.name} is disabled");
                     map.Disable();
                 }
             }

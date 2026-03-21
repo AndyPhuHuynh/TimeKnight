@@ -6,9 +6,9 @@ namespace TimeKnight.Core.Interaction
     {
         [SerializeField] private string displayName;
         public string InteractionName => displayName ?? "ExampleInteraction";
+        
         public void Interact()
         {
-            Debug.Log($"Interacting with example object: {InteractionName}");
             Destroy(gameObject);
         }
     }
