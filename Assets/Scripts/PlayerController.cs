@@ -12,23 +12,23 @@ public class PlayerController : MonoBehaviour
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private Vector2 _currentMovementInput;
-    private bool _jumpPressed = false;
+    private bool _jumpPressed;
 
-    // Movement variables
-    [SerializeField] private float _maxMoveSpeed = 5;
-    [SerializeField] private float _acceleration = 1;
-    private float _currentMoveSpeed = 0;
+    [Header("Movement")]
+    [SerializeField] private float maxMoveSpeed = 5;
+    [SerializeField] private float acceleration = 1;
+    private float _currentMoveSpeed;
 
-    // Jump Variables
-    [SerializeField] private float _baseJumpForce = 10;
-    [SerializeField] private float _holdJumpForce = 2;
-    [SerializeField] private int _holdJumpUpdates = 10;
+    [Header("Jump")]
+    [SerializeField] private float baseJumpForce = 10;
+    [SerializeField] private float holdJumpForce = 2;
+    [SerializeField] private int holdJumpUpdates = 10;
     private Coroutine _jumpCoroutine;
 
     // Grounding Variables
-    [SerializeField] private Vector2 _groundCheckDimenisons = new Vector2(0.7f, 0.2f);
+    [SerializeField] private Vector2 groundCheckDimensions = new(0.7f, 0.2f);
     private LayerMask _groundLayer;
-    private bool _isGrounded = false;
+    private bool _isGrounded;
 
     private void Awake()
     {
@@ -64,19 +64,18 @@ public class PlayerController : MonoBehaviour
     private void UpdateSpriteDirection()
     {
         if (_currentMovementInput.x == 0) return;
-
-        _sr.flipX = _currentMovementInput.x < 0 ? true : false;
+        _sr.flipX = _currentMovementInput.x < 0;
     }
 
     private IEnumerator ApplyJump()
     {
 
-        _rb.linearVelocityY += _baseJumpForce;
+        _rb.linearVelocityY += baseJumpForce;
 
         //_rb.AddForce(Vector2.up * _baseJumpForce, ForceMode2D.Impulse);
         yield return null;
 
-        for (int i = 0; i < _holdJumpUpdates; i++)
+        for (int i = 0; i < holdJumpUpdates; i++)
         {
             if (!_jumpPressed) break;
 
@@ -87,7 +86,7 @@ public class PlayerController : MonoBehaviour
                 break;
             }
             
-            _rb.linearVelocityY += _holdJumpForce;
+            _rb.linearVelocityY += holdJumpForce;
 
             yield return new WaitForFixedUpdate();  // Keeps synced with physics calculations.
         }
@@ -99,7 +98,7 @@ public class PlayerController : MonoBehaviour
     {
         // Calculate move speed by taking the min of the maxMoveSpeed and adding acceleration.
         // Multiplied by absolute value of horizontal input to zero out current speed when released.
-        _currentMoveSpeed = Math.Min(_currentMoveSpeed + _acceleration, _maxMoveSpeed) * Math.Abs(_currentMovementInput.x);
+        _currentMoveSpeed = Math.Min(_currentMoveSpeed + acceleration, maxMoveSpeed) * Math.Abs(_currentMovementInput.x);
 
         // Multiply by horizontal movement again to capture direction of input.
         _rb.linearVelocity = new Vector2(_currentMovementInput.x * _currentMoveSpeed, _rb.linearVelocityY);
@@ -107,12 +106,12 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForGround()
     {
-        _isGrounded = Physics2D.BoxCast(transform.position, _groundCheckDimenisons, 0f, -transform.up, 0.1f, _groundLayer);
+        _isGrounded = Physics2D.BoxCast(transform.position, groundCheckDimensions, 0f, -transform.up, 0.1f, _groundLayer);
     }
 
     // Used to visualize the CheckForGround box.
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(transform.position, (Vector3)_groundCheckDimenisons);
+        Gizmos.DrawWireCube(transform.position, groundCheckDimensions);
     }
 }
