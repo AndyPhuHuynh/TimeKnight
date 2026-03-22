@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TimeKnight.Core.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,17 +9,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private SpriteRenderer _sr;
 
-    // Input variables
-    private InputAction _moveAction;
-    private InputAction _jumpAction;
-    private Vector2 _currentMovementInput;
-    private bool _jumpPressed;
-
+    [Header("Input")] 
+    [SerializeField] private InputReader input;
+    
     [Header("Movement")]
     [SerializeField] private float maxMoveSpeed = 5;
     [SerializeField] private float acceleration = 1;
     private float _currentMoveSpeed;
-    private bool _isBeingPulled = false;
+    private bool _isBeingPulled;
+    private Coroutine _onMoveHeldCoroutine;
 
     [Header("Jump")]
     [SerializeField] private float baseJumpForce = 10;
@@ -27,60 +26,73 @@ public class PlayerController : MonoBehaviour
     private Coroutine _jumpCoroutine;
 
     // Grounding Variables
-    [SerializeField] private GroundCheck _groundCheck;
+    [SerializeField] private GroundCheck groundCheck;
 
     private void Awake()
     {
-        _moveAction = InputSystem.actions.FindAction("Move");
-        _jumpAction = InputSystem.actions.FindAction("Jump");
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
     }
 
-    // Update gets player input.
-    private void Update()
+    private void OnEnable()
     {
-        CheckForJumpInput();
-
-        _currentMovementInput = _moveAction.ReadValue<Vector2>();
+        input.Actions.Player.Move.started   += OnMoveStarted;
+        input.Actions.Player.Move.performed += OnMovePerformed;
+        input.Actions.Player.Move.canceled  += OnMoveCanceled;
+        input.Actions.Player.Jump.performed += OnJumpPerformed;
     }
 
-    // Physics adjustments.
-    private void FixedUpdate()
+    private void OnDisable()
+    {
+        input.Actions.Player.Move.started   -= OnMoveStarted;
+        input.Actions.Player.Move.performed -= OnMovePerformed;
+        input.Actions.Player.Move.canceled  -= OnMoveCanceled;
+        input.Actions.Player.Jump.performed -= OnJumpPerformed;
+    }
+
+    private void OnMoveStarted(InputAction.CallbackContext _)
+    {
+        _onMoveHeldCoroutine = StartCoroutine(OnMovementHeld());
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext _)
     {
         UpdateSpriteDirection();
-        ApplyMovement();
     }
 
-    private void UpdateSpriteDirection()
+    private void OnMoveCanceled(InputAction.CallbackContext _)
     {
-        if (_currentMovementInput.x == 0) return;
-        _sr.flipX = _currentMovementInput.x < 0;
+        StopCoroutine(_onMoveHeldCoroutine);
+        _onMoveHeldCoroutine = null;
+        _currentMoveSpeed = 0;
+        _rb.linearVelocity = Vector2.zero;
     }
-
-    public void CheckForJumpInput()
+    
+    private void OnJumpPerformed(InputAction.CallbackContext _)
     {
-        _jumpPressed = _jumpAction.IsPressed();
-
-        if (_jumpAction.WasPressedThisFrame() && _groundCheck.isGrounded && _jumpCoroutine == null && !_isBeingPulled)
+        if (input.Actions.Player.Jump.WasPressedThisFrame() && 
+            groundCheck.IsGrounded && 
+            _jumpCoroutine == null && 
+            !_isBeingPulled)
         {
             _jumpCoroutine = StartCoroutine(ApplyJump());
         }
     }
+    
+    private void UpdateSpriteDirection()
+    {
+        _sr.flipX = input.Actions.Player.Move.ReadValue<float>() < 0;
+    }
 
     private IEnumerator ApplyJump()
     {
-
         _rb.linearVelocityY += baseJumpForce;
-
         yield return null;
 
         for (int i = 0; i < holdJumpUpdates; i++)
         {
-            if (!_jumpPressed) break;
-
+            if (!input.Actions.Player.Jump.IsPressed()) break;
             _rb.linearVelocityY += holdJumpForce;
-
             yield return new WaitForFixedUpdate();  // Keeps synced with physics calculations.
         }
 
@@ -89,36 +101,43 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        if (!_moveAction.enabled) return;
-
         // Calculate move speed by taking the min of the maxMoveSpeed and adding acceleration.
-        // Multiplied by absolute value of horizontal input to zero out current speed when released.
-        _currentMoveSpeed = Math.Min(_currentMoveSpeed + acceleration, maxMoveSpeed) * Math.Abs(_currentMovementInput.x);
+        _currentMoveSpeed = Math.Min(_currentMoveSpeed + acceleration, maxMoveSpeed);
 
         // Multiply by horizontal movement again to capture direction of input.
-        _rb.linearVelocity = new Vector2(_currentMovementInput.x * _currentMoveSpeed, _rb.linearVelocityY);
+        var moveInput = input.Actions.Player.Move.ReadValue<float>();
+        _rb.linearVelocity = new Vector2(moveInput * _currentMoveSpeed, _rb.linearVelocityY);
     }
 
-    public IEnumerator PullPlayer(Vector3 targetPosition, float _pullSpeed)
+    private IEnumerator OnMovementHeld()
     {
-        _moveAction.Disable();
+        while (input.Actions.Player.Move.IsPressed())
+        {
+            ApplyMovement();
+            yield return null;
+        }
+    }
+
+    public IEnumerator PullPlayer(Vector3 targetPosition, float pullSpeed)
+    {
+        input.Actions.Player.Move.Disable();
         float previousGravity = _rb.gravityScale;
         _rb.gravityScale = 0;
         _isBeingPulled = true;
 
         while (true)
         {
-            if (_jumpAction.WasPressedThisFrame())
+            if (input.Actions.Player.Jump.WasPressedThisFrame())
             {
                 _rb.gravityScale = previousGravity;
                 _rb.linearVelocity = new Vector2(0, 0);
-                _moveAction.Enable();
+                input.Actions.Player.Move.Enable();
                 _jumpCoroutine = StartCoroutine(ApplyJump());
                 _isBeingPulled = false;
                 break; 
             }
 
-            Vector2 pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * _pullSpeed;
+            Vector2 pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * pullSpeed;
 
             _rb.linearVelocity = pullVelocity;
             yield return null;

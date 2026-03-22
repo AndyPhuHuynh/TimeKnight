@@ -1077,17 +1077,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!114 &1025456197 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5333235469785014403, guid: 8c58544e3aaf69f46942f73e93d1c084, type: 3}
-  m_PrefabInstance: {fileID: 6507261635974543887}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 244132180}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bec29c0a230741bdac901dba8da47ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1025456200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1101,7 +1090,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Dialogue.DialogueManager
   input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  dialogueRunner: {fileID: 1025456197}
 --- !u!1 &1036599022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,10 +1618,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 949721873685394997, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: interactionUI
-      value: 
-      objectReference: {fileID: 2042837965}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.11676
@@ -1683,17 +1667,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
---- !u!114 &2042837965 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7097773331351781758, guid: 8c58544e3aaf69f46942f73e93d1c084, type: 3}
-  m_PrefabInstance: {fileID: 6507261635974543887}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5183d3c0654d4772b85072218fe145f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Interaction.UI
 --- !u!1 &2085433068
 GameObject:
   m_ObjectHideFlags: 0

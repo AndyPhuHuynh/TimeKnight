@@ -35,7 +35,7 @@ namespace TimeKnight.Core.Dialogue
 
         private void OnValidate()
         {
-            Debug.Assert(input          != null, $"Missing {nameof(input)}",          this);
+            Debug.Assert(input != null, $"Missing {nameof(input)}", this);
         }
 
         private void OnDialogueStartFunc()

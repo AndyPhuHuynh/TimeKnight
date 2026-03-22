@@ -51,8 +51,8 @@ namespace TimeKnight.Core.Interaction
 
         private void OnEnable()
         {
-            input.Actions.Interaction.Interact.performed += OnInteract;
-            input.Actions.Interaction.Navigate.performed += OnNavigate;
+            input.Actions.Interaction.Interact.performed += OnInteractPerformed;
+            input.Actions.Interaction.Navigate.performed += OnNavigatePerformed;
 
             InteractionEvents.OnInteractionTriggerEnter += AddInteractable;
             InteractionEvents.OnInteractionTriggerExit += RemoveInteractable;
@@ -63,8 +63,8 @@ namespace TimeKnight.Core.Interaction
 
         private void OnDisable()
         {
-            input.Actions.Interaction.Interact.performed -= OnInteract;
-            input.Actions.Interaction.Navigate.performed -= OnNavigate;
+            input.Actions.Interaction.Interact.performed -= OnInteractPerformed;
+            input.Actions.Interaction.Navigate.performed -= OnNavigatePerformed;
             
             InteractionEvents.OnInteractionTriggerEnter -= AddInteractable;
             InteractionEvents.OnInteractionTriggerExit -= RemoveInteractable;
@@ -102,13 +102,13 @@ namespace TimeKnight.Core.Interaction
             cursor.transform.position = rightEdgeWorld + new Vector3(20.0f, 0.0f, 0.0f);
         }
 
-        private void OnInteract(InputAction.CallbackContext _)
+        private void OnInteractPerformed(InputAction.CallbackContext _)
         {
             if (!_interactionAllowed) return;
             _selectedButton?.Value.Button.onClick?.Invoke();
         }
 
-        private void OnNavigate(InputAction.CallbackContext ctx)
+        private void OnNavigatePerformed(InputAction.CallbackContext ctx)
         {
             if (!_interactionAllowed) return;
             if (ctx.ReadValue<float>() > 0)
