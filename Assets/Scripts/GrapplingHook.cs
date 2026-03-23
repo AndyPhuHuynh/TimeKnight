@@ -1,7 +1,9 @@
 using System.Collections;
+using TimeKnight.Core.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class GrapplingHook : MonoBehaviour
 {
     private SpriteRenderer _sr;
@@ -9,7 +11,10 @@ public class GrapplingHook : MonoBehaviour
     // Input for firing
     private InputAction _fireHook;
     
-    [Header("Hook Tip")]
+    [Header("Input")] 
+    [SerializeField] private InputReader input;
+
+    [Header("Hook Tip")] 
     [SerializeField] private Transform tipTransform;
 
     [Header("Grapple Properties")]
@@ -20,10 +25,11 @@ public class GrapplingHook : MonoBehaviour
     [SerializeField] private float pullSpeed = 10;
 
     // TODO: Initialize this with constructor
-   [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerController playerController;
 
     // State management
-    private Coroutine _fireCoroutine = null;    // Reference to coroutine needed so it can be ended early when hook collides.
+    private Coroutine _fireCoroutine; // Reference to coroutine needed so it can be ended early when hook collides.
+
     private enum HookState
     {
         Idle,
@@ -31,18 +37,17 @@ public class GrapplingHook : MonoBehaviour
         Retracting,
         Stuck
     }
+
     private HookState _currentState = HookState.Idle;
     private Vector3 _collisionPoint;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        _fireHook = InputSystem.actions.FindAction("Primary Fire");
         _sr = GetComponent<SpriteRenderer>();
+        _fireHook = input.Actions.GrapplingHook.PrimaryFire;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
@@ -59,7 +64,6 @@ public class GrapplingHook : MonoBehaviour
             // Convert to a world position - Z axis set to 0 because depth doesn't matter for this object.
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
             RotateGrapplingHook(mouseWorldPos);
-
 
             if (_fireHook.WasPressedThisFrame())
             {
@@ -109,12 +113,13 @@ public class GrapplingHook : MonoBehaviour
         tipTransform.localPosition = new Vector3(newLength, 0f, 0f);
     }
 
-    private bool IsMouseInbounds(Vector2 mousePosition)
+    private static bool IsMouseInbounds(Vector2 mousePosition)
     {
-        if (mousePosition == null) return false;
-
-        if (mousePosition.x > 0 && mousePosition.x < Screen.width && mousePosition.y > 0 && mousePosition.y < Screen.height) return true;
-        return false;
+        return 
+            mousePosition.x > 0 && 
+            mousePosition.x < Screen.width && 
+            mousePosition.y > 0 && 
+            mousePosition.y < Screen.height;
     }
 
     private void RotateGrapplingHook(Vector3 otherPosition)

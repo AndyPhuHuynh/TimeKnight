@@ -27,12 +27,17 @@ namespace TimeKnight.Core.Input
             Actions = new PlayerInputActions();
             Actions.Player.Enable();
             Actions.Interaction.Enable();
+            Actions.Dialogue.Disable();
+            Actions.GrapplingHook.Enable();
+            Actions.GrapplingHook.StopGrapple.Disable();
         }
 
         private void OnDisable()
         {
             Actions.Player.Disable();
             Actions.Interaction.Disable();
+            Actions.Dialogue.Disable();
+            Actions.GrapplingHook.Disable();
         }
         
         public void EnableOnly(InputActionMap mapToEnable)
