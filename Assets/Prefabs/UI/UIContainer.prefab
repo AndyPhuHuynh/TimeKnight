@@ -200,13 +200,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8247321045691251584}
   m_SourcePrefab: {fileID: 100100000, guid: 52571f68872914e24837210513edea1d, type: 3}
 --- !u!4 &6306126139389106816 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7985477256237130417, guid: 52571f68872914e24837210513edea1d, type: 3}
   m_PrefabInstance: {fileID: 4130294601513596977}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6744646013026494718 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+  m_PrefabInstance: {fileID: 4130294601513596977}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8247321045691251584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6744646013026494718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca25dcf19b84b4081a25c4effe9ab8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Dialogue.DialogueManager
+  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
 --- !u!1001 &7352621720639299625
 PrefabInstance:
   m_ObjectHideFlags: 0

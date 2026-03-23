@@ -434,6 +434,7 @@ MonoBehaviour:
   playerBody: {fileID: 6837310045875004360}
   playerJump: {fileID: 2670027938769256984}
   grapplingHook: {fileID: 2457989635044707339}
+  grapplingHookTip: {fileID: 1867474069997170146}
 --- !u!1001 &6693219694085021491
 PrefabInstance:
   m_ObjectHideFlags: 0

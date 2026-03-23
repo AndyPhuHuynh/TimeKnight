@@ -15,9 +15,10 @@ namespace TimeKnight.Core.Player
         [Header("Player")] 
         [SerializeField] private Rigidbody2D playerBody;
         [SerializeField] private PlayerJumpController playerJump;
-        
+
         [Header("Grappling Hook")]
         [SerializeField] private GrapplingHook.GrapplingHook grapplingHook;
+        [SerializeField] private GrapplingHookTip grapplingHookTip;
 
         // Pull player state
         private bool _isBeingPulled;
@@ -25,12 +26,13 @@ namespace TimeKnight.Core.Player
 
         private void OnValidate()
         {
-            Debug.Assert(input         != null, $"Missing {nameof(input)}",         this);
-            Debug.Assert(playerBody    != null, $"Missing {nameof(playerBody)}",    this);
-            Debug.Assert(playerJump    != null, $"Missing {nameof(playerJump)}",    this);
-            Debug.Assert(grapplingHook != null, $"Missing {nameof(grapplingHook)}", this);
+            Debug.Assert(input            != null, $"Missing {nameof(input)}",            this);
+            Debug.Assert(playerBody       != null, $"Missing {nameof(playerBody)}",       this);
+            Debug.Assert(playerJump       != null, $"Missing {nameof(playerJump)}",       this);
+            Debug.Assert(grapplingHook    != null, $"Missing {nameof(grapplingHook)}",    this);
+            Debug.Assert(grapplingHookTip != null, $"Missing {nameof(grapplingHookTip)}", this);
         }
-        
+
         private void OnEnable()
         {
             input.Actions.GrapplingHook.PrimaryFire.performed += OnPrimaryFirePerformed;
@@ -51,6 +53,7 @@ namespace TimeKnight.Core.Player
 
         private void OnPrimaryFirePerformed(InputAction.CallbackContext _)
         {
+            if (grapplingHookTip.IsTipTouchingGround) return;
             grapplingHook.TransitionTo(HookState.Extending);
         }
 
@@ -58,10 +61,10 @@ namespace TimeKnight.Core.Player
         {
             if (!grapplingHook.CurrentState.IsStuck()) return;
             _isBeingPulled = false;
-            
+
             playerBody.gravityScale = _prevGravity;
             playerBody.linearVelocity = Vector2.zero;
-            
+
             input.Actions.Player.Enable();
             input.Actions.GrapplingHook.StopGrapple.Disable();
             
@@ -90,7 +93,7 @@ namespace TimeKnight.Core.Player
         {
             _prevGravity = playerBody.gravityScale;
             playerBody.gravityScale = 0;
-        
+
             _isBeingPulled = true;
             while (_isBeingPulled)
             {
