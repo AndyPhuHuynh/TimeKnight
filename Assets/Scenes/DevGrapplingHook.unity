@@ -262,113 +262,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
   m_PrefabInstance: {fileID: 7210615269502327878}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &294534767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 294534761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0a97807648042e3b20ad047451a3b19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerHorizontalMovement
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  maxMoveSpeed: 5
-  acceleration: 1
---- !u!50 &294534769 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 6837310045875004360, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &294534772 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &294534773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 294534761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 241a7e31f0c8404fb55494a9ca520679, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerJumpController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  baseJumpForce: 10
-  holdJumpForce: 2
-  holdJumpUpdates: 10
-  groundCheck: {fileID: 1948211477}
---- !u!114 &294534774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 294534761}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfc7562e4642d724db06d4c63b0b450c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  baseJumpForce: 10
-  holdJumpForce: 2
-  holdJumpUpdates: 10
-  groundCheck: {fileID: 1948211477}
---- !u!1 &372423160
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 372423161}
-  - component: {fileID: 372423162}
-  m_Layer: 0
-  m_Name: GrapplingHookController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &372423161
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372423160}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 294534772}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &372423162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372423160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f495399a674e269220e1c10970eeb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerGrapplingHookController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  playerBody: {fileID: 294534769}
-  playerJump: {fileID: 294534773}
-  grapplingHook: {fileID: 1487967414}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32cadf37e883b1d4b84200f917013f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _player: {fileID: 294534761}
+  player: {fileID: 294534761}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,29 +635,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!1 &1030039557 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6332260202998917749, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1030039558 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3423467810262152470, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1030039563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030039557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a16637f6f6cd44a3a884f34d94aa939f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.GrapplingHook.GrapplingHookTip
-  parentHook: {fileID: 1487967414}
 --- !u!1 &1439077637
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,29 +773,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1487967410 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 768364091741018206, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1487967414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1487967410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e8e590fb1c743fb9269895d040f9d5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.GrapplingHook.GrapplingHook
-  tipTransform: {fileID: 1030039558}
-  baseLength: 1
-  maxLength: 10
-  fireSpeed: 25
-  retractSpeed: 25
-  pullSpeed: 10
 --- !u!1001 &1880922610
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1102,17 +949,6 @@ MonoBehaviour:
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
---- !u!114 &1948211477 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6841495374549988156, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-  m_PrefabInstance: {fileID: 7210615269502327878}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9add3012f66fc34f8cfdd5822b5a323, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1 &2085433068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1259,22 +1095,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 768364091741018206, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: m_Name
-      value: GrapplingHook
-      objectReference: {fileID: 0}
-    - target: {fileID: 2482836487152041431, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2482836487152041431, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: _parentHook
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2482836487152041431, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: m_EditorClassIdentifier
-      value: Assembly-CSharp::GrapplingHookTip
-      objectReference: {fileID: 0}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.211553
@@ -1315,47 +1135,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3824928118112804375, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: input
-      value: 
-      objectReference: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-    - target: {fileID: 3824928118112804375, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6332260202998917749, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: m_Name
-      value: HookTip
-      objectReference: {fileID: 0}
     - target: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2482836487152041431, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-    - {fileID: 3824928118112804375, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-    - {fileID: 1750267656710825578, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 372423161}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 294534767}
-    - targetCorrespondingSourceObject: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 294534773}
-    - targetCorrespondingSourceObject: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 294534774}
-    - targetCorrespondingSourceObject: {fileID: 768364091741018206, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1487967414}
-    - targetCorrespondingSourceObject: {fileID: 6332260202998917749, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1030039563}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

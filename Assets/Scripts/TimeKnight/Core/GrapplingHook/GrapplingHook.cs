@@ -24,11 +24,10 @@ namespace TimeKnight.Core.GrapplingHook
         public event Action<Vector3> OnStuckEnter;
         
         // State management
-        private HookState _currentState = HookState.Idle;
         private Vector3 _collisionPoint;
         
         // Properties
-        public HookState CurrentState => _currentState;
+        public HookState CurrentState { get; private set; } = HookState.Idle;
         public float PullSpeed => pullSpeed;
         
         private void Awake()
@@ -43,8 +42,8 @@ namespace TimeKnight.Core.GrapplingHook
         
         public void TransitionTo(HookState newState)
         {
-            if (_currentState == newState) return;
-            _currentState = newState;
+            if (CurrentState == newState) return;
+            CurrentState = newState;
             
             // Enter new state
             switch (newState)
@@ -69,7 +68,7 @@ namespace TimeKnight.Core.GrapplingHook
         
         private IEnumerator UpdateIdle()
         {
-            while (_currentState.IsIdle())
+            while (CurrentState.IsIdle())
             {
                 Vector2 mousePosition = Mouse.current.position.ReadValue();
                 if (IsMouseInbounds(mousePosition))
@@ -86,7 +85,7 @@ namespace TimeKnight.Core.GrapplingHook
 
         private IEnumerator UpdateExtending()
         {
-            while (_currentState.IsExtending())
+            while (CurrentState.IsExtending())
             {
                 if (_sr.size.x < maxLength)
                 {
@@ -105,7 +104,7 @@ namespace TimeKnight.Core.GrapplingHook
 
         private IEnumerator UpdateRetracting()
         {
-            while (_currentState.IsRetracting())
+            while (CurrentState.IsRetracting())
             {
                 if (_sr.size.x > baseLength)
                 {
@@ -130,7 +129,7 @@ namespace TimeKnight.Core.GrapplingHook
         
         private IEnumerator UpdateStuck()
         {
-            while (_currentState.IsStuck())
+            while (CurrentState.IsStuck())
             {
                 RotateGrapplingHook(_collisionPoint);
                 float distance = Vector2.Distance(transform.position, _collisionPoint);
