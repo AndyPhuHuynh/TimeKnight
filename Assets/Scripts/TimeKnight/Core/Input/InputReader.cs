@@ -57,7 +57,7 @@ namespace TimeKnight.Core.Input
 
         public List<PreviousMapState> GetMapStates()
         {
-            return Actions.asset.actionMaps.Select(map => new PreviousMapState(map.enabled, map)).ToList();
+           return Actions.asset.actionMaps.Select(map => new PreviousMapState(map.enabled, map)).ToList();
         }
 
         public static void RestoreMapStates(List<PreviousMapState> states)
@@ -73,6 +73,7 @@ namespace TimeKnight.Core.Input
                     state.Map.Disable();
                 }
             }
+            
         }
     }
 }

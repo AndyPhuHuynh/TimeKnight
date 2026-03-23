@@ -21,7 +21,9 @@ namespace TimeKnight.Core.GrapplingHook
         [SerializeField] private float pullSpeed = 10;
         
         // Callbacks
-        public event Action<Vector3> OnStuckEnter;
+        public event Action OnEnterIdle;
+        public event Action OnExitIdle;
+        public event Action<Vector3> OnEnterStuck;
         
         // State management
         private Vector3 _collisionPoint;
@@ -42,6 +44,19 @@ namespace TimeKnight.Core.GrapplingHook
         
         public void TransitionTo(HookState newState)
         {
+            // Exit current state
+            switch (CurrentState)
+            {
+                case HookState.Idle: ExitIdle(); break;
+                case HookState.Extending:
+                case HookState.Retracting:
+                case HookState.Stuck:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            // Set new state
             if (CurrentState == newState) return;
             CurrentState = newState;
             
@@ -49,10 +64,11 @@ namespace TimeKnight.Core.GrapplingHook
             switch (newState)
             {
                 case HookState.Stuck: EnterStuck(); break;
-                case HookState.Idle:
+                case HookState.Idle:  EnterIdle();  break;
                 case HookState.Extending:
                 case HookState.Retracting:
-                default: break;
+                    break;
+                default: throw new ArgumentOutOfRangeException();
             }
             
             // Update new state
@@ -65,22 +81,32 @@ namespace TimeKnight.Core.GrapplingHook
                 default: throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
             }
         }
+
+        private void EnterIdle()
+        {
+            OnEnterIdle?.Invoke();
+        }
         
         private IEnumerator UpdateIdle()
         {
             while (CurrentState.IsIdle())
             {
-                Vector2 mousePosition = Mouse.current.position.ReadValue();
+                var mousePosition = Mouse.current.position.ReadValue();
                 if (IsMouseInbounds(mousePosition))
                 {
                     // Rotate grappling hook to face mouse so it can be fired later.
                     // Convert to a world position - Z axis set to 0 because depth doesn't matter for this object.
-                    Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
+                    var mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
                     RotateGrapplingHook(mouseWorldPos);
                 }
                 
                 yield return null;
             }
+        }
+
+        private void ExitIdle()
+        {
+            OnExitIdle?.Invoke();
         }
 
         private IEnumerator UpdateExtending()
@@ -124,7 +150,7 @@ namespace TimeKnight.Core.GrapplingHook
         private void EnterStuck()
         {
             _collisionPoint = tipTransform.position;
-            OnStuckEnter?.Invoke(_collisionPoint);
+            OnEnterStuck?.Invoke(_collisionPoint);
         }
         
         private IEnumerator UpdateStuck()

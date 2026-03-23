@@ -34,15 +34,19 @@ namespace TimeKnight.Core.Player
         private void OnEnable()
         {
             input.Actions.GrapplingHook.PrimaryFire.performed += OnPrimaryFirePerformed;
-            input.Actions.GrapplingHook.StopGrapple.performed += OnStopGrapple;
-            grapplingHook.OnStuckEnter += OnStuckEnter;
+            input.Actions.GrapplingHook.StopGrapple.performed += OnStopGrapplePerformed;
+            grapplingHook.OnEnterIdle += OnEnterIdle;
+            grapplingHook.OnExitIdle += OnExitIdle;
+            grapplingHook.OnEnterStuck += OnEnterStuck;
         }
 
         private void OnDisable()
         {
             input.Actions.GrapplingHook.PrimaryFire.performed -= OnPrimaryFirePerformed;
-            input.Actions.GrapplingHook.StopGrapple.performed -= OnStopGrapple;
-            grapplingHook.OnStuckEnter -= OnStuckEnter;
+            input.Actions.GrapplingHook.StopGrapple.performed -= OnStopGrapplePerformed;
+            grapplingHook.OnEnterIdle -= OnEnterIdle;
+            grapplingHook.OnExitIdle -= OnExitIdle;
+            grapplingHook.OnEnterStuck -= OnEnterStuck;
         }
 
         private void OnPrimaryFirePerformed(InputAction.CallbackContext _)
@@ -50,24 +54,35 @@ namespace TimeKnight.Core.Player
             grapplingHook.TransitionTo(HookState.Extending);
         }
 
-        private void OnStopGrapple(InputAction.CallbackContext _)
+        private void OnStopGrapplePerformed(InputAction.CallbackContext _)
         {
+            if (!grapplingHook.CurrentState.IsStuck()) return;
             _isBeingPulled = false;
             
             playerBody.gravityScale = _prevGravity;
             playerBody.linearVelocity = Vector2.zero;
             
-            input.Actions.Player.HorizontalMove.Enable();
+            input.Actions.Player.Enable();
             input.Actions.GrapplingHook.StopGrapple.Disable();
             
             playerJump.ApplyJump(() => input.Actions.GrapplingHook.StopGrapple.IsPressedRegardlessOfEnableStatus());
             grapplingHook.TransitionTo(HookState.Retracting);
         }
+
+        private void OnEnterIdle()
+        {
+            input.Actions.GrapplingHook.PrimaryFire.Enable();
+        }
+
+        private void OnExitIdle()
+        {
+            input.Actions.GrapplingHook.PrimaryFire.Disable();
+        }
         
-        private void OnStuckEnter(Vector3 collisionPoint)
+        private void OnEnterStuck(Vector3 collisionPoint)
         {
             StartCoroutine(PullPlayer(collisionPoint, grapplingHook.PullSpeed));
-            input.Actions.Player.HorizontalMove.Disable();
+            input.Actions.Player.Disable();
             input.Actions.GrapplingHook.StopGrapple.Enable();
         }
 
@@ -79,7 +94,7 @@ namespace TimeKnight.Core.Player
             _isBeingPulled = true;
             while (_isBeingPulled)
             {
-                Vector2 pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * pullSpeed;
+                var pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * pullSpeed;
                 playerBody.linearVelocity = pullVelocity;
                 yield return null;
             }
