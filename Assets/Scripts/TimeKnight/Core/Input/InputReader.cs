@@ -24,6 +24,14 @@ namespace TimeKnight.Core.Input
 
         private void OnEnable()
         {
+            OnDisable();
+            
+            if (Actions != null)
+            {
+                Actions.Disable();
+                Actions.Dispose();
+            }
+    
             Actions = new PlayerInputActions();
             Actions.Player.Enable();
             Actions.Interaction.Enable();
@@ -34,10 +42,22 @@ namespace TimeKnight.Core.Input
 
         private void OnDisable()
         {
-            Actions.Player.Disable();
-            Actions.Interaction.Disable();
-            Actions.Dialogue.Disable();
-            Actions.GrapplingHook.Disable();
+            if (Actions == null) return;
+            Actions.Disable();
+    
+        #if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                // In edit mode, we can't call Dispose() as it uses Destroy() internally.
+                // Just null the reference and let GC handle cleanup.
+                Actions = null;
+                return;
+            }
+        #endif
+    
+            // Dispose can only be called in play mode
+            Actions.Dispose();
+            Actions = null;
         }
         
         public void EnableOnly(InputActionMap mapToEnable)
