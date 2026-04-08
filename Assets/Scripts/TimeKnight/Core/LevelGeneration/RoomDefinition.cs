@@ -5,28 +5,14 @@ using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-    public enum ConnectionType
-    {
-        Left,
-        Right,
-        Up,
-        Down
-    }
-    
-    public class Connection
-    {
-        public ConnectionType Type;
-        public Vector3Int Position;
-    }
-    
-    public class Room : MonoBehaviour
+    public class RoomDefinition : MonoBehaviour
     {
         [SerializeField] private Tileset tileset;
         [SerializeField] private Tilemap connectionMap;
 
-        private readonly List<Connection> connectionList = new();
-        public IReadOnlyList<Connection> ConnectionList => connectionList;
-
+        [SerializeField] private List<ConnectionDefinition> connectionList = new();
+        public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;
+        
         private void OnValidate()
         {
             Debug.Assert(tileset       != null, $"Missing {nameof(tileset)}",       this);
@@ -40,12 +26,15 @@ namespace TimeKnight.Core.LevelGeneration
             {
                 var tile = connectionMap.GetTile(pos);
                 if (!IsConnectionTile(tile)) continue;
-                connectionList.Add(new Connection
+                connectionList.Add(new ConnectionDefinition
                 {
-                    Type = GetConnectionType(tile),
-                    Position = pos
+                    type = GetConnectionType(tile),
+                    centerOffset = connectionMap.GetCellCenterWorld(pos)
                 });
             }
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
         }
 
         private bool IsConnectionTile(TileBase tile)
@@ -60,7 +49,7 @@ namespace TimeKnight.Core.LevelGeneration
             if (tile == tileset.ConnectionUp)    return ConnectionType.Up;
             if (tile == tileset.ConnectionLeft)  return ConnectionType.Left;
             if (tile == tileset.ConnectionRight) return ConnectionType.Right;
-            throw new ArgumentException("Invalid connection type");
+            throw new ArgumentException($"Invalid tile on connection tileset: {tile.name}");
         }
     }
 }

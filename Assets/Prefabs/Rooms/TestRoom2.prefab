@@ -61,6 +61,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.Room
   tileset: {fileID: 11400000, guid: e1d6c48de283d47479be9f4afa6f9c42, type: 2}
   connectionMap: {fileID: 7264954178364820027}
+  connectionList:
+  - type: 0
+    centerOffset: {x: -3.5, y: -0.5, z: 0}
+  - type: 1
+    centerOffset: {x: -0.5, y: -0.5, z: 0}
 --- !u!1 &4533180398642016195
 GameObject:
   m_ObjectHideFlags: 0
