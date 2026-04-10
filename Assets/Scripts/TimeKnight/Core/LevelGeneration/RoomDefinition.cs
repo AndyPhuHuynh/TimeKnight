@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TimeKnight.Extensions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,6 +9,7 @@ namespace TimeKnight.Core.LevelGeneration
     public class RoomDefinition : MonoBehaviour
     {
         [SerializeField] private Tileset tileset;
+        [SerializeField] private Tilemap terrainMap;
         [SerializeField] private Tilemap connectionMap;
 
         [SerializeField] private List<ConnectionDefinition> connectionList = new();
@@ -16,6 +18,7 @@ namespace TimeKnight.Core.LevelGeneration
         private void OnValidate()
         {
             Debug.Assert(tileset       != null, $"Missing {nameof(tileset)}",       this);
+            Debug.Assert(terrainMap    != null, $"Missing {nameof(terrainMap)}",    this);
             Debug.Assert(connectionMap != null, $"Missing {nameof(connectionMap)}", this);
         }
 
@@ -29,7 +32,7 @@ namespace TimeKnight.Core.LevelGeneration
                 connectionList.Add(new ConnectionDefinition
                 {
                     type = GetConnectionType(tile),
-                    centerOffset = connectionMap.GetCellCenterWorld(pos)
+                    centerOffset = pos
                 });
             }
 #if UNITY_EDITOR
@@ -50,6 +53,30 @@ namespace TimeKnight.Core.LevelGeneration
             if (tile == tileset.ConnectionLeft)  return ConnectionType.Left;
             if (tile == tileset.ConnectionRight) return ConnectionType.Right;
             throw new ArgumentException($"Invalid tile on connection tileset: {tile.name}");
+        }
+
+        public List<Vector3Int> GetTileLocalPositions()
+        {
+            var result = new List<Vector3Int>();
+            foreach (var pos in terrainMap.cellBounds.allPositionsWithin)
+            {
+                var tile = terrainMap.GetTile(pos);
+                if (tile is null) continue;
+                result.Add(pos);
+            }
+            return result;
+        }
+        
+        public List<Vector3Int> GetTileWorldPositions()
+        {
+            var result = new List<Vector3Int>();
+            foreach (var pos in terrainMap.cellBounds.allPositionsWithin)
+            {
+                var tile = terrainMap.GetTile(pos);
+                if (tile is null) continue;
+                result.Add(terrainMap.GetCellCenterWorld(pos).FloorToInt());
+            }
+            return result;
         }
     }
 }

@@ -14,5 +14,10 @@ namespace TimeKnight.Extensions
             group.interactable = visible;
             group.blocksRaycasts = visible;
         }
+
+        public static Vector3Int FloorToInt(this Vector3 vec)
+        {
+            return new Vector3Int(Mathf.FloorToInt(vec.x),  Mathf.FloorToInt(vec.y), Mathf.FloorToInt(vec.z));
+        }
     }
 }

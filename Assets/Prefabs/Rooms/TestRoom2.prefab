@@ -60,6 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.Room
   tileset: {fileID: 11400000, guid: e1d6c48de283d47479be9f4afa6f9c42, type: 2}
+  terrainMap: {fileID: 1100283704328572831}
   connectionMap: {fileID: 7264954178364820027}
   connectionList:
   - type: 0

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
+using UnityEditor.Rendering;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -41,7 +43,7 @@ namespace TimeKnight.Core.LevelGeneration
         }
 
         // Checks if a valid connection exists out of this room into the other room with the connection type
-        private RoomInstance PlaceConnection(RoomDefinition other, ConnectionType type)
+        private RoomInstance PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles)
         {
             // Check if this room even has that connection type available.
             var thisConnections = Connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
@@ -56,39 +58,36 @@ namespace TimeKnight.Core.LevelGeneration
             otherConnections.ShuffleInPlace();
             
             // Iterate through every pair of connections
-            // TODO: Check for collisions that make the tilemap generation impossible
+            var localTilePositions = other.GetTileLocalPositions();
             foreach (var thisConnection in thisConnections)
             {
                 foreach (var otherConnection in otherConnections)
                 {
-                    var newPos = GetConnectionPosition(thisConnection.Definition) + 
+                    var newCenterPos = GetConnectionPosition(thisConnection.Definition) + 
                                  thisConnection.Definition.type.GetUnitVector() - 
                                  otherConnection.centerOffset;
+                    var newCenterPosInt = newCenterPos.FloorToInt();
+                    
+                    // Check for tilemap collisions
+                    var collisionFound = localTilePositions
+                        .Select(localPos => newCenterPosInt + localPos)
+                        .Where(occupiedTiles.Contains)
+                        .Any();
+                    if (collisionFound) continue;
                     
                     // Instantiate the room definition
-                    var newRoomObject = Object.Instantiate(other, newPos, Quaternion.identity);
+                    var newRoomObject = Object.Instantiate(other, newCenterPos, Quaternion.identity);
                     
                     // Initialize the connections
                     var newConnections = new ConnectionInstance[other.ConnectionList.Count];
                     for (var i = 0; i < other.ConnectionList.Count; i++)
                     {
                         var connection = other.ConnectionList[i];
-                        if (connection == otherConnection)
+                        newConnections[i] = new ConnectionInstance
                         {
-                            newConnections[i] = new ConnectionInstance
-                            {
-                                Definition = connection,
-                                ConnectedRoom = this
-                            };
-                        }
-                        else
-                        {
-                            newConnections[i] = new ConnectionInstance
-                            {
-                                Definition = connection,
-                                ConnectedRoom = null
-                            };
-                        }
+                            Definition = connection,
+                            ConnectedRoom = connection == otherConnection ? this : null
+                        };
                     }
                     
                     // Initialize the new room instance
@@ -108,7 +107,7 @@ namespace TimeKnight.Core.LevelGeneration
             return null;
         }
         
-        public RoomInstance CreateConnection(RoomDefinition other)
+        public RoomInstance CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles)
         {
             // Find matching connection between this room and the other new room
             var directions = Enum.GetValues(typeof(ConnectionType)) as ConnectionType[];
@@ -117,7 +116,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             foreach (var dir in directions)
             {
-                var newRoom = PlaceConnection(other, dir);
+                var newRoom = PlaceConnection(other, dir, occupiedTiles);
                 if (newRoom != null) return newRoom;
             }
             

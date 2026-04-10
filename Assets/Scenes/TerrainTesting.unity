@@ -151,6 +151,7 @@ MonoBehaviour:
   rooms:
   - {fileID: 8624496213323838614, guid: 7146e492972be47449f4cfbbf937a797, type: 3}
   - {fileID: 4003372969044752731, guid: d18668ceb2be64268acf7f796cedbbed, type: 3}
+  - {fileID: 6339041048670927376, guid: a2d4fa491429e4c079206d96dae596f2, type: 3}
 --- !u!4 &156726567
 Transform:
   m_ObjectHideFlags: 0
@@ -160,7 +161,7 @@ Transform:
   m_GameObject: {fileID: 156726565}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.15713, y: -1.16858, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
