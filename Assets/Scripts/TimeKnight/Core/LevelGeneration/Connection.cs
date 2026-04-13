@@ -64,7 +64,7 @@ namespace TimeKnight.Core.LevelGeneration
                 ConnectionType.Left  => Vector3.left,
                 ConnectionType.Right => Vector3.right,
                 ConnectionType.Up    => Vector3.up,
-                ConnectionType.Down  => Vector3.left,
+                ConnectionType.Down  => Vector3.down,
                 _ => throw new ArgumentOutOfRangeException(nameof(connectionType), connectionType, null)
             };
         }

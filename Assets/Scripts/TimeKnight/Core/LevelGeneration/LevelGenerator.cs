@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
 using UnityEngine;
+using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
 {
@@ -30,7 +31,10 @@ namespace TimeKnight.Core.LevelGeneration
     public class LevelGenerator : MonoBehaviour
     {
         [SerializeField] private List<RoomDefinition> rooms = new();
+        [SerializeField] private int seed;
 
+        private Random _random;
+        
         private readonly Dictionary<LevelNode, RoomInstance> _roomMap = new();
         private readonly HashSet<Vector3Int> _occupiedTiles = new(); 
         
@@ -41,13 +45,18 @@ namespace TimeKnight.Core.LevelGeneration
                 Debug.LogWarning("No rooms found");
             }
 
+            _random = new Random(seed);
             
             var startRoom = new LevelNode();
             var secondRoom = new LevelNode();
             var thirdRoom = new LevelNode();
+            var room4 = new LevelNode();
+            var room5 = new LevelNode();
             
             LevelNode.Connect(startRoom, secondRoom);
             LevelNode.Connect(secondRoom, thirdRoom);
+            LevelNode.Connect(thirdRoom, room4);
+            LevelNode.Connect(startRoom, room5);
             
             StartGraphGeneration(startRoom);
         }
@@ -74,7 +83,7 @@ namespace TimeKnight.Core.LevelGeneration
                     var otherNode = edge.First == node ? edge.Second : edge.First;
                 
                     // Create the room
-                    _roomMap[otherNode] = _roomMap[node].CreateConnection(rooms.GetRandomElement(), _occupiedTiles);
+                    _roomMap[otherNode] = _roomMap[node].CreateConnection(rooms.GetRandomElement(_random), _occupiedTiles, _random);
                     // _roomMap[otherNode] = _roomMap[node].CreateConnection(rooms[2], _occupiedTiles);
 
                     if (_roomMap[otherNode] == null)

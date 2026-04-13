@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
-using UnityEditor.Rendering;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
 {
@@ -19,7 +19,7 @@ namespace TimeKnight.Core.LevelGeneration
     public class RoomInstance
     {
         public RoomDefinition Definition;
-        public ConnectionInstance[] Connections;
+        private ConnectionInstance[] _connections;
 
         private Vector3 GetConnectionPosition(ConnectionDefinition connection)
         {
@@ -38,15 +38,15 @@ namespace TimeKnight.Core.LevelGeneration
             return new RoomInstance
             {
                 Definition = def,
-                Connections = connections
+                _connections = connections
             };
         }
 
         // Checks if a valid connection exists out of this room into the other room with the connection type
-        private RoomInstance PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles)
+        private RoomInstance PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Check if this room even has that connection type available.
-            var thisConnections = Connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
+            var thisConnections = _connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
             if (thisConnections.IsEmpty()) return null;
             
             // Check if the other room has the matching connection type
@@ -54,8 +54,8 @@ namespace TimeKnight.Core.LevelGeneration
             if (otherConnections.IsEmpty()) return null;
 
             // Shuffle the rooms
-            thisConnections.ShuffleInPlace();
-            otherConnections.ShuffleInPlace();
+            thisConnections.ShuffleInPlace(random);
+            otherConnections.ShuffleInPlace(random);
             
             // Iterate through every pair of connections
             var localTilePositions = other.GetTileLocalPositions();
@@ -94,7 +94,7 @@ namespace TimeKnight.Core.LevelGeneration
                     var newInstance = new RoomInstance
                     {
                         Definition = newRoomObject,
-                        Connections = newConnections
+                        _connections = newConnections
                     };
                     
                     // Set the connection on this instance
@@ -107,21 +107,16 @@ namespace TimeKnight.Core.LevelGeneration
             return null;
         }
         
-        public RoomInstance CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles)
+        public RoomInstance CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Find matching connection between this room and the other new room
             var directions = Enum.GetValues(typeof(ConnectionType)) as ConnectionType[];
-            directions.ShuffleInPlace();
+            directions.ShuffleInPlace(random);
             Debug.Assert(directions != null);
-            
-            foreach (var dir in directions)
-            {
-                var newRoom = PlaceConnection(other, dir, occupiedTiles);
-                if (newRoom != null) return newRoom;
-            }
-            
-            Debug.LogWarning("Error, unable to create connection");
-            return null;
+
+            return directions
+                .Select(dir => PlaceConnection(other, dir, occupiedTiles, random))
+                .FirstOrDefault(newRoom => newRoom != null);
         }
     }
 }
