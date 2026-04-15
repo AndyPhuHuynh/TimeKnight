@@ -67,7 +67,8 @@ namespace TimeKnight.Core.Player
         
         private void UpdateSpriteDirection()
         {
-            _sr.flipX = input.Actions.Player.HorizontalMove.ReadValue<float>() < 0;
+            bool isFacingLeft = input.Actions.Player.HorizontalMove.ReadValue<float>() < 0;
+            transform.localScale = isFacingLeft ?  new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
         }
         
         private void ApplyMovement()

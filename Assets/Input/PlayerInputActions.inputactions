@@ -230,7 +230,7 @@
                 {
                     "name": "",
                     "id": "2a203e2f-f5ec-44cc-9789-fd9436ebca74",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -246,6 +246,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "StopGrapple",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Sword",
+            "id": "d4e12cd3-4156-4412-8fa6-bb0a90a9c7f6",
+            "actions": [
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "c120065d-3c32-4c7c-9b62-1bb86f2e68b8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "75f71913-2875-4458-8cf3-18de9ff34d9e",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

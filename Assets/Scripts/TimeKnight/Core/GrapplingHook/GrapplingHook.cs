@@ -10,8 +10,9 @@ namespace TimeKnight.Core.GrapplingHook
     {
         private SpriteRenderer _sr;
 
-        [Header("Hook Tip")] 
+        [Header("Hook Tip")]
         [SerializeField] private Transform tipTransform;
+        [SerializeField] private SpriteRenderer tipSprite;
 
         [Header("Grapple Properties")]
         [SerializeField] private float baseLength = 3.48f;
@@ -19,19 +20,21 @@ namespace TimeKnight.Core.GrapplingHook
         [SerializeField] private float fireSpeed = 5f;
         [SerializeField] private float retractSpeed = 10f;
         [SerializeField] private float pullSpeed = 10;
-        
+        [field: SerializeField] public LayerMask GrappleSurfaceLayer { get; private set; }
+
         // Callbacks
         public event Action OnEnterIdle;
         public event Action OnExitIdle;
         public event Action<Vector3> OnEnterStuck;
-        
+
         // State management
         private Vector3 _collisionPoint;
-        
+        private Vector3 _firingPoint;
+
         // Properties
         public HookState CurrentState { get; private set; } = HookState.Idle;
         public float PullSpeed => pullSpeed;
-        
+
         private void Awake()
         {
             _sr = GetComponent<SpriteRenderer>();
@@ -41,7 +44,7 @@ namespace TimeKnight.Core.GrapplingHook
         {
             StartCoroutine(UpdateIdle());
         }
-        
+
         public void TransitionTo(HookState newState)
         {
             // Exit current state
@@ -55,38 +58,39 @@ namespace TimeKnight.Core.GrapplingHook
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             // Set new state
             if (CurrentState == newState) return;
             CurrentState = newState;
-            
+
             // Enter new state
             switch (newState)
             {
                 case HookState.Stuck: EnterStuck(); break;
-                case HookState.Idle:  EnterIdle();  break;
+                case HookState.Idle: EnterIdle(); break;
                 case HookState.Extending:
                 case HookState.Retracting:
                     break;
                 default: throw new ArgumentOutOfRangeException();
             }
-            
+
             // Update new state
             switch (newState)
             {
-                case HookState.Idle:       StartCoroutine(UpdateIdle());       break;
-                case HookState.Extending:  StartCoroutine(UpdateExtending());  break;
+                case HookState.Idle: StartCoroutine(UpdateIdle()); break;
+                case HookState.Extending: StartCoroutine(UpdateExtending()); break;
                 case HookState.Retracting: StartCoroutine(UpdateRetracting()); break;
-                case HookState.Stuck:      StartCoroutine(UpdateStuck());      break;
+                case HookState.Stuck: StartCoroutine(UpdateStuck()); break;
                 default: throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
             }
         }
 
         private void EnterIdle()
         {
+            HideSprites();
             OnEnterIdle?.Invoke();
         }
-        
+
         private IEnumerator UpdateIdle()
         {
             while (CurrentState.IsIdle())
@@ -99,22 +103,39 @@ namespace TimeKnight.Core.GrapplingHook
                     var mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
                     RotateGrapplingHook(mouseWorldPos);
                 }
-                
+
                 yield return null;
             }
         }
 
         private void ExitIdle()
         {
+            ShowSprites();
             OnExitIdle?.Invoke();
+        }
+
+        private void HideSprites()
+        {
+            _sr.enabled = false;
+            tipSprite.enabled = false;
+        }
+
+        private void ShowSprites()
+        {
+            _sr.enabled = true;
+            tipSprite.enabled = true;
         }
 
         private IEnumerator UpdateExtending()
         {
+            // Find a point in space that the grappling hook will fire to - keeps hook firing consistent with player movement - account math of if player facing left.
+            _firingPoint = transform.position + transform.right * maxLength * (IsPlayerFacingLeft() ? -1 : 1);
+
             while (CurrentState.IsExtending())
             {
                 if (_sr.size.x < maxLength)
                 {
+                    RotateGrapplingHook(_firingPoint);  // Keeps grappling hook firing into the same direction regardless of player movement.
                     float newLength = _sr.size.x + (fireSpeed * Time.deltaTime);
                     UpdateLength(newLength);
                 }
@@ -134,6 +155,7 @@ namespace TimeKnight.Core.GrapplingHook
             {
                 if (_sr.size.x > baseLength)
                 {
+                    RotateGrapplingHook(_firingPoint);  // Keeps grappling hook retracting from the same direction it was fired from.
                     float newLength = _sr.size.x - (retractSpeed * Time.deltaTime);
                     UpdateLength(newLength);
                     yield return null;
@@ -141,7 +163,7 @@ namespace TimeKnight.Core.GrapplingHook
                 else
                 {
                     UpdateLength(baseLength); // There might be some variance when subtracting length on last frame due to Time.deltaTime, this resets it to base length. 
-                    TransitionTo(HookState.Idle);                    
+                    TransitionTo(HookState.Idle);
                 }
             }
             yield return null;
@@ -152,7 +174,7 @@ namespace TimeKnight.Core.GrapplingHook
             _collisionPoint = tipTransform.position;
             OnEnterStuck?.Invoke(_collisionPoint);
         }
-        
+
         private IEnumerator UpdateStuck()
         {
             while (CurrentState.IsStuck())
@@ -163,22 +185,22 @@ namespace TimeKnight.Core.GrapplingHook
                 yield return null;
             }
         }
-        
+
         private void UpdateLength(float newLength)
         {
             _sr.size = new Vector2(newLength, _sr.size.y);
             tipTransform.localPosition = new Vector3(newLength, 0f, 0f);
         }
-        
+
         private static bool IsMouseInbounds(Vector2 mousePosition)
         {
-            return 
-                mousePosition.x > 0 && 
-                mousePosition.x < Screen.width && 
-                mousePosition.y > 0 && 
+            return
+                mousePosition.x > 0 &&
+                mousePosition.x < Screen.width &&
+                mousePosition.y > 0 &&
                 mousePosition.y < Screen.height;
         }
-        
+
         private void RotateGrapplingHook(Vector3 otherPosition)
         {
             // Calculate x and y components of the vector, then get the angle using atan2.
@@ -187,11 +209,22 @@ namespace TimeKnight.Core.GrapplingHook
             // Apply rotation using Quaternions.
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
-        
+
+        private bool IsPlayerFacingLeft()
+        {
+            return transform.parent != null && transform.parent.localScale.x < 0f;
+        }
+
         private float GetAngleTo(Vector3 otherPosition)
         {
             Vector2 direction = (otherPosition - transform.position).normalized;
-            return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            // If player is facing left, the math gets flipped so add 180 to angle
+            if (IsPlayerFacingLeft())
+            {
+                angle += 180f;
+            }
+            return angle;
         }
     }
 }

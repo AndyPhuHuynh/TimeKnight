@@ -9,7 +9,7 @@ namespace TimeKnight.Core.GrapplingHook
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (IsCollisionLayerGround(collision))
+            if (IsCollisionLayerGrappleSurface(collision))
             {
                 IsTipTouchingGround = true;
                 if (parentHook.CurrentState.IsExtending())
@@ -21,15 +21,17 @@ namespace TimeKnight.Core.GrapplingHook
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (IsCollisionLayerGround(collision))
+            if (IsCollisionLayerGrappleSurface(collision))
             {
                 IsTipTouchingGround = false;
             }
         }
 
-        private static bool IsCollisionLayerGround(Collider2D collision)
+        private bool IsCollisionLayerGrappleSurface(Collider2D collision)
         {
-            return LayerMask.LayerToName(collision.gameObject.layer) == "Ground";
+            // Yummy black magic chat gpt line??? Yippie!!! God bless AI and burning forests
+            // This allows us to change the grapple layer in inspector of grappling hook later on and not have it hard coded here.
+            return (parentHook.GrappleSurfaceLayer.value & (1 << collision.gameObject.layer)) != 0;
         }
     }
 }
