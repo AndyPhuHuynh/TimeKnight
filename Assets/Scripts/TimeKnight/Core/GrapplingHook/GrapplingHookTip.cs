@@ -32,6 +32,7 @@ namespace TimeKnight.Core.GrapplingHook
             {
                 parentHook.TransitionTo(HookState.Stuck);
             }
+            
         }
     }
 }

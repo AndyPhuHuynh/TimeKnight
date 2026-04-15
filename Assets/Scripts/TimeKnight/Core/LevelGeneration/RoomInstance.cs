@@ -18,18 +18,25 @@ namespace TimeKnight.Core.LevelGeneration
     
     public class RoomInstance
     {
-        public RoomDefinition Definition;
+        private RoomDefinition _definition;
         private ConnectionInstance[] _connections;
+        private Vector3 _worldPos;
 
         private Vector3 GetConnectionPosition(ConnectionDefinition connection)
         {
-            return Definition.gameObject.transform.position + connection.centerOffset;
+            return _worldPos + connection.centerOffset;
+        }
+
+        public List<Vector3Int> GetTileWorldPositions()
+        {
+            var localPositions = _definition.GetTileLocalPositions();
+            var flooredWorldPos = _worldPos.FloorToInt();
+            return localPositions.Select(pos => flooredWorldPos + pos).ToList();
         }
         
         public static RoomInstance FromStart(RoomDefinition definition)
         {
-            var def = Object.Instantiate(definition);
-            var connections = def.ConnectionList.Select(connectionDef => new ConnectionInstance 
+            var connections = definition.ConnectionList.Select(connectionDef => new ConnectionInstance 
             {
                 Definition = connectionDef,
                 ConnectedRoom = null
@@ -37,8 +44,9 @@ namespace TimeKnight.Core.LevelGeneration
             
             return new RoomInstance
             {
-                Definition = def,
-                _connections = connections
+                _definition = definition,
+                _connections = connections,
+                _worldPos = Vector3.zero
             };
         }
 
@@ -75,9 +83,6 @@ namespace TimeKnight.Core.LevelGeneration
                         .Any();
                     if (collisionFound) continue;
                     
-                    // Instantiate the room definition
-                    var newRoomObject = Object.Instantiate(other, newCenterPos, Quaternion.identity);
-                    
                     // Initialize the connections
                     var newConnections = new ConnectionInstance[other.ConnectionList.Count];
                     for (var i = 0; i < other.ConnectionList.Count; i++)
@@ -93,8 +98,9 @@ namespace TimeKnight.Core.LevelGeneration
                     // Initialize the new room instance
                     var newInstance = new RoomInstance
                     {
-                        Definition = newRoomObject,
-                        _connections = newConnections
+                        _definition = other,
+                        _connections = newConnections,
+                        _worldPos = newCenterPos,
                     };
                     
                     // Set the connection on this instance
@@ -117,6 +123,25 @@ namespace TimeKnight.Core.LevelGeneration
             return directions
                 .Select(dir => PlaceConnection(other, dir, occupiedTiles, random))
                 .FirstOrDefault(newRoom => newRoom != null);
+        }
+
+        public void Instantiate(string name)
+        {
+            _definition = Object.Instantiate(_definition, _worldPos, Quaternion.identity);
+            _definition.gameObject.name = name;
+        }
+
+        public void RemoveConnections()
+        {
+            foreach (var connection in _connections.Where(c => c.IsConnected))
+            {
+                var matchingConnections = connection.ConnectedRoom._connections.Where(c => c.ConnectedRoom == this);
+                foreach (var matchingConnection in matchingConnections)
+                {
+                    matchingConnection.ConnectedRoom = null;
+                }
+                connection.ConnectedRoom = null;
+            }
         }
     }
 }

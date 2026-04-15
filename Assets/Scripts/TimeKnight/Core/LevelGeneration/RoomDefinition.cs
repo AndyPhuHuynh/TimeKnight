@@ -66,17 +66,5 @@ namespace TimeKnight.Core.LevelGeneration
             }
             return result;
         }
-        
-        public List<Vector3Int> GetTileWorldPositions()
-        {
-            var result = new List<Vector3Int>();
-            foreach (var pos in terrainMap.cellBounds.allPositionsWithin)
-            {
-                var tile = terrainMap.GetTile(pos);
-                if (tile is null) continue;
-                result.Add(terrainMap.GetCellCenterWorld(pos).FloorToInt());
-            }
-            return result;
-        }
     }
 }
