@@ -104,3 +104,6 @@ InitTestScene*.unity*
 
 # JetBrains IDEA
 /.idea
+
+# MAC
+**/.DS_store

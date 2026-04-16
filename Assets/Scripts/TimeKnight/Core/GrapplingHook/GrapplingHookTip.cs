@@ -4,32 +4,35 @@ namespace TimeKnight.Core.GrapplingHook
 {
     public class GrapplingHookTip : MonoBehaviour
     {
+        private ContactFilter2D _filter;
+        private Collider2D _collider;
+        private readonly Collider2D[] _collisionResults = new Collider2D[1];
+        
         [SerializeField] private GrapplingHook parentHook;
-        public bool IsTipTouchingGround { get; private set; } = false;
+        
+        public bool IsTipTouchingGround { get; private set; }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void Awake()
         {
-            if (IsCollisionLayerGround(collision))
+            _collider = GetComponent<Collider2D>();
+            
+            _filter = new ContactFilter2D
             {
-                IsTipTouchingGround = true;
-                if (parentHook.CurrentState.IsExtending())
-                {
-                    parentHook.TransitionTo(HookState.Stuck);
-                }
-            }
+                useLayerMask = true,
+                useTriggers = true
+            };
+            _filter.SetLayerMask(LayerMask.GetMask("Ground"));
         }
 
-        private void OnTriggerExit2D(Collider2D collision)
+        private void FixedUpdate()
         {
-            if (IsCollisionLayerGround(collision))
+            var count = _collider.Overlap(_filter, _collisionResults);
+            IsTipTouchingGround = count > 0;
+            if (parentHook.CurrentState.IsExtending() && IsTipTouchingGround)
             {
-                IsTipTouchingGround = false;
+                parentHook.TransitionTo(HookState.Stuck);
             }
-        }
-
-        private static bool IsCollisionLayerGround(Collider2D collision)
-        {
-            return LayerMask.LayerToName(collision.gameObject.layer) == "Ground";
+            
         }
     }
 }
