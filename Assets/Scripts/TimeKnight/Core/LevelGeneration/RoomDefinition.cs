@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using TimeKnight.Extensions;
+using TimeKnight.Attributes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,7 +12,7 @@ namespace TimeKnight.Core.LevelGeneration
         [SerializeField] private Tilemap terrainMap;
         [field: SerializeField] public Tilemap ConnectionMap { get; private set; }
 
-        [SerializeField] private List<ConnectionDefinition> connectionList = new();
+        [SerializeField, ReadOnly] private List<ConnectionDefinition> connectionList = new();
         public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;
         
         private void OnValidate()

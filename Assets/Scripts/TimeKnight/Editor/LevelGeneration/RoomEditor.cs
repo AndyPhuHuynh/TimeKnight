@@ -20,6 +20,11 @@ namespace TimeKnight.Editor.LevelGeneration
             
             Tilemap.tilemapTileChanged += OnConnectionTilemapChanged;
             Undo.undoRedoPerformed += OnUndoRedo;
+            
+            foreach (var room in RoomTargets)
+            {
+                room?.BakeConnections();
+            }
         }
 
         public void OnDisable()
