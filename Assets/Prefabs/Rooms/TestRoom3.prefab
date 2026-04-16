@@ -433,8 +433,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -4, y: -1, z: 0}
-  m_Size: {x: 4, y: 1, z: 1}
+  m_Origin: {x: -4, y: -2, z: 0}
+  m_Size: {x: 4, y: 2, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -571,9 +571,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.Room
   tileset: {fileID: 11400000, guid: e1d6c48de283d47479be9f4afa6f9c42, type: 2}
   terrainMap: {fileID: 481128931577898239}
-  connectionMap: {fileID: 3014429979749415719}
+  <ConnectionMap>k__BackingField: {fileID: 3014429979749415719}
   connectionList:
   - type: 0
-    centerOffset: {x: -3.5, y: -0.5, z: 0}
+    centerOffset: {x: -4, y: -1, z: 0}
   - type: 1
-    centerOffset: {x: -0.5, y: -0.5, z: 0}
+    centerOffset: {x: -1, y: -1, z: 0}

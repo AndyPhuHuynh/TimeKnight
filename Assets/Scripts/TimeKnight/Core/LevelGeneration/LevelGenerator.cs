@@ -78,7 +78,12 @@ namespace TimeKnight.Core.LevelGeneration
             LevelNode.Connect(thirdRoom, room4);
             LevelNode.Connect(startRoom, room5);
             
-            StartGraphGeneration(startRoom);
+            var success = GenerateGraph(startRoom);
+            if (!success)
+            {
+                Debug.LogError("Unable to find a valid configuration for the level generation");
+                return;
+            }
 
             foreach (var (node, instance) in _roomMap)
             {
@@ -86,13 +91,15 @@ namespace TimeKnight.Core.LevelGeneration
             }
         }
 
-        private void StartGraphGeneration(LevelNode start)
+        private bool GenerateGraph(LevelNode start)
         {
-            var startHistory = GenerateStartingRoom(start);
-            
             var edgesToConnect = new Stack<GenerationHistory>();
             var history = new Stack<GenerationHistory>();
 
+            // Generate the starting room
+            var startHistory = GenerateConnectedRoom(null, start);
+            if (startHistory == null) return false;
+            
             AddEdges(start, edgesToConnect);
             history.Push(startHistory);
             
@@ -108,6 +115,7 @@ namespace TimeKnight.Core.LevelGeneration
                 if (generationHistory is null)
                 {
                     // Get last placed history
+                    if (history.IsEmpty()) return false;
                     var lastHistory = history.Pop();
                     
                     // Pop all things from stack connected to the room we are about to undo
@@ -133,6 +141,8 @@ namespace TimeKnight.Core.LevelGeneration
                     history.Push(generationHistory);
                 }
             }
+
+            return true;
         }
 
         private bool IsEdgeCreated(LevelNodeEdge edge)
@@ -142,7 +152,6 @@ namespace TimeKnight.Core.LevelGeneration
 
         private void AddEdges(LevelNode existingNode, Stack<GenerationHistory> edgesToConnect)
         {
-            // TODO: Handle number of edges > than number of existing connections in the existing node
             foreach (var edge in existingNode.Edges.Where(edge => !IsEdgeCreated(edge)))
             {
                 var otherNode = edge.Other(existingNode);
@@ -172,28 +181,10 @@ namespace TimeKnight.Core.LevelGeneration
             var positions = room.GetTileWorldPositions();
             positions.ForEach(pos => _occupiedTiles.Remove(pos));
         }
-
-        private GenerationHistory GenerateStartingRoom(LevelNode startingNode)
-        {
-            var possibleRooms = rooms.ToArray();
-            possibleRooms.ShuffleInPlace(_random);
-            
-            // TODO: Actually use the shuffle
-            _roomMap[startingNode] = RoomInstance.FromStart(possibleRooms[0]);
-            RegisterRoom(_roomMap[startingNode]);
-
-            return new GenerationHistory
-            {
-                ExistingNode   = null,
-                GeneratedNode  = startingNode,
-                RoomShuffle    = possibleRooms,
-                GeneratedIndex = 0
-            };
-        }
-
+        
         private GenerationHistory GenerateConnectedRoom(
-            LevelNode existingNode, 
-            LevelNode otherNode, 
+            LevelNode existingNode,
+            LevelNode otherNode,
             RoomDefinition[] possibleRooms = null,
             int possibleRoomsIndex = 0)
         {
@@ -211,6 +202,10 @@ namespace TimeKnight.Core.LevelGeneration
 
             for (var i = possibleRoomsIndex; i < possibleRooms.Length; i++)
             {
+                // If the room doesn't support the amount of connections that we need
+                if (possibleRooms[i].ConnectionList.Count < otherNode.Edges.Count) continue;
+                
+                // Generate room
                 var roomGen = 
                     existingNode is not null ?
                         _roomMap[existingNode].CreateConnection(possibleRooms[i], _occupiedTiles, _random) :

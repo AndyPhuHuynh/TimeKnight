@@ -10,7 +10,7 @@ namespace TimeKnight.Core.LevelGeneration
     {
         [SerializeField] private Tileset tileset;
         [SerializeField] private Tilemap terrainMap;
-        [SerializeField] private Tilemap connectionMap;
+        [field: SerializeField] public Tilemap ConnectionMap { get; private set; }
 
         [SerializeField] private List<ConnectionDefinition> connectionList = new();
         public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;
@@ -19,15 +19,15 @@ namespace TimeKnight.Core.LevelGeneration
         {
             Debug.Assert(tileset       != null, $"Missing {nameof(tileset)}",       this);
             Debug.Assert(terrainMap    != null, $"Missing {nameof(terrainMap)}",    this);
-            Debug.Assert(connectionMap != null, $"Missing {nameof(connectionMap)}", this);
+            Debug.Assert(ConnectionMap != null, $"Missing {nameof(ConnectionMap)}", this);
         }
 
         public void BakeConnections()
         {
             connectionList.Clear();
-            foreach (var pos in connectionMap.cellBounds.allPositionsWithin)
+            foreach (var pos in ConnectionMap.cellBounds.allPositionsWithin)
             {
-                var tile = connectionMap.GetTile(pos);
+                var tile = ConnectionMap.GetTile(pos);
                 if (!IsConnectionTile(tile)) continue;
                 connectionList.Add(new ConnectionDefinition
                 {

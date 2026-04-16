@@ -130,7 +130,7 @@ namespace TimeKnight.Core.LevelGeneration
             _definition = Object.Instantiate(_definition, _worldPos, Quaternion.identity);
             _definition.gameObject.name = name;
         }
-
+        
         public void RemoveConnections()
         {
             foreach (var connection in _connections.Where(c => c.IsConnected))

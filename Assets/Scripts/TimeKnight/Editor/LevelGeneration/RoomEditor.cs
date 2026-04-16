@@ -1,23 +1,77 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
+using System.Linq;
 using TimeKnight.Core.LevelGeneration;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Editor.LevelGeneration
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(RoomDefinition))]
     public class RoomEditor : UnityEditor.Editor
     {
-        // TODO: Make some sort of warning/reminder to click this button after changes are made
+        private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition);
+        
+        public void OnEnable()
+        {
+            if (target == null) return;
+            
+            Tilemap.tilemapTileChanged += OnConnectionTilemapChanged;
+            Undo.undoRedoPerformed += OnUndoRedo;
+        }
+
+        public void OnDisable()
+        {
+            Tilemap.tilemapTileChanged -= OnConnectionTilemapChanged;
+            Undo.undoRedoPerformed -= OnUndoRedo;
+        }
+
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
+            
+            EditorGUI.BeginChangeCheck();
             DrawDefaultInspector();
-            var room = (RoomDefinition)target;
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                foreach (var room in RoomTargets)
+                {
+                    room?.BakeConnections();
+                }
+            }
             
             GUILayout.Space(10);
-            if (GUILayout.Button("Apply Tilemap Changes"))
+            EditorGUILayout.HelpBox("Connections bake automatically on tile or inspector change.", MessageType.Info);
+            
+            if (!GUILayout.Button("Force Re-Bake Connections")) return;
+            foreach (var room in RoomTargets)
             {
-                room.BakeConnections();
+                room?.BakeConnections();
+            }
+        }
+        
+        private void OnUndoRedo()
+        {
+            if (targets == null || targets.Length == 0) return;
+            foreach (var room in RoomTargets)
+            {
+                room?.BakeConnections();
+            }
+        }
+
+        private void OnConnectionTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] _)
+        {
+            if (targets == null || targets.Length == 0) return;
+            foreach (var room in RoomTargets)
+            {
+                if (room != null && tilemap == room.ConnectionMap)
+                {
+                    room.BakeConnections();
+                }
             }
         }
     }

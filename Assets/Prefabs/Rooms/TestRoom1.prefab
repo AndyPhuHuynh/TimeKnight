@@ -545,9 +545,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.Room
   tileset: {fileID: 11400000, guid: e1d6c48de283d47479be9f4afa6f9c42, type: 2}
   terrainMap: {fileID: 8455174159908593746}
-  connectionMap: {fileID: 4937219000441004003}
+  <ConnectionMap>k__BackingField: {fileID: 4937219000441004003}
   connectionList:
   - type: 0
-    centerOffset: {x: -8.5, y: -0.5, z: 0}
+    centerOffset: {x: -9, y: -1, z: 0}
   - type: 1
-    centerOffset: {x: -4.5, y: -0.5, z: 0}
+    centerOffset: {x: -5, y: -1, z: 0}
