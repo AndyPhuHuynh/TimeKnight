@@ -316,7 +316,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2a203e2f-f5ec-44cc-9789-fd9436ebca74"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -332,6 +332,34 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""StopGrapple"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Sword"",
+            ""id"": ""d4e12cd3-4156-4412-8fa6-bb0a90a9c7f6"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""c120065d-3c32-4c7c-9b62-1bb86f2e68b8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""75f71913-2875-4458-8cf3-18de9ff34d9e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -372,6 +400,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_GrapplingHook = asset.FindActionMap("Grappling Hook", throwIfNotFound: true);
         m_GrapplingHook_PrimaryFire = m_GrapplingHook.FindAction("Primary Fire", throwIfNotFound: true);
         m_GrapplingHook_StopGrapple = m_GrapplingHook.FindAction("StopGrapple", throwIfNotFound: true);
+        // Sword
+        m_Sword = asset.FindActionMap("Sword", throwIfNotFound: true);
+        m_Sword_Attack = m_Sword.FindAction("Attack", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -380,6 +411,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Interaction.enabled, "This will cause a leak and performance issues, PlayerInputActions.Interaction.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Dialogue.enabled, "This will cause a leak and performance issues, PlayerInputActions.Dialogue.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_GrapplingHook.enabled, "This will cause a leak and performance issues, PlayerInputActions.GrapplingHook.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Sword.enabled, "This will cause a leak and performance issues, PlayerInputActions.Sword.Disable() has not been called.");
     }
 
     /// <summary>
@@ -868,6 +900,102 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="GrapplingHookActions" /> instance referencing this action map.
     /// </summary>
     public GrapplingHookActions @GrapplingHook => new GrapplingHookActions(this);
+
+    // Sword
+    private readonly InputActionMap m_Sword;
+    private List<ISwordActions> m_SwordActionsCallbackInterfaces = new List<ISwordActions>();
+    private readonly InputAction m_Sword_Attack;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Sword".
+    /// </summary>
+    public struct SwordActions
+    {
+        private @PlayerInputActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public SwordActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Sword/Attack".
+        /// </summary>
+        public InputAction @Attack => m_Wrapper.m_Sword_Attack;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Sword; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="SwordActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(SwordActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="SwordActions" />
+        public void AddCallbacks(ISwordActions instance)
+        {
+            if (instance == null || m_Wrapper.m_SwordActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_SwordActionsCallbackInterfaces.Add(instance);
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="SwordActions" />
+        private void UnregisterCallbacks(ISwordActions instance)
+        {
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="SwordActions.UnregisterCallbacks(ISwordActions)" />.
+        /// </summary>
+        /// <seealso cref="SwordActions.UnregisterCallbacks(ISwordActions)" />
+        public void RemoveCallbacks(ISwordActions instance)
+        {
+            if (m_Wrapper.m_SwordActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="SwordActions.AddCallbacks(ISwordActions)" />
+        /// <seealso cref="SwordActions.RemoveCallbacks(ISwordActions)" />
+        /// <seealso cref="SwordActions.UnregisterCallbacks(ISwordActions)" />
+        public void SetCallbacks(ISwordActions instance)
+        {
+            foreach (var item in m_Wrapper.m_SwordActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_SwordActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="SwordActions" /> instance referencing this action map.
+    /// </summary>
+    public SwordActions @Sword => new SwordActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -961,5 +1089,20 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnStopGrapple(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Sword" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="SwordActions.AddCallbacks(ISwordActions)" />
+    /// <seealso cref="SwordActions.RemoveCallbacks(ISwordActions)" />
+    public interface ISwordActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Attack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

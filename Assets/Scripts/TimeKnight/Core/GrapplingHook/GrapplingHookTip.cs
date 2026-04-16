@@ -4,35 +4,34 @@ namespace TimeKnight.Core.GrapplingHook
 {
     public class GrapplingHookTip : MonoBehaviour
     {
-        private ContactFilter2D _filter;
-        private Collider2D _collider;
-        private readonly Collider2D[] _collisionResults = new Collider2D[1];
-        
         [SerializeField] private GrapplingHook parentHook;
-        
-        public bool IsTipTouchingGround { get; private set; }
+        public bool IsTipTouchingGround { get; private set; } = false;
 
-        private void Awake()
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            _collider = GetComponent<Collider2D>();
-            
-            _filter = new ContactFilter2D
+            if (IsCollisionLayerGrappleSurface(collision))
             {
-                useLayerMask = true,
-                useTriggers = true
-            };
-            _filter.SetLayerMask(LayerMask.GetMask("Ground"));
+                IsTipTouchingGround = true;
+                if (parentHook.CurrentState.IsExtending())
+                {
+                    parentHook.TransitionTo(HookState.Stuck);
+                }
+            }
         }
 
-        private void FixedUpdate()
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            var count = _collider.Overlap(_filter, _collisionResults);
-            IsTipTouchingGround = count > 0;
-            if (parentHook.CurrentState.IsExtending() && IsTipTouchingGround)
+            if (IsCollisionLayerGrappleSurface(collision))
             {
-                parentHook.TransitionTo(HookState.Stuck);
+                IsTipTouchingGround = false;
             }
-            
+        }
+
+        private bool IsCollisionLayerGrappleSurface(Collider2D collision)
+        {
+            // Yummy black magic chat gpt line??? Yippie!!! God bless AI and burning forests
+            // This allows us to change the grapple layer in inspector of grappling hook later on and not have it hard coded here.
+            return (parentHook.GrappleSurfaceLayer.value & (1 << collision.gameObject.layer)) != 0;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace TimeKnight.Core.Input
             Actions.Dialogue.Disable();
             Actions.GrapplingHook.Enable();
             Actions.GrapplingHook.StopGrapple.Disable();
+            Actions.Sword.Enable();
         }
 
         private void OnDisable()
