@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TimeKnight.Core.Enemy;
 using TimeKnight.Core.Player;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -29,7 +27,7 @@ namespace TimeKnight.Core.Sword
 
         // Collision management
         private RaycastHit2D[] _swordCollisions;
-        private List<IDamageable> _previouslyDamagedThisAttack = new List<IDamageable>();
+        private HashSet<IDamageable> _previouslyDamagedThisAttack = new HashSet<IDamageable>();
 
         private void Start()
         {
