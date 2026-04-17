@@ -97,7 +97,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: SwordSwinging
+    attribute: swordSwinging
     path: Sword
     classID: 114
     script: {fileID: 11500000, guid: df2b082c91258a2458e8e6cd2374ec4a, type: 3}
@@ -130,7 +130,7 @@ AnimationClip:
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
       path: 1529145355
-      attribute: 3912864332
+      attribute: 1514658233
       script: {fileID: 11500000, guid: df2b082c91258a2458e8e6cd2374ec4a, type: 3}
       typeID: 114
       customType: 0
@@ -304,7 +304,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: SwordSwinging
+    attribute: swordSwinging
     path: Sword
     classID: 114
     script: {fileID: 11500000, guid: df2b082c91258a2458e8e6cd2374ec4a, type: 3}

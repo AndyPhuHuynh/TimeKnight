@@ -11,11 +11,11 @@ namespace TimeKnight.Core.Player
         public int Health { get; private set; }
         public event Action<int> MaxHealthChanged = delegate {}; 
         public event Action<int> HealthChanged = delegate {};
-        private const float BaseDamage = 2;
-        private const float CritChance = 0.0f;
-        private const float CritDamageMultiplier = 2.0f;
-        private const float DamageResistance = 1.0f;
-        private const float DamageRecoveryTime = 1f;
+        [SerializeField] private float baseDamage = 2;
+        [SerializeField] private float critChance = 0.1f;
+        [SerializeField] private float critDamageMultiplier = 2.0f;
+        [SerializeField] private float damageResistance = 1.0f;
+        [SerializeField] private float damageRecoveryTime = 1f;
         private bool _isInvincible;
 
         private void Awake()
@@ -25,14 +25,14 @@ namespace TimeKnight.Core.Player
             HealthChanged.Invoke(Health);
         }
 
-        public static float GetCurrentDamageOutput()
+        public float GetCurrentDamageOutput()
         {
-            var damage = BaseDamage;
+            var damage = baseDamage;
             var roll = UnityEngine.Random.value;
 
-            if (roll < CritChance)
+            if (roll < critChance)
             {
-                damage *= CritDamageMultiplier;
+                damage *= critDamageMultiplier;
             }
 
             return damage;
@@ -43,7 +43,7 @@ namespace TimeKnight.Core.Player
             if (_isInvincible) return;
             
             StartCoroutine(DamageInvulnerability());
-            Health -= (int)Math.Round(damage * DamageResistance);
+            Health -= (int)Math.Round(damage * damageResistance);
             HealthChanged.Invoke(Health);
         }
 
@@ -51,7 +51,7 @@ namespace TimeKnight.Core.Player
         {
             _isInvincible = true;
             float timePassed = 0;
-            while (timePassed < DamageRecoveryTime)
+            while (timePassed < damageRecoveryTime)
             {
                 timePassed += Time.deltaTime;
                 yield return null;
