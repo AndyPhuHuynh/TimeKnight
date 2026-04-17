@@ -178,11 +178,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.7999
+      value: -1.78
       objectReference: {fileID: 0}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.50964
+      value: 1.07
       objectReference: {fileID: 0}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.z
@@ -222,7 +222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -295,7 +295,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 127
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
