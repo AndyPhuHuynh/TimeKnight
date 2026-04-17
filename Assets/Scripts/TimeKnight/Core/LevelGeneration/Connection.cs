@@ -32,7 +32,7 @@ namespace TimeKnight.Core.LevelGeneration
             return type == other.type && centerOffset.Equals(other.centerOffset);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is ConnectionDefinition other && Equals(other);
         }

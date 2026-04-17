@@ -6,12 +6,12 @@ namespace TimeKnight.Core.HUD
 {
     public class HealthBar : MonoBehaviour
     {
-        [SerializeField] private Slider HealthFillSlider;
-        private PlayerManager _playerManager;
+        [SerializeField] private Slider healthFillSlider = null!;
+        private PlayerManager _playerManager = null!;
 
         private void OnValidate()
         {
-            Debug.Assert(HealthFillSlider != null, $"HealthFillSlider reference in {gameObject.name} not assigned.");
+            Debug.Assert(healthFillSlider != null, $"HealthFillSlider reference in {gameObject.name} not assigned.");
         }
 
         private void OnEnable()
@@ -28,7 +28,7 @@ namespace TimeKnight.Core.HUD
             _playerManager.HealthChanged += SetHealth;
 
             // Sync immediately in case the player already initialized.
-            SetMaxHealth(_playerManager.MaxHealth);
+            SetMaxHealth(_playerManager.maxHealth);
             SetHealth(_playerManager.Health);
         }
 
@@ -43,14 +43,14 @@ namespace TimeKnight.Core.HUD
             _playerManager.HealthChanged -= SetHealth;
         }
 
-        public void SetHealth(int health)
+        private void SetHealth(int health)
         {
-            HealthFillSlider.value = health;
+            healthFillSlider.value = health;
         }
 
-        public void SetMaxHealth(int maxHealth)
+        private void SetMaxHealth(int maxHealth)
         {
-            HealthFillSlider.maxValue = maxHealth;
+            healthFillSlider.maxValue = maxHealth;
         }
     }
 }

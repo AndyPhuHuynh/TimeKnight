@@ -8,9 +8,9 @@ namespace TimeKnight.Core.LevelGeneration
 {
     public class RoomDefinition : MonoBehaviour
     {
-        [SerializeField] private Tileset tileset;
-        [SerializeField] private Tilemap terrainMap;
-        [field: SerializeField] public Tilemap ConnectionMap { get; private set; }
+        [SerializeField] private Tileset tileset = null!;
+        [SerializeField] private Tilemap terrainMap = null!;
+        [field: SerializeField] public Tilemap ConnectionMap { get; private set; } = null!;
 
         [SerializeField, ReadOnly] private List<ConnectionDefinition> connectionList = new();
         public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;

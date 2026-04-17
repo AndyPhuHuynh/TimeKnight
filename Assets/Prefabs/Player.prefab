@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerSwordController
   input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  Sword: {fileID: 5134453458329420300}
+  sword: {fileID: 5134453458329420300}
 --- !u!1 &7994627178333564736
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82458f8204dbab54db34a718c24fcfba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  maxHealth: 10
 --- !u!1 &8894625496495905059
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,9 +832,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8014966812539700450}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 8014966812539700450}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackRadius
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: playerManager
+      value: 
+      objectReference: {fileID: 1038622019370413058}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackCooldown
       value: 0.3
@@ -844,6 +853,10 @@ PrefabInstance:
       objectReference: {fileID: 1038622019370413058}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackTransform
+      value: 
+      objectReference: {fileID: 6372644459679051215}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: attackTransform
       value: 
       objectReference: {fileID: 6372644459679051215}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}

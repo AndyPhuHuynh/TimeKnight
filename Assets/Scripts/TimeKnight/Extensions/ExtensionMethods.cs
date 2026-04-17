@@ -5,7 +5,7 @@ namespace TimeKnight.Extensions
 {
     public static class ExtensionMethods
     {
-        public static bool IsEmpty<T>(this IReadOnlyCollection<T> list) => list == null || list.Count == 0;
+        public static bool IsEmpty<T>(this IReadOnlyCollection<T> list) => list.Count == 0;
         
         public static void SetVisible(this CanvasGroup group, bool visible)
         {

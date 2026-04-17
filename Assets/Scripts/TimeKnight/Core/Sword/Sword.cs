@@ -57,7 +57,7 @@ namespace TimeKnight.Core.Sword
             // SwordSwinging is disabled by the animation when sword is finished swinging.
             while (SwordSwinging)
             {
-                float damage = _playerManager.GetCurrentDamageOutput();
+                float damage = PlayerManager.GetCurrentDamageOutput();
                 _swordCollisions = Physics2D.CircleCastAll(AttackTransform.position, AttackRadius, Vector2.right, 0f, AttackableLayer);
                 for (int i = 0; i < _swordCollisions.Length; i++)
                 {

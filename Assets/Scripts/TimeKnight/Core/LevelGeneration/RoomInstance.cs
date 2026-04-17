@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
+using TimeKnight.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = System.Random;
@@ -11,15 +11,15 @@ namespace TimeKnight.Core.LevelGeneration
     public class ConnectionInstance
     {
         public ConnectionDefinition Definition;
-        public RoomInstance ConnectedRoom;
+        public RoomInstance? ConnectedRoom;
         
         public bool IsConnected => ConnectedRoom != null;
     }
     
     public class RoomInstance
     {
-        private RoomDefinition _definition;
-        private ConnectionInstance[] _connections;
+        private RoomDefinition _definition = null!;
+        private ConnectionInstance[] _connections = null!;
         private Vector3 _worldPos;
 
         private Vector3 GetConnectionPosition(ConnectionDefinition connection)
@@ -51,7 +51,7 @@ namespace TimeKnight.Core.LevelGeneration
         }
 
         // Checks if a valid connection exists out of this room into the other room with the connection type
-        private RoomInstance PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
+        private RoomInstance? PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Check if this room even has that connection type available.
             var thisConnections = _connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
@@ -113,12 +113,11 @@ namespace TimeKnight.Core.LevelGeneration
             return null;
         }
         
-        public RoomInstance CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles, Random random)
+        public RoomInstance? CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Find matching connection between this room and the other new room
-            var directions = Enum.GetValues(typeof(ConnectionType)) as ConnectionType[];
+            var directions = EnumUtils.GetEnumValues<ConnectionType>();
             directions.ShuffleInPlace(random);
-            Debug.Assert(directions != null);
 
             return directions
                 .Select(dir => PlaceConnection(other, dir, occupiedTiles, random))
@@ -135,7 +134,7 @@ namespace TimeKnight.Core.LevelGeneration
         {
             foreach (var connection in _connections.Where(c => c.IsConnected))
             {
-                var matchingConnections = connection.ConnectedRoom._connections.Where(c => c.ConnectedRoom == this);
+                var matchingConnections = connection.ConnectedRoom!._connections.Where(c => c.ConnectedRoom == this);
                 foreach (var matchingConnection in matchingConnections)
                 {
                     matchingConnection.ConnectedRoom = null;

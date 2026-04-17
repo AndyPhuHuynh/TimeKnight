@@ -4,7 +4,12 @@ namespace TimeKnight.Core
 {
     public class CameraScript : MonoBehaviour
     {
-        [SerializeField] private GameObject player;
+        [SerializeField] private GameObject player = null!;
+
+        private void OnValidate()
+        {
+            Debug.Assert(player != null, $"Missing {nameof(player)}", this);
+        }
 
         private void Update()
         {

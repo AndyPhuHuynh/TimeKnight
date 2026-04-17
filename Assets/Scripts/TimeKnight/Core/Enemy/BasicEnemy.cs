@@ -6,21 +6,21 @@ namespace TimeKnight.Core.Enemy
 {
     public class BasicEnemy : MonoBehaviour, IDamageable
     {
-        [SerializeField] private int MaxHealth = 5;
-        [SerializeField] private int PlayerCollisionDamage = 3;
+        [SerializeField] private int maxHealth = 5;
+        [SerializeField] private int playerCollisionDamage = 3;
         private int _currentHealth;
         
 
         private void Start()
         {
-            _currentHealth = MaxHealth;
+            _currentHealth = maxHealth;
         }
 
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (collision.tag != "PlayerManager") return;
+            if (!collision.CompareTag("PlayerManager")) return;
 
-            collision.gameObject.GetComponent<PlayerManager>().Damage(PlayerCollisionDamage);
+            collision.gameObject.GetComponent<PlayerManager>().Damage(playerCollisionDamage);
         }
 
         public void Damage(float damage)

@@ -9,23 +9,21 @@ namespace TimeKnight.Core.Player
     [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
     public class PlayerHorizontalMovementController : MonoBehaviour
     {
-        private Rigidbody2D _rb;
-        private SpriteRenderer _sr;
+        private Rigidbody2D _rb = null!;
         
         [Header("Input")] 
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
     
         [Header("Movement")]
         [SerializeField] private float maxMoveSpeed = 5;
         [SerializeField] private float acceleration = 1;
         
         private float _currentMoveSpeed;
-        private Coroutine _onMoveHeldCoroutine;
+        private Coroutine? _onMoveHeldCoroutine;
         
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _sr = GetComponent<SpriteRenderer>();
         }
 
         private void OnValidate()

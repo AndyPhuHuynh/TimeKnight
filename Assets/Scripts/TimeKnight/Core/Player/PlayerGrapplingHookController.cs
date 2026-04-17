@@ -10,15 +10,15 @@ namespace TimeKnight.Core.Player
     public class PlayerGrapplingHookController : MonoBehaviour
     {
         [Header("Input")] 
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
 
         [Header("Player")] 
-        [SerializeField] private Rigidbody2D playerBody;
-        [SerializeField] private PlayerJumpController playerJump;
+        [SerializeField] private Rigidbody2D playerBody = null!;
+        [SerializeField] private PlayerJumpController playerJump = null!;
 
         [Header("Grappling Hook")]
-        [SerializeField] private GrapplingHook.GrapplingHook grapplingHook;
-        [SerializeField] private GrapplingHookTip grapplingHookTip;
+        [SerializeField] private GrapplingHook.GrapplingHook grapplingHook = null!;
+        [SerializeField] private GrapplingHookTip grapplingHookTip = null!;
 
         // Pull player state
         private bool _isBeingPulled;

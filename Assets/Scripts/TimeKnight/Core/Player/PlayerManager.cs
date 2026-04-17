@@ -7,32 +7,32 @@ namespace TimeKnight.Core.Player
     public class PlayerManager : MonoBehaviour
     {
         // TODO: Finalize how we handle health. right now I'm thinking all health is integer, and we round when calculating damage.
-        public int MaxHealth { get; private set; } = 10;
+        public int maxHealth = 10;
         public int Health { get; private set; }
-        public event Action<int> MaxHealthChanged;
-        public event Action<int> HealthChanged;
-        private float _baseDamage = 2;
-        private float _critChance = 0.0f;
-        private float _critDamageMultiplier = 2.0f;
-        private float _damageResistance = 1.0f;
-        private bool _isInvincible = false;
-        private float _damageRecoveryTime = 1f;
+        public event Action<int> MaxHealthChanged = delegate {}; 
+        public event Action<int> HealthChanged = delegate {};
+        private const float BaseDamage = 2;
+        private const float CritChance = 0.0f;
+        private const float CritDamageMultiplier = 2.0f;
+        private const float DamageResistance = 1.0f;
+        private const float DamageRecoveryTime = 1f;
+        private bool _isInvincible;
 
         private void Awake()
         {
-            Health = MaxHealth;
-            MaxHealthChanged?.Invoke(MaxHealth);
-            HealthChanged?.Invoke(Health);
+            Health = maxHealth;
+            MaxHealthChanged.Invoke(maxHealth);
+            HealthChanged.Invoke(Health);
         }
 
-        public float GetCurrentDamageOutput()
+        public static float GetCurrentDamageOutput()
         {
-            float damage = _baseDamage;
-            float roll = UnityEngine.Random.value;
+            var damage = BaseDamage;
+            var roll = UnityEngine.Random.value;
 
-            if (roll < _critChance)
+            if (roll < CritChance)
             {
-                damage *= _critDamageMultiplier;
+                damage *= CritDamageMultiplier;
             }
 
             return damage;
@@ -43,15 +43,15 @@ namespace TimeKnight.Core.Player
             if (_isInvincible) return;
             
             StartCoroutine(DamageInvulnerability());
-            Health -= (int)Math.Round(damage * _damageResistance);
-            HealthChanged?.Invoke(Health);
+            Health -= (int)Math.Round(damage * DamageResistance);
+            HealthChanged.Invoke(Health);
         }
 
         private IEnumerator DamageInvulnerability()
         {
             _isInvincible = true;
             float timePassed = 0;
-            while (timePassed < _damageRecoveryTime)
+            while (timePassed < DamageRecoveryTime)
             {
                 timePassed += Time.deltaTime;
                 yield return null;

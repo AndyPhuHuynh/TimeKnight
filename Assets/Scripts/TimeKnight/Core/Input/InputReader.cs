@@ -20,50 +20,58 @@ namespace TimeKnight.Core.Input
     [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
     public class InputReader : ScriptableObject
     {
-        public PlayerInputActions Actions { get; private set; }
+        private PlayerInputActions? _actions; 
+        public PlayerInputActions Actions => _actions ?? CreateActions();
 
         private void OnEnable()
         {
             OnDisable();
             
-            if (Actions != null)
+            if (_actions != null)
             {
-                Actions.Disable();
-                Actions.Dispose();
+                _actions.Disable();
+                _actions.Dispose();
             }
-    
-            Actions = new PlayerInputActions();
-            Actions.Player.Enable();
-            Actions.Interaction.Enable();
-            Actions.Dialogue.Disable();
-            Actions.GrapplingHook.Enable();
-            Actions.GrapplingHook.StopGrapple.Disable();
-            Actions.Sword.Enable();
+            
+            CreateActions();
         }
 
         private void OnDisable()
         {
-            if (Actions == null) return;
-            Actions.Disable();
+            if (_actions == null) return;
+            _actions.Disable();
     
         #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
                 // In edit mode, we can't call Dispose() as it uses Destroy() internally.
                 // Just null the reference and let GC handle cleanup.
-                Actions = null;
+                _actions = null;
                 return;
             }
         #endif
     
             // Dispose can only be called in play mode
-            Actions.Dispose();
-            Actions = null;
+            _actions.Dispose();
+            _actions = null;
+        }
+
+        private PlayerInputActions CreateActions()
+        {
+            _actions = new PlayerInputActions();
+            _actions.Player.Enable();
+            _actions.Interaction.Enable();
+            _actions.Dialogue.Disable();
+            _actions.GrapplingHook.Enable();
+            _actions.GrapplingHook.StopGrapple.Disable();
+            _actions.Sword.Enable();
+            return _actions;
         }
         
         public void EnableOnly(InputActionMap mapToEnable)
         {
-            foreach (var map in Actions.asset.actionMaps)
+            if (_actions == null) return;
+            foreach (var map in _actions.asset.actionMaps)
             {
                 if (map == mapToEnable)
                 {

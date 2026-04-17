@@ -5,15 +5,16 @@ using Yarn.Unity;
 
 namespace TimeKnight.Core.Dialogue
 {
+    [RequireComponent(typeof(DialogueRunner))]
     public class DialogueManager : MonoBehaviour
     {
-        public static DialogueManager Instance { get; private set; }
+        public static DialogueManager? Instance { get; private set; }
 
         [Header("Input")]
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
         
-        private DialogueRunner _dialogueRunner;
-        private List<PreviousMapState> _previousInputMapStates;
+        private DialogueRunner _dialogueRunner = null!;
+        private List<PreviousMapState>? _previousInputMapStates;
         
         private void Awake()
         {
@@ -24,7 +25,6 @@ namespace TimeKnight.Core.Dialogue
             Instance = this;
             
             _dialogueRunner = GetComponent<DialogueRunner>();
-            if (_dialogueRunner == null) Debug.LogError("Dialogue runner is null!");
         }
 
         private void Start()
@@ -49,7 +49,8 @@ namespace TimeKnight.Core.Dialogue
         private void OnDialogueCompleteFunc()
         {
             DialogueEvents.RaiseComplete();
-            
+
+            if (_previousInputMapStates == null) return;
             InputReader.RestoreMapStates(_previousInputMapStates);
             _previousInputMapStates = null;
         }

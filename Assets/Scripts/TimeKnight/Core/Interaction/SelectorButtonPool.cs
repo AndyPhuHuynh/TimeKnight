@@ -11,7 +11,6 @@ namespace TimeKnight.Core.Interaction
         private const int StartSize = 5;
         private const int MaxSize = 5;
 
-        private readonly MonoBehaviour _parent;
         private readonly Button _buttonPrefab;
         private readonly GameObject _buttonContainer;
         private readonly GameObject _buttonPoolContainer;

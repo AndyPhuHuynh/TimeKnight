@@ -8,19 +8,19 @@ namespace TimeKnight.Core.Player
 {
     public class PlayerJumpController : MonoBehaviour
     {
-        private Rigidbody2D _rb;
+        private Rigidbody2D _rb = null!;
 
         [Header("Input")] 
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
     
         [Header("Jump")]
         [SerializeField] private float baseJumpForce = 10;
         [SerializeField] private float holdJumpForce = 2;
         [SerializeField] private int holdJumpUpdates = 10;
-        private Coroutine _jumpCoroutine;
+        private Coroutine? _jumpCoroutine;
 
         // Grounding Variables
-        [SerializeField] private GroundCheck groundCheck;
+        [SerializeField] private GroundCheck groundCheck = null!;
         
         private void Awake()
         {

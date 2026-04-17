@@ -9,9 +9,15 @@ namespace TimeKnight.Core.LevelGeneration
 {
     public class LevelNodeEdge
     {
-        public LevelNode First;
-        public LevelNode Second;
+        public readonly LevelNode First;
+        public readonly LevelNode Second;
 
+        public LevelNodeEdge(LevelNode first, LevelNode second)
+        {
+            First = first;
+            Second = second;
+        }
+        
         public LevelNode Other(LevelNode node)
         {
             return First == node ? Second : First;
@@ -30,11 +36,7 @@ namespace TimeKnight.Core.LevelGeneration
         
         public static void Connect(LevelNode first, LevelNode second)
         {
-            var edge = new LevelNodeEdge
-            {
-                First = first,
-                Second = second,
-            };
+            var edge = new LevelNodeEdge(first, second);
             first.Edges.Add(edge);
             second.Edges.Add(edge);
         }
@@ -42,9 +44,9 @@ namespace TimeKnight.Core.LevelGeneration
 
     public class GenerationHistory
     {
-        public LevelNode ExistingNode;
-        public LevelNode GeneratedNode;
-        public RoomDefinition[] RoomShuffle;
+        public LevelNode? ExistingNode;
+        public LevelNode GeneratedNode = null!;
+        public RoomDefinition[]? RoomShuffle;
         public int GeneratedIndex;
     }
     
@@ -53,7 +55,7 @@ namespace TimeKnight.Core.LevelGeneration
         [SerializeField] private List<RoomDefinition> rooms = new();
         [SerializeField] private int seed;
 
-        private Random _random;
+        private Random _random = null!;
         
         private readonly Dictionary<LevelNode, RoomInstance> _roomMap = new();
         private readonly HashSet<Vector3Int> _occupiedTiles = new(); 
@@ -182,10 +184,10 @@ namespace TimeKnight.Core.LevelGeneration
             positions.ForEach(pos => _occupiedTiles.Remove(pos));
         }
         
-        private GenerationHistory GenerateConnectedRoom(
-            LevelNode existingNode,
+        private GenerationHistory? GenerateConnectedRoom(
+            LevelNode? existingNode,
             LevelNode otherNode,
-            RoomDefinition[] possibleRooms = null,
+            RoomDefinition[]? possibleRooms = null,
             int possibleRoomsIndex = 0)
         {
             // Start from a new shuffle

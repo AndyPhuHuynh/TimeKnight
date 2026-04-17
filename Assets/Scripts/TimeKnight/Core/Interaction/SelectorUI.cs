@@ -11,25 +11,25 @@ namespace TimeKnight.Core.Interaction
     public class SelectorUI : MonoBehaviour
     {
         [Header("Input")] 
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
         
         [Header("Canvas")]
-        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private CanvasGroup canvasGroup = null!;
         
         [Header("Selector Button")]
-        [SerializeField] private Button buttonPrefab;
-        [SerializeField] private GameObject buttonContainer;
-        [SerializeField] private GameObject buttonPoolContainer;
+        [SerializeField] private Button buttonPrefab = null!;
+        [SerializeField] private GameObject buttonContainer = null!;
+        [SerializeField] private GameObject buttonPoolContainer = null!;
         
         [Header("Selector Cursor")]
-        [SerializeField] private GameObject cursor;
+        [SerializeField] private GameObject cursor = null!;
 
         
-        private SelectorButtonPool _buttonPool;
+        private SelectorButtonPool _buttonPool = null!;
         private readonly Dictionary<IInteractable, SelectorButton> _buttonMap = new();
         
         private readonly LinkedList<SelectorButton> _activeButtons = new();
-        private LinkedListNode<SelectorButton> _selectedButton;
+        private LinkedListNode<SelectorButton>? _selectedButton;
 
         private bool _interactionAllowed = true;
         
@@ -51,7 +51,7 @@ namespace TimeKnight.Core.Interaction
 
         private void OnEnable()
         {
-            input.Actions.Interaction.Interact.performed += OnInteractPerformed;
+            input.Actions!.Interaction.Interact.performed += OnInteractPerformed;
             input.Actions.Interaction.Navigate.performed += OnNavigatePerformed;
 
             InteractionEvents.OnInteractionTriggerEnter += AddInteractable;
@@ -63,7 +63,7 @@ namespace TimeKnight.Core.Interaction
 
         private void OnDisable()
         {
-            input.Actions.Interaction.Interact.performed -= OnInteractPerformed;
+            input.Actions!.Interaction.Interact.performed -= OnInteractPerformed;
             input.Actions.Interaction.Navigate.performed -= OnNavigatePerformed;
             
             InteractionEvents.OnInteractionTriggerEnter -= AddInteractable;
@@ -97,7 +97,7 @@ namespace TimeKnight.Core.Interaction
             
             var buttonRect = _selectedButton.Value.Button.transform as RectTransform;
             var rightEdgeLocal = new Vector3(buttonRect!.rect.xMax, buttonRect.rect.center.y, 0);
-            var rightEdgeWorld = buttonRect!.transform.TransformPoint(rightEdgeLocal);
+            var rightEdgeWorld = buttonRect.transform.TransformPoint(rightEdgeLocal);
             
             cursor.transform.position = rightEdgeWorld + new Vector3(20.0f, 0.0f, 0.0f);
         }
@@ -105,7 +105,7 @@ namespace TimeKnight.Core.Interaction
         private void OnInteractPerformed(InputAction.CallbackContext _)
         {
             if (!_interactionAllowed) return;
-            _selectedButton?.Value.Button.onClick?.Invoke();
+            _selectedButton?.Value.Button.onClick.Invoke();
         }
 
         private void OnNavigatePerformed(InputAction.CallbackContext ctx)
@@ -136,7 +136,7 @@ namespace TimeKnight.Core.Interaction
             _activeButtons.AddLast(button);
 
             Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(buttonContainer.transform as RectTransform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((buttonContainer.transform as RectTransform)!);
             UpdateCursorPosition();
 
             if (_activeButtons.Count > 1) return;
@@ -158,7 +158,7 @@ namespace TimeKnight.Core.Interaction
             _activeButtons.Remove(button);
             
             Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(canvasGroup.transform as RectTransform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((canvasGroup.transform as RectTransform)!);
             UpdateCursorPosition();
             
             if (!_buttonMap.IsEmpty()) return;
