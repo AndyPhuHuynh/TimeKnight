@@ -68,7 +68,8 @@ namespace TimeKnight.Core.Player
             input.Actions.Player.Enable();
             input.Actions.GrapplingHook.StopGrapple.Disable();
             
-            playerJump.ApplyJump(() => input.Actions.GrapplingHook.StopGrapple.IsPressedRegardlessOfEnableStatus());
+            // TODO: Handle this
+            // playerJump.ApplyJump(() => input.Actions.GrapplingHook.StopGrapple.IsPressedRegardlessOfEnableStatus());
             grapplingHook.TransitionTo(HookState.Retracting);
         }
 

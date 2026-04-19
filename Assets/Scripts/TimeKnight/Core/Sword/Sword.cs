@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TimeKnight.Core.Enemy;
 using TimeKnight.Core.Player;
+using TimeKnight.Utils;
 using UnityEngine;
 
 namespace TimeKnight.Core.Sword
@@ -18,19 +19,31 @@ namespace TimeKnight.Core.Sword
 
         [Header("Animation/State management")]
         [SerializeField] private Animator animator = null!;
-        // In order to behave normally, AttackCooldown should be greater than or equal to the duration of the attack animation (to avoid animation cancelling).
+        [SerializeField] private AnimationClip attackClip = null!;
         [SerializeField] private float attackCooldown = 1;
+        
         public bool swordSwinging;  // This is public as it is controlled by the animator to set sword swinging.
         private float _attackTimer;
-        private int _attackTriggerHash;
+        private readonly int _attackTriggerHash = Animator.StringToHash("Attack");
 
         // Collision management
         private RaycastHit2D[]? _swordCollisions;
         private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
 
+        private void OnValidate()
+        {
+            Validation.NotNull(this, attackTransform, nameof(attackTransform));
+            Validation.NotNull(this, attackClip, nameof(attackClip));
+
+            if (attackCooldown < attackClip.length)
+            {
+                Debug.LogWarning($"Attack cooldown is shorter than the attack animation length of {attackClip.length}. " +
+                                 "This may cause animation cancelling", this);
+            }
+        }
+        
         private void Awake()
         {
-            _attackTriggerHash = Animator.StringToHash("Attack");
             _attackTimer = attackCooldown;  // Set current timer to be at cooldown so player can attack right away.
         }
 
@@ -39,9 +52,16 @@ namespace TimeKnight.Core.Sword
             _attackTimer += Time.deltaTime;
         }
 
+        private void OnEnable()
+        {
+            // These are on the player, not the sword object so we check in OnEnable, not in OnValidate
+            Validation.NotNull(this, playerManager, nameof(playerManager));
+            Validation.NotNull(this, animator, nameof(animator));
+        }
+
         public void BeginSwing()
         {
-            if (_attackTimer <= attackCooldown)  return;
+            if (_attackTimer < attackCooldown)  return;
 
             animator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;

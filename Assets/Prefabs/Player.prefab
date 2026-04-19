@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 2698006495082357462}
   - component: {fileID: 2670027938769256984}
   - component: {fileID: 8014966812539700450}
+  - component: {fileID: 6136758975071666584}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -356,7 +357,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0a97807648042e3b20ad047451a3b19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerHorizontalMovement
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   maxMoveSpeed: 5
   acceleration: 1
 --- !u!114 &2670027938769256984
@@ -371,7 +371,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 241a7e31f0c8404fb55494a9ca520679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerJumpController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   baseJumpForce: 10
   holdJumpForce: 2
   holdJumpUpdates: 10
@@ -398,6 +397,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6136758975071666584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994627178333564736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cd5ed5d2fe14298b552bcce42b60bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerController
+  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
+  horizontalMovement: {fileID: 2698006495082357462}
+  jump: {fileID: 2670027938769256984}
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,7 +872,7 @@ PrefabInstance:
       objectReference: {fileID: 1038622019370413058}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: attackCooldown
-      value: 0.3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackTransform
