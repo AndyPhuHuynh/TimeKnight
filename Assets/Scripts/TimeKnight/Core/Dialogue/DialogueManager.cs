@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -8,7 +9,7 @@ namespace TimeKnight.Core.Dialogue
     [RequireComponent(typeof(DialogueRunner))]
     public class DialogueManager : MonoBehaviour
     {
-        public static DialogueManager? Instance { get; private set; }
+        public static DialogueManager Instance { get; private set; } = null!;
 
         [Header("Input")]
         [SerializeField] private InputReader input = null!;
@@ -35,7 +36,7 @@ namespace TimeKnight.Core.Dialogue
 
         private void OnValidate()
         {
-            Debug.Assert(input != null, $"Missing {nameof(input)}", this);
+            Validation.NotNull(this, input, nameof(input));
         }
 
         private void OnDialogueStartFunc()

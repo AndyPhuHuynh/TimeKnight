@@ -26,11 +26,11 @@ namespace TimeKnight.Core.Player
 
         private void OnValidate()
         {
-            Debug.Assert(input            != null, $"Missing {nameof(input)}",            this);
-            Debug.Assert(playerBody       != null, $"Missing {nameof(playerBody)}",       this);
-            Debug.Assert(playerJump       != null, $"Missing {nameof(playerJump)}",       this);
-            Debug.Assert(grapplingHook    != null, $"Missing {nameof(grapplingHook)}",    this);
-            Debug.Assert(grapplingHookTip != null, $"Missing {nameof(grapplingHookTip)}", this);
+            Validation.NotNull(this, input, nameof(input));
+            Validation.NotNull(this, playerBody, nameof(playerBody));
+            Validation.NotNull(this, playerJump, nameof(playerJump));
+            Validation.NotNull(this, grapplingHook, nameof(grapplingHook));
+            Validation.NotNull(this, grapplingHookTip, nameof(grapplingHookTip));
         }
 
         private void OnEnable()

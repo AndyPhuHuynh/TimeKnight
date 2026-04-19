@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -34,6 +35,12 @@ namespace TimeKnight.Core.GrapplingHook
         // Properties
         public HookState CurrentState { get; private set; } = HookState.Idle;
         public float PullSpeed => pullSpeed;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, tipTransform, nameof(tipTransform));
+            Validation.NotNull(this, tipSprite, nameof(tipSprite));
+        }
 
         private void Awake()
         {

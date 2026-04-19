@@ -4,7 +4,6 @@ using TimeKnight.Core.Enemy;
 using TimeKnight.Core.Player;
 using UnityEngine;
 
-
 namespace TimeKnight.Core.Sword
 {
     public class Sword : MonoBehaviour
@@ -29,7 +28,7 @@ namespace TimeKnight.Core.Sword
         private RaycastHit2D[]? _swordCollisions;
         private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
 
-        private void Start()
+        private void Awake()
         {
             _attackTriggerHash = Animator.StringToHash("Attack");
             _attackTimer = attackCooldown;  // Set current timer to be at cooldown so player can attack right away.

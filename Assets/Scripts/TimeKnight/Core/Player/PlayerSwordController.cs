@@ -1,4 +1,5 @@
 using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,8 +14,8 @@ namespace TimeKnight.Core.Player
 
         private void OnValidate()
         {
-            Debug.Assert(input != null, $"Input Reader on {gameObject.name} not defined");
-            Debug.Assert(sword != null, $"Sword on {gameObject.name} not defined");
+            Validation.NotNull(this, input, nameof(input));
+            Validation.NotNull(this, sword, nameof(sword));
         }
 
         private void OnEnable()

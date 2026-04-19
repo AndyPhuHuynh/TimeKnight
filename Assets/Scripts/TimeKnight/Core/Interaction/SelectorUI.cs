@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TimeKnight.Core.Dialogue;
 using TimeKnight.Core.Input;
 using TimeKnight.Extensions;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -41,17 +42,17 @@ namespace TimeKnight.Core.Interaction
         
         private void OnValidate()
         {
-            Debug.Assert(input               != null, $"Missing {nameof(input)}",               this);
-            Debug.Assert(canvasGroup         != null, $"Missing {nameof(canvasGroup)}",         this);
-            Debug.Assert(buttonPrefab        != null, $"Missing {nameof(buttonPrefab)}",        this);
-            Debug.Assert(buttonContainer     != null, $"Missing {nameof(buttonContainer)}",     this);
-            Debug.Assert(buttonPoolContainer != null, $"Missing {nameof(buttonPoolContainer)}", this);
-            Debug.Assert(cursor              != null, $"Missing {nameof(cursor)}",              this);
+            Validation.NotNull(this, input, nameof(input));
+            Validation.NotNull(this, canvasGroup, nameof(canvasGroup));
+            Validation.NotNull(this, buttonPrefab, nameof(buttonPrefab));
+            Validation.NotNull(this, buttonContainer, nameof(buttonContainer));
+            Validation.NotNull(this, buttonPoolContainer, nameof(buttonPoolContainer));
+            Validation.NotNull(this, cursor, nameof(cursor));
         }
 
         private void OnEnable()
         {
-            input.Actions!.Interaction.Interact.performed += OnInteractPerformed;
+            input.Actions.Interaction.Interact.performed += OnInteractPerformed;
             input.Actions.Interaction.Navigate.performed += OnNavigatePerformed;
 
             InteractionEvents.OnInteractionTriggerEnter += AddInteractable;
@@ -63,7 +64,7 @@ namespace TimeKnight.Core.Interaction
 
         private void OnDisable()
         {
-            input.Actions!.Interaction.Interact.performed -= OnInteractPerformed;
+            input.Actions.Interaction.Interact.performed -= OnInteractPerformed;
             input.Actions.Interaction.Navigate.performed -= OnNavigatePerformed;
             
             InteractionEvents.OnInteractionTriggerEnter -= AddInteractable;
@@ -143,6 +144,7 @@ namespace TimeKnight.Core.Interaction
             SetSelectedButton(_activeButtons.First);
             if (_interactionAllowed)
             {
+                canvasGroup.SetVisible(true);
                 canvasGroup.SetVisible(true);
             }
         }

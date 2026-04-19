@@ -1,5 +1,6 @@
 using UnityEngine;
 using TimeKnight.Core.Player;
+using TimeKnight.Utils;
 using UnityEngine.UI;
 
 namespace TimeKnight.Core.HUD
@@ -11,7 +12,7 @@ namespace TimeKnight.Core.HUD
 
         private void OnValidate()
         {
-            Debug.Assert(healthFillSlider != null, $"HealthFillSlider reference in {gameObject.name} not assigned.");
+            Validation.NotNull(this, healthFillSlider, nameof(healthFillSlider));
         }
 
         private void OnEnable()

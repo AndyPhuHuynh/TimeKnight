@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TimeKnight.Utils;
+using UnityEngine;
 
 namespace TimeKnight.Core.GrapplingHook
 {
@@ -7,6 +8,11 @@ namespace TimeKnight.Core.GrapplingHook
         [SerializeField] private GrapplingHook parentHook = null!;
         public bool IsTipTouchingGround { get; private set; }
 
+        private void OnValidate()
+        {
+            Validation.NotNull(this, parentHook, nameof(parentHook));
+        }
+        
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (!IsCollisionLayerGrappleSurface(collision)) return;

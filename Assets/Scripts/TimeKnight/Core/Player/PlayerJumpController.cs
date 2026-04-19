@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,11 @@ namespace TimeKnight.Core.Player
 
         // Grounding Variables
         [SerializeField] private GroundCheck groundCheck = null!;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, input, nameof(input));
+        }
         
         private void Awake()
         {

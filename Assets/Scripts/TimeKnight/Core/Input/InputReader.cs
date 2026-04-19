@@ -33,7 +33,7 @@ namespace TimeKnight.Core.Input
                 _actions.Dispose();
             }
             
-            CreateActions();
+            _actions = CreateActions();
         }
 
         private void OnDisable()
@@ -56,16 +56,16 @@ namespace TimeKnight.Core.Input
             _actions = null;
         }
 
-        private PlayerInputActions CreateActions()
+        private static PlayerInputActions CreateActions()
         {
-            _actions = new PlayerInputActions();
-            _actions.Player.Enable();
-            _actions.Interaction.Enable();
-            _actions.Dialogue.Disable();
-            _actions.GrapplingHook.Enable();
-            _actions.GrapplingHook.StopGrapple.Disable();
-            _actions.Sword.Enable();
-            return _actions;
+            var actions = new PlayerInputActions();
+            actions.Player.Enable();
+            actions.Interaction.Enable();
+            actions.Dialogue.Disable();
+            actions.GrapplingHook.Enable();
+            actions.GrapplingHook.StopGrapple.Disable();
+            actions.Sword.Enable();
+            return actions;
         }
         
         public void EnableOnly(InputActionMap mapToEnable)

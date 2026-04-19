@@ -1,3 +1,4 @@
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,10 +15,10 @@ namespace TimeKnight.Core.LevelGeneration
 
         private void OnValidate()
         {
-            Debug.Assert(ConnectionLeft  != null, $"Missing {nameof(ConnectionLeft)}", this);
-            Debug.Assert(ConnectionRight != null, $"Missing {nameof(ConnectionRight)}",this);
-            Debug.Assert(ConnectionUp    != null, $"Missing {nameof(ConnectionUp)}",   this);
-            Debug.Assert(ConnectionDown  != null, $"Missing {nameof(ConnectionDown)}", this);
+            Validation.NotNull(this, ConnectionLeft,  nameof(ConnectionLeft));  
+            Validation.NotNull(this, ConnectionRight, nameof(ConnectionRight)); 
+            Validation.NotNull(this, ConnectionUp,    nameof(ConnectionUp));    
+            Validation.NotNull(this, ConnectionDown,  nameof(ConnectionDown));  
         }
     }
 }

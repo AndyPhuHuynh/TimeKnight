@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,7 +29,7 @@ namespace TimeKnight.Core.Player
 
         private void OnValidate()
         {
-            Debug.Assert(input != null, $"Missing {nameof(input)}", this);
+            Validation.NotNull(this, input, nameof(input));
         }
 
         private void OnEnable()

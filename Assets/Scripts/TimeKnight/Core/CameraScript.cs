@@ -1,3 +1,4 @@
+using TimeKnight.Utils;
 using UnityEngine;
 
 namespace TimeKnight.Core
@@ -8,7 +9,7 @@ namespace TimeKnight.Core
 
         private void OnValidate()
         {
-            Debug.Assert(player != null, $"Missing {nameof(player)}", this);
+            Validation.NotNull(this, player, nameof(player));
         }
 
         private void Update()

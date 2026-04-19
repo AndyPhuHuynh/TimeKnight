@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TimeKnight.Attributes;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -17,9 +18,9 @@ namespace TimeKnight.Core.LevelGeneration
         
         private void OnValidate()
         {
-            Debug.Assert(tileset       != null, $"Missing {nameof(tileset)}",       this);
-            Debug.Assert(terrainMap    != null, $"Missing {nameof(terrainMap)}",    this);
-            Debug.Assert(ConnectionMap != null, $"Missing {nameof(ConnectionMap)}", this);
+            Validation.NotNull(this, tileset, nameof(tileset));
+            Validation.NotNull(this, terrainMap, nameof(terrainMap));
+            Validation.NotNull(this, ConnectionMap, nameof(ConnectionMap));
         }
 
         public void BakeConnections()

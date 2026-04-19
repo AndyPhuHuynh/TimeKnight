@@ -10,8 +10,7 @@ namespace TimeKnight.Core.Enemy
         [SerializeField] private int playerCollisionDamage = 3;
         private int _currentHealth;
         
-
-        private void Start()
+        private void Awake()
         {
             _currentHealth = maxHealth;
         }
