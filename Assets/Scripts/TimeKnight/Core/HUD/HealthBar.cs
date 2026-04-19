@@ -8,7 +8,7 @@ namespace TimeKnight.Core.HUD
     public class HealthBar : MonoBehaviour
     {
         [SerializeField] private Slider healthFillSlider = null!;
-        private PlayerManager _playerManager = null!;
+        [SerializeField] private PlayerManager playerManager = null!;
 
         private void OnValidate()
         {
@@ -17,31 +17,25 @@ namespace TimeKnight.Core.HUD
 
         private void OnEnable()
         {
-            _playerManager = GameObject.FindWithTag("PlayerManager").GetComponent<PlayerManager>();
+            Validation.NotNull(this, playerManager, nameof(playerManager));
             
-            if (_playerManager == null)
-            {
-                Debug.LogWarning("HealthBar could not find PlayerManager in the scene.");
-                return;
-            }
-
-            _playerManager.MaxHealthChanged += SetMaxHealth;
-            _playerManager.HealthChanged += SetHealth;
+            playerManager.MaxHealthChanged += SetMaxHealth;
+            playerManager.HealthChanged += SetHealth;
 
             // Sync immediately in case the player already initialized.
-            SetMaxHealth(_playerManager.maxHealth);
-            SetHealth(_playerManager.Health);
+            SetMaxHealth(playerManager.maxHealth);
+            SetHealth(playerManager.Health);
         }
 
         private void OnDisable()
         {
-            if (_playerManager == null)
+            if (playerManager == null)
             {
                 return;
             }
 
-            _playerManager.MaxHealthChanged -= SetMaxHealth;
-            _playerManager.HealthChanged -= SetHealth;
+            playerManager.MaxHealthChanged -= SetMaxHealth;
+            playerManager.HealthChanged -= SetHealth;
         }
 
         private void SetHealth(int health)

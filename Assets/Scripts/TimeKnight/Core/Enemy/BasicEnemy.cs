@@ -17,9 +17,10 @@ namespace TimeKnight.Core.Enemy
 
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (!collision.CompareTag("PlayerManager")) return;
-
-            collision.gameObject.GetComponent<PlayerManager>().Damage(playerCollisionDamage);
+            if (collision.gameObject.TryGetComponent(out PlayerManager player))
+            {
+                player.Damage(playerCollisionDamage);
+            }
         }
 
         public void Damage(float damage)

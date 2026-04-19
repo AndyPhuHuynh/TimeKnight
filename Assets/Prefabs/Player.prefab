@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 1038622019370413058}
   m_Layer: 0
   m_Name: PlayerManager
-  m_TagString: PlayerManager
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -490,6 +490,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   maxHealth: 10
+  baseDamage: 2
+  critChance: 0.1
+  critDamageMultiplier: 2
+  damageResistance: 1
+  damageRecoveryTime: 1
 --- !u!1 &8894625496495905059
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,6 +857,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1038622019370413058}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: attackCooldown
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackTransform
       value: 
       objectReference: {fileID: 6372644459679051215}
@@ -861,6 +870,10 @@ PrefabInstance:
       objectReference: {fileID: 6372644459679051215}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: AttackableLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: attackableLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 5772134652196904952, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
