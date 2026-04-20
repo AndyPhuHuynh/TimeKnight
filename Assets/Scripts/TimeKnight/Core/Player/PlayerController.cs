@@ -9,33 +9,49 @@ namespace TimeKnight.Core.Player
 	{
 		[SerializeField] private InputReader input = null!;
 		[SerializeField] private PlayerHorizontalMovement horizontalMovement = null!;
-		[SerializeField] private PlayerJumpController jump = null!;
+		[SerializeField] private PlayerJumpMovement jumpMovement = null!;
+		[SerializeField] private PlayerGrapplingHookMovement grapplingHookMovement = null!;
 
 		private void OnValidate()
 		{
 			Validation.NotNull(this, input, nameof(input));
 			Validation.NotNull(this, horizontalMovement, nameof(horizontalMovement));
-			Validation.NotNull(this, jump, nameof(jump));
+			Validation.NotNull(this, jumpMovement, nameof(jumpMovement));
+			Validation.NotNull(this, grapplingHookMovement, nameof(grapplingHookMovement));
 		}
 
 		private void OnEnable()
 		{
-			input.Actions.Player.HorizontalMove.started   += OnHorizontalMoveStarted;
-			input.Actions.Player.HorizontalMove.performed += OnHorizontalMovePerformed;
-			input.Actions.Player.HorizontalMove.canceled  += OnHorizontalMoveCanceled;
+			input.Actions.Gameplay.MoveHorizontal.started   += OnHorizontalMoveStarted;
+			input.Actions.Gameplay.MoveHorizontal.performed += OnHorizontalMovePerformed;
+			input.Actions.Gameplay.MoveHorizontal.canceled  += OnHorizontalMoveCanceled;
 			
-			input.Actions.Player.Jump.started  += OnJumpStarted;
-			input.Actions.Player.Jump.canceled += OnJumpCanceled;
+			input.Actions.Gameplay.MoveJump.started  += OnJumpStarted;
+			input.Actions.Gameplay.MoveJump.canceled += OnJumpCanceled;
+
+			input.Actions.Gameplay.GrappleFire.started  += OnGrappleFire;
+			input.Actions.Gameplay.GrappleStop.started  += OnGrappleStopStarted;
+			input.Actions.Gameplay.GrappleStop.canceled += OnGrappleStopCancelled;
+			grapplingHookMovement.OnGrappleEnterIdle  += OnGrappleEnterIdle;
+			grapplingHookMovement.OnGrappleExitIdle   += OnGrappleExitIdle;
+			grapplingHookMovement.OnGrappleEnterStuck += OnGrappleEnterStuck;
 		}
 
 		private void OnDisable()
 		{
-			input.Actions.Player.HorizontalMove.started   -= OnHorizontalMoveStarted;
-			input.Actions.Player.HorizontalMove.performed -= OnHorizontalMovePerformed;
-			input.Actions.Player.HorizontalMove.canceled  -= OnHorizontalMoveCanceled;
+			input.Actions.Gameplay.MoveHorizontal.started   -= OnHorizontalMoveStarted;
+			input.Actions.Gameplay.MoveHorizontal.performed -= OnHorizontalMovePerformed;
+			input.Actions.Gameplay.MoveHorizontal.canceled  -= OnHorizontalMoveCanceled;
 			
-			input.Actions.Player.Jump.started  -= OnJumpStarted;
-			input.Actions.Player.Jump.canceled -= OnJumpCanceled;
+			input.Actions.Gameplay.MoveJump.started  -= OnJumpStarted;
+			input.Actions.Gameplay.MoveJump.canceled -= OnJumpCanceled;
+			
+			input.Actions.Gameplay.GrappleFire.started  -= OnGrappleFire;
+			input.Actions.Gameplay.GrappleStop.started  -= OnGrappleStopStarted;
+			input.Actions.Gameplay.GrappleStop.canceled -= OnGrappleStopCancelled;
+			grapplingHookMovement.OnGrappleEnterIdle  -= OnGrappleEnterIdle;
+			grapplingHookMovement.OnGrappleExitIdle   -= OnGrappleExitIdle;
+			grapplingHookMovement.OnGrappleEnterStuck -= OnGrappleEnterStuck;
 		}
 
 		#region Horizontal Movement
@@ -61,12 +77,50 @@ namespace TimeKnight.Core.Player
 
 		private void OnJumpStarted(InputAction.CallbackContext ctx)
 		{
-			jump.StartJump();
+			jumpMovement.StartJump(checkGround: true);
 		}
 
 		private void OnJumpCanceled(InputAction.CallbackContext ctx)
 		{
-			jump.StopJump();
+			jumpMovement.StopJump();
+		}
+		
+		#endregion
+		
+		#region GrapplingHook
+
+		private void OnGrappleFire(InputAction.CallbackContext _)
+		{
+			grapplingHookMovement.StartGrappling();
+		}
+
+		private void OnGrappleStopStarted(InputAction.CallbackContext _)
+		{
+			grapplingHookMovement.StopGrappling();
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.Move);
+			jumpMovement.StartJump(checkGround: false);
+		}
+
+		private void OnGrappleStopCancelled(InputAction.CallbackContext _)
+		{
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
+			jumpMovement.StopJump();
+		}
+
+		private void OnGrappleEnterIdle()
+		{
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
+		}
+
+		private void OnGrappleExitIdle()
+		{
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleFire);
+		}
+
+		private void OnGrappleEnterStuck(Vector3 _)
+		{
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop); 
 		}
 		
 		#endregion

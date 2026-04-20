@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace TimeKnight.Core.Input
             Map = map;
         }
     }
+    
+    // TODO: Change sword and interaction maps to be under gameplay map
+    // TODO: Remove the old system of enable only and restoring all
     
     [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
     public class InputReader : ScriptableObject
@@ -59,11 +63,10 @@ namespace TimeKnight.Core.Input
         private static PlayerInputActions CreateActions()
         {
             var actions = new PlayerInputActions();
-            actions.Player.Enable();
+            actions.Gameplay.Enable();
+            actions.Gameplay.GrappleStop.Disable();
             actions.Interaction.Enable();
             actions.Dialogue.Disable();
-            actions.GrapplingHook.Enable();
-            actions.GrapplingHook.StopGrapple.Disable();
             actions.Sword.Enable();
             return actions;
         }
@@ -102,7 +105,28 @@ namespace TimeKnight.Core.Input
                     state.Map.Disable();
                 }
             }
-            
+        }
+        
+        private static readonly Action<InputActionMap> EnableMap = m => m.Enable();
+        private static readonly Action<InputActionMap> DisableMap = m => m.Disable();
+        
+        private static readonly Action<InputAction> EnableAction = a => a.Enable();
+        private static readonly Action<InputAction> DisableAction = a => a.Disable();
+
+        public void SetMapStatus(InputStatus status, InputMapState map)
+        {
+            var op = status == InputStatus.Disabled ? DisableMap : EnableMap;
+            if ((map & InputMapState.Gameplay) != 0) op(Actions.Gameplay);
+            if ((map & InputMapState.Dialogue) != 0) op(Actions.Dialogue);
+        }
+
+        public void SetActionStatus(InputStatus status, GameplayActions action)
+        {
+            var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
+            if ((action & GameplayActions.MoveHorizontal) != 0) op(Actions.Gameplay.MoveHorizontal);
+            if ((action & GameplayActions.MoveJump)       != 0) op(Actions.Gameplay.MoveJump);
+            if ((action & GameplayActions.GrappleFire)    != 0) op(Actions.Gameplay.GrappleFire);
+            if ((action & GameplayActions.GrappleStop)    != 0) op(Actions.Gameplay.GrappleStop);
         }
     }
 }

@@ -411,7 +411,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerController
   input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   horizontalMovement: {fileID: 2698006495082357462}
-  jump: {fileID: 2670027938769256984}
+  jumpMovement: {fileID: 2670027938769256984}
+  grapplingHookMovement: {fileID: 2857255150204042394}
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,9 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f495399a674e269220e1c10970eeb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerGrapplingHookController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   playerBody: {fileID: 6837310045875004360}
-  playerJump: {fileID: 2670027938769256984}
   grapplingHook: {fileID: 2457989635044707339}
   grapplingHookTip: {fileID: 1867474069997170146}
 --- !u!1001 &6693219694085021491

@@ -1,72 +1,61 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TimeKnight.Core.GrapplingHook;
-using TimeKnight.Core.Input;
 using TimeKnight.Utils;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace TimeKnight.Core.Player
 {
-    public class PlayerGrapplingHookController : MonoBehaviour
+    public class PlayerGrapplingHookMovement : MonoBehaviour
     {
-        [Header("Input")] 
-        [SerializeField] private InputReader input = null!;
-
         [Header("Player")] 
         [SerializeField] private Rigidbody2D playerBody = null!;
-        [SerializeField] private PlayerJumpController playerJump = null!;
 
         [Header("Grappling Hook")]
         [SerializeField] private GrapplingHook.GrapplingHook grapplingHook = null!;
         [SerializeField] private GrapplingHookTip grapplingHookTip = null!;
+        
+        public event Action OnGrappleEnterIdle = delegate { };
+        public event Action OnGrappleExitIdle = delegate { };
+        public event Action<Vector3> OnGrappleEnterStuck = delegate { };
 
-        // Pull player state
         private bool _isBeingPulled;
         private float _prevGravity;
 
         private void OnValidate()
         {
-            Validation.NotNull(this, input, nameof(input));
             Validation.NotNull(this, playerBody, nameof(playerBody));
-            Validation.NotNull(this, playerJump, nameof(playerJump));
             Validation.NotNull(this, grapplingHook, nameof(grapplingHook));
             Validation.NotNull(this, grapplingHookTip, nameof(grapplingHookTip));
         }
 
         private void OnEnable()
         {
-            input.Actions.GrapplingHook.PrimaryFire.performed += OnPrimaryFirePerformed;
-            input.Actions.GrapplingHook.StopGrapple.performed += OnStopGrapplePerformed;
-            grapplingHook.OnEnterIdle += OnEnterIdle;
-            grapplingHook.OnExitIdle += OnExitIdle;
+            grapplingHook.OnEnterIdle  += OnEnterIdle;
+            grapplingHook.OnExitIdle   += OnExitIdle;
             grapplingHook.OnEnterStuck += OnEnterStuck;
         }
 
         private void OnDisable()
         {
-            input.Actions.GrapplingHook.PrimaryFire.performed -= OnPrimaryFirePerformed;
-            input.Actions.GrapplingHook.StopGrapple.performed -= OnStopGrapplePerformed;
-            grapplingHook.OnEnterIdle -= OnEnterIdle;
-            grapplingHook.OnExitIdle -= OnExitIdle;
+            grapplingHook.OnEnterIdle  -= OnEnterIdle;
+            grapplingHook.OnExitIdle   -= OnExitIdle;
             grapplingHook.OnEnterStuck -= OnEnterStuck;
         }
 
-        private void OnPrimaryFirePerformed(InputAction.CallbackContext _)
+        public void StartGrappling()
         {
             if (grapplingHookTip.IsTipTouchingGround) return;
             grapplingHook.TransitionTo(HookState.Extending);
         }
 
-        private void OnStopGrapplePerformed(InputAction.CallbackContext _)
+        public void StopGrappling()
         {
             if (!grapplingHook.CurrentState.IsStuck()) return;
             _isBeingPulled = false;
 
             playerBody.gravityScale = _prevGravity;
             playerBody.linearVelocity = Vector2.zero;
-
-            input.Actions.Player.Enable();
-            input.Actions.GrapplingHook.StopGrapple.Disable();
             
             // TODO: Handle this
             // playerJump.ApplyJump(() => input.Actions.GrapplingHook.StopGrapple.IsPressedRegardlessOfEnableStatus());
@@ -75,19 +64,18 @@ namespace TimeKnight.Core.Player
 
         private void OnEnterIdle()
         {
-            input.Actions.GrapplingHook.PrimaryFire.Enable();
+            OnGrappleEnterIdle.Invoke();
         }
 
         private void OnExitIdle()
         {
-            input.Actions.GrapplingHook.PrimaryFire.Disable();
+            OnGrappleExitIdle.Invoke();
         }
         
         private void OnEnterStuck(Vector3 collisionPoint)
         {
             StartCoroutine(PullPlayer(collisionPoint, grapplingHook.PullSpeed));
-            input.Actions.Player.Disable();
-            input.Actions.GrapplingHook.StopGrapple.Enable();
+            OnGrappleEnterStuck.Invoke(collisionPoint);
         }
 
         private IEnumerator PullPlayer(Vector3 targetPosition, float pullSpeed)

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TimeKnight.Core.Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerJumpController : MonoBehaviour
+    public class PlayerJumpMovement : MonoBehaviour
     {
         private Rigidbody2D _rb = null!;
         
@@ -30,18 +30,16 @@ namespace TimeKnight.Core.Player
             _rb = GetComponent<Rigidbody2D>();
         }
 
-        public void StartJump()
+        public void StartJump(bool checkGround)
         {
             if (_isJumping) return;
-            if (!groundCheck.IsGrounded) return; 
-            Debug.Log("Starting jump");
+            if (checkGround && !groundCheck.IsGrounded) return; 
             _isJumping = true;
             StartCoroutine(JumpCoroutine());
         }
 
         public void StopJump()
         {
-            Debug.Log("Stopping jump");
             _isJumping = false;
         }
         
