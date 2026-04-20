@@ -1,56 +1,51 @@
 using UnityEngine;
 using TimeKnight.Core.Player;
+using TimeKnight.Utils;
 using UnityEngine.UI;
 
 namespace TimeKnight.Core.HUD
 {
     public class HealthBar : MonoBehaviour
     {
-        [SerializeField] private Slider HealthFillSlider;
-        private PlayerManager _playerManager;
+        [SerializeField] private Slider healthFillSlider = null!;
+        [SerializeField] private PlayerManager playerManager = null!;
 
         private void OnValidate()
         {
-            Debug.Assert(HealthFillSlider != null, $"HealthFillSlider reference in {gameObject.name} not assigned.");
+            Validation.NotNull(this, healthFillSlider, nameof(healthFillSlider));
         }
 
         private void OnEnable()
         {
-            _playerManager = GameObject.FindWithTag("PlayerManager").GetComponent<PlayerManager>();
+            Validation.NotNull(this, playerManager, nameof(playerManager));
             
-            if (_playerManager == null)
-            {
-                Debug.LogWarning("HealthBar could not find PlayerManager in the scene.");
-                return;
-            }
-
-            _playerManager.MaxHealthChanged += SetMaxHealth;
-            _playerManager.HealthChanged += SetHealth;
+            playerManager.MaxHealthChanged += SetMaxHealth;
+            playerManager.HealthChanged += SetHealth;
 
             // Sync immediately in case the player already initialized.
-            SetMaxHealth(_playerManager.MaxHealth);
-            SetHealth(_playerManager.Health);
+            SetMaxHealth(playerManager.maxHealth);
+            SetHealth(playerManager.Health);
         }
 
         private void OnDisable()
         {
-            if (_playerManager == null)
+            if (playerManager == null)
             {
                 return;
             }
 
-            _playerManager.MaxHealthChanged -= SetMaxHealth;
-            _playerManager.HealthChanged -= SetHealth;
+            playerManager.MaxHealthChanged -= SetMaxHealth;
+            playerManager.HealthChanged -= SetHealth;
         }
 
-        public void SetHealth(int health)
+        private void SetHealth(int health)
         {
-            HealthFillSlider.value = health;
+            healthFillSlider.value = health;
         }
 
-        public void SetMaxHealth(int maxHealth)
+        private void SetMaxHealth(int maxHealth)
         {
-            HealthFillSlider.maxValue = maxHealth;
+            healthFillSlider.maxValue = maxHealth;
         }
     }
 }

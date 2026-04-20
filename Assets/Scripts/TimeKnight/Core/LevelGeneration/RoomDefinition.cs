@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TimeKnight.Attributes;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,18 +9,18 @@ namespace TimeKnight.Core.LevelGeneration
 {
     public class RoomDefinition : MonoBehaviour
     {
-        [SerializeField] private Tileset tileset;
-        [SerializeField] private Tilemap terrainMap;
-        [field: SerializeField] public Tilemap ConnectionMap { get; private set; }
+        [SerializeField] private Tileset tileset = null!;
+        [SerializeField] private Tilemap terrainMap = null!;
+        [field: SerializeField] public Tilemap ConnectionMap { get; private set; } = null!;
 
         [SerializeField, ReadOnly] private List<ConnectionDefinition> connectionList = new();
         public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;
         
         private void OnValidate()
         {
-            Debug.Assert(tileset       != null, $"Missing {nameof(tileset)}",       this);
-            Debug.Assert(terrainMap    != null, $"Missing {nameof(terrainMap)}",    this);
-            Debug.Assert(ConnectionMap != null, $"Missing {nameof(ConnectionMap)}", this);
+            Validation.NotNull(this, tileset, nameof(tileset));
+            Validation.NotNull(this, terrainMap, nameof(terrainMap));
+            Validation.NotNull(this, ConnectionMap, nameof(ConnectionMap));
         }
 
         public void BakeConnections()

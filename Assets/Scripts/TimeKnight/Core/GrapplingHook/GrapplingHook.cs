@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +9,11 @@ namespace TimeKnight.Core.GrapplingHook
     [RequireComponent(typeof(SpriteRenderer))]
     public class GrapplingHook : MonoBehaviour
     {
-        private SpriteRenderer _sr;
+        private SpriteRenderer _sr = null!;
 
         [Header("Hook Tip")]
-        [SerializeField] private Transform tipTransform;
-        [SerializeField] private SpriteRenderer tipSprite;
+        [SerializeField] private Transform tipTransform = null!;
+        [SerializeField] private SpriteRenderer tipSprite = null!;
 
         [Header("Grapple Properties")]
         [SerializeField] private float baseLength = 3.48f;
@@ -23,9 +24,9 @@ namespace TimeKnight.Core.GrapplingHook
         [field: SerializeField] public LayerMask GrappleSurfaceLayer { get; private set; }
 
         // Callbacks
-        public event Action OnEnterIdle;
-        public event Action OnExitIdle;
-        public event Action<Vector3> OnEnterStuck;
+        public event Action OnEnterIdle =  delegate {};
+        public event Action OnExitIdle = delegate {};
+        public event Action<Vector3> OnEnterStuck = delegate {};
 
         // State management
         private Vector3 _collisionPoint;
@@ -34,6 +35,12 @@ namespace TimeKnight.Core.GrapplingHook
         // Properties
         public HookState CurrentState { get; private set; } = HookState.Idle;
         public float PullSpeed => pullSpeed;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, tipTransform, nameof(tipTransform));
+            Validation.NotNull(this, tipSprite, nameof(tipSprite));
+        }
 
         private void Awake()
         {
@@ -88,7 +95,7 @@ namespace TimeKnight.Core.GrapplingHook
         private void EnterIdle()
         {
             HideSprites();
-            OnEnterIdle?.Invoke();
+            OnEnterIdle.Invoke();
         }
 
         private IEnumerator UpdateIdle()
@@ -100,7 +107,7 @@ namespace TimeKnight.Core.GrapplingHook
                 {
                     // Rotate grappling hook to face mouse so it can be fired later.
                     // Convert to a world position - Z axis set to 0 because depth doesn't matter for this object.
-                    var mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
+                    var mouseWorldPos = Camera.main!.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
                     RotateGrapplingHook(mouseWorldPos);
                 }
 
@@ -111,7 +118,7 @@ namespace TimeKnight.Core.GrapplingHook
         private void ExitIdle()
         {
             ShowSprites();
-            OnExitIdle?.Invoke();
+            OnExitIdle.Invoke();
         }
 
         private void HideSprites()
@@ -129,7 +136,7 @@ namespace TimeKnight.Core.GrapplingHook
         private IEnumerator UpdateExtending()
         {
             // Find a point in space that the grappling hook will fire to - keeps hook firing consistent with player movement - account math of if player facing left.
-            _firingPoint = transform.position + transform.right * maxLength * (IsPlayerFacingLeft() ? -1 : 1);
+            _firingPoint = transform.position + transform.right * (maxLength * (IsPlayerFacingLeft() ? -1 : 1));
 
             while (CurrentState.IsExtending())
             {
@@ -172,7 +179,7 @@ namespace TimeKnight.Core.GrapplingHook
         private void EnterStuck()
         {
             _collisionPoint = tipTransform.position;
-            OnEnterStuck?.Invoke(_collisionPoint);
+            OnEnterStuck.Invoke(_collisionPoint);
         }
 
         private IEnumerator UpdateStuck()

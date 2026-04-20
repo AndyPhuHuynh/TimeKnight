@@ -5,7 +5,7 @@ namespace TimeKnight.Extensions
 {
     public static class RandomUtils
     {
-        public static T GetRandomElement<T>(this IReadOnlyList<T> list, Random random)
+        public static T? GetRandomElement<T>(this IReadOnlyList<T> list, Random random)
         {
             if (list.IsEmpty()) return default;
             return list[random.Next(0, list.Count)];

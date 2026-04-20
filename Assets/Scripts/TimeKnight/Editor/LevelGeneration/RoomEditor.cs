@@ -12,7 +12,7 @@ namespace TimeKnight.Editor.LevelGeneration
     [CustomEditor(typeof(RoomDefinition))]
     public class RoomEditor : UnityEditor.Editor
     {
-        private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition);
+        private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition)!;
         
         public void OnEnable()
         {

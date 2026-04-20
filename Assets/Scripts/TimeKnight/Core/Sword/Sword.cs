@@ -2,37 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using TimeKnight.Core.Enemy;
 using TimeKnight.Core.Player;
+using TimeKnight.Utils;
 using UnityEngine;
-
 
 namespace TimeKnight.Core.Sword
 {
     public class Sword : MonoBehaviour
     {
         [Header("Player Reference")]
-        [SerializeField] private PlayerManager _playerManager;   // Used for getting damage values
+        [SerializeField] private PlayerManager playerManager = null!; // Used for getting damage values
 
         [Header("Attack Properties")]
-        [SerializeField] private Transform AttackTransform;
-        [SerializeField] private float AttackRadius = 0.5f;
-        [SerializeField] LayerMask AttackableLayer;
+        [SerializeField] private Transform attackTransform = null!;
+        [SerializeField] private float attackRadius = 0.5f;
+        [SerializeField] private LayerMask attackableLayer;
+        [SerializeField] private float attackCooldown = 1;
 
-        [Header("Animation/State management")]
-        [SerializeField] Animator Animator;
-        // In order to behave normally, AttackCooldown should be greater than or equal to the duration of the attack animation (to avoid animation cancelling).
-        [SerializeField] float AttackCooldown = 1;
-        public bool SwordSwinging = false;  // This is public as it is controlled by the animator to set sword swinging.
+        private bool _isSwordingSwinging;
         private float _attackTimer;
-        private int _attackTriggerHash;
 
         // Collision management
-        private RaycastHit2D[] _swordCollisions;
-        private HashSet<IDamageable> _previouslyDamagedThisAttack = new HashSet<IDamageable>();
+        private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
 
-        private void Start()
+        private void OnValidate()
         {
-            _attackTriggerHash = Animator.StringToHash("Attack");
-            _attackTimer = AttackCooldown;  // Set current timer to be at cooldown so player can attack right away.
+            Validation.NotNull(this, attackTransform, nameof(attackTransform));
+        }
+        
+        private void Awake()
+        {
+            _attackTimer = attackCooldown; // Set current timer to be at cooldown so player can attack right away.
         }
 
         private void Update()
@@ -40,35 +39,45 @@ namespace TimeKnight.Core.Sword
             _attackTimer += Time.deltaTime;
         }
 
-        public void BeginSwing()
+        private void OnEnable()
         {
-            if (_attackTimer > AttackCooldown)
-            {
-                Animator.SetTrigger(_attackTriggerHash);
-                _attackTimer = 0;
-                StartCoroutine(DamageWhileAttackActive());
-            }
+            // These are on the player, not the sword object so we check in OnEnable, not in OnValidate
+            Validation.NotNull(this, playerManager, nameof(playerManager));
         }
 
-        public IEnumerator DamageWhileAttackActive()
+        public bool CanAttack()
         {
-            SwordSwinging = true;
+            return _attackTimer >= attackCooldown;
+        }
+        
+        public void BeginSwing()
+        {
+            _attackTimer = 0;
+            _isSwordingSwinging = true;
+            StartCoroutine(DamageWhileAttackActive());
+        }
 
+        public void EndSwing()
+        {
+            _isSwordingSwinging = false;
+        }
+
+        private IEnumerator DamageWhileAttackActive()
+        {
             // SwordSwinging is disabled by the animation when sword is finished swinging.
-            while (SwordSwinging)
+            while (_isSwordingSwinging)
             {
-                float damage = _playerManager.GetCurrentDamageOutput();
-                _swordCollisions = Physics2D.CircleCastAll(AttackTransform.position, AttackRadius, Vector2.right, 0f, AttackableLayer);
-                for (int i = 0; i < _swordCollisions.Length; i++)
+                var damage = playerManager.GetCurrentDamageOutput();
+                var colliders = Physics2D.OverlapCircleAll(attackTransform.position, attackRadius, attackableLayer);
+                foreach (var hit in colliders)
                 {
-                    IDamageable iDamageable = _swordCollisions[i].collider.gameObject.GetComponent<IDamageable>();
+                    var iDamageable = hit.gameObject.GetComponent<IDamageable>();
 
                     // Ignore enemies that have already been hit with this swing.
-                    if (iDamageable != null && !_previouslyDamagedThisAttack.Contains(iDamageable))
-                    {
-                        iDamageable.Damage(damage);
-                        _previouslyDamagedThisAttack.Add(iDamageable);
-                    }
+                    if (iDamageable == null || _previouslyDamagedThisAttack.Contains(iDamageable)) continue;
+                    
+                    iDamageable.Damage(damage);
+                    _previouslyDamagedThisAttack.Add(iDamageable);
                 }
 
                 yield return null;
@@ -81,7 +90,7 @@ namespace TimeKnight.Core.Sword
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(AttackTransform.position, AttackRadius);
+            Gizmos.DrawWireSphere(attackTransform.position, attackRadius);
         }
     }
 }
