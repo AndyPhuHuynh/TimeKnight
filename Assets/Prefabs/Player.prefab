@@ -122,52 +122,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6557167669948733744}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6781775322208525416
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7111833835641214851}
-  - component: {fileID: 3563546980576957891}
-  m_Layer: 0
-  m_Name: SwordController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7111833835641214851
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6781775322208525416}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2567960917763861338}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3563546980576957891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6781775322208525416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82dc171ba5933e847bf53f9663e1ac93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerSwordController
-  input: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
-  sword: {fileID: 5134453458329420300}
 --- !u!1 &7994627178333564736
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,6 +138,7 @@ GameObject:
   - component: {fileID: 2670027938769256984}
   - component: {fileID: 8014966812539700450}
   - component: {fileID: 6136758975071666584}
+  - component: {fileID: 4529869971271536865}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -210,7 +165,6 @@ Transform:
   - {fileID: 7539210274489630923}
   - {fileID: 1454893393823989388}
   - {fileID: 4144812076972265265}
-  - {fileID: 7111833835641214851}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2744465954188697043
@@ -413,6 +367,20 @@ MonoBehaviour:
   horizontalMovement: {fileID: 2698006495082357462}
   jumpMovement: {fileID: 2670027938769256984}
   grapplingHookMovement: {fileID: 2857255150204042394}
+  sword: {fileID: 5134453458329420300}
+--- !u!114 &4529869971271536865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994627178333564736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 951dcaba1e36425e97dcec8b860ada14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerAnimator
+  sword: {fileID: 5134453458329420300}
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0

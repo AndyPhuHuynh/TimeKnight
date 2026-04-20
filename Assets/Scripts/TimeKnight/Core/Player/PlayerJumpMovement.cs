@@ -19,7 +19,6 @@ namespace TimeKnight.Core.Player
         
         private bool _isJumping;
         
-
         private void OnValidate()
         {
             Validation.NotNull(this, groundCheck, nameof(groundCheck));

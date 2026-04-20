@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 namespace TimeKnight.Core.Input
 {
     // TODO: Change sword and interaction maps to be under gameplay map
-    // TODO: Generate Enums for dialogue map
     
     [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
     public class InputReader : ScriptableObject
@@ -58,7 +57,6 @@ namespace TimeKnight.Core.Input
             actions.Gameplay.Enable();
             actions.Gameplay.GrappleStop.Disable();
             actions.Dialogue.Disable();
-            actions.Sword.Enable();
             return actions;
         }
 
@@ -74,6 +72,7 @@ namespace TimeKnight.Core.Input
             var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
             if ((action & GameplayActions.MoveHorizontal) != 0) op(Actions.Gameplay.MoveHorizontal);
             if ((action & GameplayActions.MoveJump) != 0) op(Actions.Gameplay.MoveJump);
+            if ((action & GameplayActions.Attack) != 0) op(Actions.Gameplay.Attack);
             if ((action & GameplayActions.GrappleFire) != 0) op(Actions.Gameplay.GrappleFire);
             if ((action & GameplayActions.GrappleStop) != 0) op(Actions.Gameplay.GrappleStop);
             if ((action & GameplayActions.InteractionInteract) != 0) op(Actions.Gameplay.InteractionInteract);
@@ -97,6 +96,7 @@ namespace TimeKnight.Core.Input
             
             if (Actions.Gameplay.MoveHorizontal.enabled) gameplayActions |= GameplayActions.MoveHorizontal;
             if (Actions.Gameplay.MoveJump.enabled) gameplayActions |= GameplayActions.MoveJump;
+            if (Actions.Gameplay.Attack.enabled) gameplayActions |= GameplayActions.Attack;
             if (Actions.Gameplay.GrappleFire.enabled) gameplayActions |= GameplayActions.GrappleFire;
             if (Actions.Gameplay.GrappleStop.enabled) gameplayActions |= GameplayActions.GrappleStop;
             if (Actions.Gameplay.InteractionInteract.enabled) gameplayActions |= GameplayActions.InteractionInteract;

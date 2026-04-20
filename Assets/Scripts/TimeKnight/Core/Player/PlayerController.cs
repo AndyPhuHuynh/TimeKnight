@@ -5,19 +5,34 @@ using UnityEngine.InputSystem;
 
 namespace TimeKnight.Core.Player
 {
+	[RequireComponent(typeof(PlayerAnimator))]
 	public class PlayerController : MonoBehaviour
 	{
+		private PlayerAnimator _animator = null!;
+		
+		[Header("Input Reader")]
 		[SerializeField] private InputReader input = null!;
+		
+		[Header("Movement")]
 		[SerializeField] private PlayerHorizontalMovement horizontalMovement = null!;
 		[SerializeField] private PlayerJumpMovement jumpMovement = null!;
 		[SerializeField] private PlayerGrapplingHookMovement grapplingHookMovement = null!;
 
+		[Header("Attack")]
+		[SerializeField] private Sword.Sword sword = null!;
+		
 		private void OnValidate()
 		{
 			Validation.NotNull(this, input, nameof(input));
 			Validation.NotNull(this, horizontalMovement, nameof(horizontalMovement));
 			Validation.NotNull(this, jumpMovement, nameof(jumpMovement));
 			Validation.NotNull(this, grapplingHookMovement, nameof(grapplingHookMovement));
+			Validation.NotNull(this, sword, nameof(sword));
+		}
+
+		private void Awake()
+		{
+			_animator = GetComponent<PlayerAnimator>();
 		}
 
 		private void OnEnable()
@@ -29,7 +44,9 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.MoveJump.started  += OnJumpStarted;
 			input.Actions.Gameplay.MoveJump.canceled += OnJumpCanceled;
 
-			input.Actions.Gameplay.GrappleFire.started  += OnGrappleFire;
+			input.Actions.Gameplay.Attack.started += OnAttackStarted;
+			
+			input.Actions.Gameplay.GrappleFire.started  += OnGrappleFireStarted;
 			input.Actions.Gameplay.GrappleStop.started  += OnGrappleStopStarted;
 			input.Actions.Gameplay.GrappleStop.canceled += OnGrappleStopCancelled;
 			grapplingHookMovement.OnGrappleEnterIdle  += OnGrappleEnterIdle;
@@ -46,7 +63,9 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.MoveJump.started  -= OnJumpStarted;
 			input.Actions.Gameplay.MoveJump.canceled -= OnJumpCanceled;
 			
-			input.Actions.Gameplay.GrappleFire.started  -= OnGrappleFire;
+			input.Actions.Gameplay.Attack.started -= OnAttackStarted;
+			
+			input.Actions.Gameplay.GrappleFire.started  -= OnGrappleFireStarted;
 			input.Actions.Gameplay.GrappleStop.started  -= OnGrappleStopStarted;
 			input.Actions.Gameplay.GrappleStop.canceled -= OnGrappleStopCancelled;
 			grapplingHookMovement.OnGrappleEnterIdle  -= OnGrappleEnterIdle;
@@ -87,9 +106,19 @@ namespace TimeKnight.Core.Player
 		
 		#endregion
 		
+		#region Attack
+
+		private void OnAttackStarted(InputAction.CallbackContext _)
+		{
+			if (!sword.CanAttack()) return;
+			_animator.SetTrigger(_animator.AttackTriggerHash);
+		}
+		
+		#endregion
+		
 		#region GrapplingHook
 
-		private void OnGrappleFire(InputAction.CallbackContext _)
+		private void OnGrappleFireStarted(InputAction.CallbackContext _)
 		{
 			grapplingHookMovement.StartGrappling();
 		}

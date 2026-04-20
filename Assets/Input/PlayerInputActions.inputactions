@@ -25,6 +25,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "bb6f6bbc-bb76-4e70-8e2b-5d5376372bd4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "GrappleFire",
                     "type": "Button",
                     "id": "9c637e22-6083-4c22-a088-c4793a1b6e60",
@@ -105,6 +114,17 @@
                     "action": "MoveHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7588b10a-ad43-4482-a1cb-a2a5cc012530",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "Scroll",
@@ -230,34 +250,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Advance",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Sword",
-            "id": "d4e12cd3-4156-4412-8fa6-bb0a90a9c7f6",
-            "actions": [
-                {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "c120065d-3c32-4c7c-9b62-1bb86f2e68b8",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "75f71913-2875-4458-8cf3-18de9ff34d9e",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

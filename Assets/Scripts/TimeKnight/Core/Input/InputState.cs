@@ -26,11 +26,13 @@ namespace TimeKnight.Core.Input
 		MoveJump       = 1 << 1,
 		Move = MoveHorizontal | MoveJump,
 		
-		GrappleFire    = 1 << 2,
-		GrappleStop    = 1 << 3,
+		Attack = 1 << 2,
 		
-		InteractionInteract = 1 << 4,
-		InteractionNavigate = 1 << 5,
+		GrappleFire    = 1 << 3,
+		GrappleStop    = 1 << 4,
+		
+		InteractionInteract = 1 << 5,
+		InteractionNavigate = 1 << 6,
 		
 		Every = -1
 	}
