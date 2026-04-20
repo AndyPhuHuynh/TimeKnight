@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TimeKnight.Core.Input;
+﻿using TimeKnight.Core.Input;
 using TimeKnight.Utils;
 using UnityEngine;
 using Yarn.Unity;
@@ -15,7 +14,7 @@ namespace TimeKnight.Core.Dialogue
         [SerializeField] private InputReader input = null!;
         
         private DialogueRunner _dialogueRunner = null!;
-        private List<PreviousMapState>? _previousInputMapStates;
+        private InputState? _previousInputState;
         
         private void Awake()
         {
@@ -41,8 +40,9 @@ namespace TimeKnight.Core.Dialogue
 
         private void OnDialogueStartFunc()
         {
-            _previousInputMapStates = input.GetMapStates();
-            input.EnableOnly(input.Actions.Dialogue);
+            _previousInputState = input.SaveState();
+            input.SetMapStatus(InputStatus.Disabled, ActionMaps.Every);
+            input.SetMapStatus(InputStatus.Enabled, ActionMaps.Dialogue);
             
             DialogueEvents.RaiseStart();
         }
@@ -50,10 +50,8 @@ namespace TimeKnight.Core.Dialogue
         private void OnDialogueCompleteFunc()
         {
             DialogueEvents.RaiseComplete();
-
-            if (_previousInputMapStates == null) return;
-            InputReader.RestoreMapStates(_previousInputMapStates);
-            _previousInputMapStates = null;
+            
+            input.RestoreState(_previousInputState ?? default);
         }
 
         public void PlayDialogue(string dialogue)

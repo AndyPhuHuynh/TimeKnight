@@ -57,8 +57,6 @@ namespace TimeKnight.Core.Player
             playerBody.gravityScale = _prevGravity;
             playerBody.linearVelocity = Vector2.zero;
             
-            // TODO: Handle this
-            // playerJump.ApplyJump(() => input.Actions.GrapplingHook.StopGrapple.IsPressedRegardlessOfEnableStatus());
             grapplingHook.TransitionTo(HookState.Retracting);
         }
 

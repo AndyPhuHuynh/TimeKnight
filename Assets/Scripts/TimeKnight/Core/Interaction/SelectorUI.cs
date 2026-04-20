@@ -52,8 +52,8 @@ namespace TimeKnight.Core.Interaction
 
         private void OnEnable()
         {
-            input.Actions.Interaction.Interact.performed += OnInteractPerformed;
-            input.Actions.Interaction.Navigate.performed += OnNavigatePerformed;
+            input.Actions.Gameplay.InteractionInteract.performed += OnInteractPerformed;
+            input.Actions.Gameplay.InteractionNavigate.performed += OnNavigatePerformed;
 
             InteractionEvents.OnInteractionTriggerEnter += AddInteractable;
             InteractionEvents.OnInteractionTriggerExit += RemoveInteractable;
@@ -64,8 +64,8 @@ namespace TimeKnight.Core.Interaction
 
         private void OnDisable()
         {
-            input.Actions.Interaction.Interact.performed -= OnInteractPerformed;
-            input.Actions.Interaction.Navigate.performed -= OnNavigatePerformed;
+            input.Actions.Gameplay.InteractionInteract.performed -= OnInteractPerformed;
+            input.Actions.Gameplay.InteractionNavigate.performed -= OnNavigatePerformed;
             
             InteractionEvents.OnInteractionTriggerEnter -= AddInteractable;
             InteractionEvents.OnInteractionTriggerExit -= RemoveInteractable;
