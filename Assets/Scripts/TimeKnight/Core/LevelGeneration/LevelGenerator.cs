@@ -45,12 +45,20 @@ namespace TimeKnight.Core.LevelGeneration
         }
     }
 
-    public class GenerationHistory
+    public class GenerationStep
     {
         public LevelNode? ExistingNode;
-        public LevelNode GeneratedNode = null!;
+        public LevelNode OtherNode = null!;
         public RoomDefinition[]? RoomShuffle;
-        public int GeneratedIndex;
+        public int ShuffleIndex;
+
+        public static GenerationStep FromStart(LevelNode start)
+        {
+            return new GenerationStep
+            {
+                OtherNode = start,
+            };
+        }
     }
     
     public class LevelGenerator : MonoBehaviour
@@ -103,52 +111,51 @@ namespace TimeKnight.Core.LevelGeneration
 
         private bool GenerateGraph(LevelNode start)
         {
-            var edgesToConnect = new Stack<GenerationHistory>();
-            var history = new Stack<GenerationHistory>();
+            var stepsToGenerate = new Stack<GenerationStep>();
+            var history = new Stack<GenerationStep>();
 
             // Generate the starting room
-            var startHistory = GenerateConnectedRoom(null, start);
-            if (startHistory == null) return false;
+            var startStep = GenerationStep.FromStart(start);
+            var startSuccess = GenerateConnectedRoom(startStep);
+            if (!startSuccess) return false;
             
-            AddEdges(start, edgesToConnect);
-            history.Push(startHistory);
+            AddEdges(start, stepsToGenerate);
+            history.Push(startStep);
             
             // Generate connections
-            while (!edgesToConnect.IsEmpty())
+            while (!stepsToGenerate.IsEmpty())
             {
-                var edge = edgesToConnect.Pop();
+                var step = stepsToGenerate.Pop();
                     
                 // Attempt room generation
-                var generationHistory = GenerateConnectedRoom(edge.ExistingNode, edge.GeneratedNode, edge.RoomShuffle, edge.GeneratedIndex);
-                
-                // If generation fails undo
-                if (generationHistory is null)
+                var generationSuccess = GenerateConnectedRoom(step);
+                if (!generationSuccess)
                 {
                     // Get last placed history
                     if (history.IsEmpty()) return false;
                     var lastHistory = history.Pop();
                     
                     // Pop all things from stack connected to the room we are about to undo
-                    while (!edgesToConnect.IsEmpty())
+                    while (!stepsToGenerate.IsEmpty())
                     {
-                        var edgeToRemove = edgesToConnect.Peek();
-                        if (edgeToRemove.ExistingNode != lastHistory.GeneratedNode && 
-                            edgeToRemove.GeneratedNode != lastHistory.GeneratedNode) break;
-                        edgesToConnect.Pop();
+                        var edgeToRemove = stepsToGenerate.Peek();
+                        if (edgeToRemove.ExistingNode != lastHistory.OtherNode && 
+                            edgeToRemove.OtherNode != lastHistory.OtherNode) break;
+                        stepsToGenerate.Pop();
                     }
                     
                     // Undo the generation of the last room
-                    var roomInstanceToRemove = _roomMap[lastHistory.GeneratedNode];
+                    var roomInstanceToRemove = _roomMap[lastHistory.OtherNode];
                     roomInstanceToRemove.RemoveConnections();
                     UnregisterRoom(roomInstanceToRemove);
 
                     // Place the history back on the edgesToConnect stack
-                    edgesToConnect.Push(lastHistory);
+                    stepsToGenerate.Push(lastHistory);
                 }
                 else
                 {
-                    AddEdges(edge.GeneratedNode, edgesToConnect);
-                    history.Push(generationHistory);
+                    AddEdges(step.OtherNode, stepsToGenerate);
+                    history.Push(step);
                 }
             }
 
@@ -160,15 +167,15 @@ namespace TimeKnight.Core.LevelGeneration
             return _roomMap.ContainsKey(edge.First) && _roomMap.ContainsKey(edge.Second);
         }
 
-        private void AddEdges(LevelNode existingNode, Stack<GenerationHistory> edgesToConnect)
+        private void AddEdges(LevelNode existingNode, Stack<GenerationStep> edgesToConnect)
         {
             foreach (var edge in existingNode.Edges.Where(edge => !IsEdgeCreated(edge)))
             {
                 var otherNode = edge.Other(existingNode);
-                edgesToConnect.Push(new GenerationHistory
+                edgesToConnect.Push(new GenerationStep
                 {
                     ExistingNode = existingNode,
-                    GeneratedNode = otherNode,
+                    OtherNode = otherNode,
                 });
             }
         }
@@ -192,53 +199,43 @@ namespace TimeKnight.Core.LevelGeneration
             positions.ForEach(pos => _occupiedTiles.Remove(pos));
         }
         
-        private GenerationHistory? GenerateConnectedRoom(
-            LevelNode? existingNode,
-            LevelNode otherNode,
-            RoomDefinition[]? possibleRooms = null,
-            int possibleRoomsIndex = 0)
+        private bool GenerateConnectedRoom(GenerationStep step)
         {
             // Start from a new shuffle
-            if (possibleRooms == null)
+            if (step.RoomShuffle == null)
             {
-                if (rooms.RoomsOfType[otherNode.RoomType].IsEmpty())
+                if (rooms.RoomsOfType[step.OtherNode.RoomType].IsEmpty())
                 {
-                    throw new InvalidOperationException($"Rooms of type {otherNode.RoomType} is empty");
+                    throw new InvalidOperationException($"Rooms of type {step.OtherNode.RoomType} is empty");
                 }
-                possibleRooms = rooms.RoomsOfType[otherNode.RoomType].ToArray();
-                possibleRooms.ShuffleInPlace(_random);
+                step.RoomShuffle = rooms.RoomsOfType[step.OtherNode.RoomType].ToArray();
+                step.RoomShuffle.ShuffleInPlace(_random);
             }
             // Resume the current shuffle and try spawning the next room
             else
             {
-                possibleRoomsIndex++;
+                step.ShuffleIndex++;
             }
 
-            for (var i = possibleRoomsIndex; i < possibleRooms.Length; i++)
+            for (var i = step.ShuffleIndex; i < step.RoomShuffle.Length; i++)
             {
                 // If the room doesn't support the amount of connections that we need
-                if (possibleRooms[i].ConnectionList.Count < otherNode.Edges.Count) continue;
+                if (step.RoomShuffle[i].ConnectionList.Count < step.OtherNode.Edges.Count) continue;
                 
                 // Generate room
                 var roomGen = 
-                    existingNode is not null ?
-                        _roomMap[existingNode].CreateConnection(possibleRooms[i], _occupiedTiles, _random) :
-                        RoomInstance.FromStart(possibleRooms[i]);
+                    step.ExistingNode is not null ?
+                        _roomMap[step.ExistingNode].CreateConnection(step.RoomShuffle[i], _occupiedTiles, _random) :
+                        RoomInstance.FromStart(step.RoomShuffle[i]);
                 if (roomGen == null) continue;
                 
-                _roomMap[otherNode] = roomGen;
-                RegisterRoom(_roomMap[otherNode]);
+                _roomMap[step.OtherNode] = roomGen;
+                RegisterRoom(_roomMap[step.OtherNode]);
 
-                return new GenerationHistory
-                {
-                    ExistingNode   = existingNode,
-                    GeneratedNode  = otherNode,
-                    RoomShuffle    = possibleRooms,
-                    GeneratedIndex = i
-                };
+                return true;
             }
 
-            return null;
+            return false;
         }
     }
 }
