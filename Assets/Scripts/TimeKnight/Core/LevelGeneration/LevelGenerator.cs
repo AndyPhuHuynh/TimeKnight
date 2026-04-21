@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
+using TimeKnight.Utils;
 using UnityEngine;
 using Random = System.Random;
 
@@ -27,11 +28,13 @@ namespace TimeKnight.Core.LevelGeneration
     public class LevelNode
     {
         public readonly string Name;
+        public readonly RoomType RoomType;
         public readonly List<LevelNodeEdge> Edges = new();
 
-        public LevelNode(string name)
+        public LevelNode(string name, RoomType roomType)
         {
             Name = name;
+            RoomType = roomType;
         }
         
         public static void Connect(LevelNode first, LevelNode second)
@@ -52,28 +55,33 @@ namespace TimeKnight.Core.LevelGeneration
     
     public class LevelGenerator : MonoBehaviour
     {
-        [SerializeField] private List<RoomDefinition> rooms = new();
+        [SerializeField] private RoomRegistry rooms = null!;
         [SerializeField] private int seed;
 
         private Random _random = null!;
         
         private readonly Dictionary<LevelNode, RoomInstance> _roomMap = new();
-        private readonly HashSet<Vector3Int> _occupiedTiles = new(); 
+        private readonly HashSet<Vector3Int> _occupiedTiles = new();
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, rooms, nameof(rooms));
+        }
         
         private void Awake()
         {
-            if (rooms.IsEmpty())
+            if (rooms.AllRooms.IsEmpty())
             {
                 Debug.LogWarning("No rooms found");
             }
 
             _random = new Random(seed);
             
-            var startRoom = new LevelNode("start");
-            var secondRoom = new LevelNode("2");
-            var thirdRoom = new LevelNode("3");
-            var room4 = new LevelNode("4");
-            var room5 = new LevelNode("5");
+            var startRoom = new LevelNode("start", RoomType.Start);
+            var secondRoom = new LevelNode("2", RoomType.Enemy);
+            var thirdRoom = new LevelNode("3", RoomType.Enemy);
+            var room4 = new LevelNode("4", RoomType.Enemy);
+            var room5 = new LevelNode("5", RoomType.Enemy);
             
             LevelNode.Connect(startRoom, secondRoom);
             LevelNode.Connect(secondRoom, thirdRoom);
@@ -193,7 +201,11 @@ namespace TimeKnight.Core.LevelGeneration
             // Start from a new shuffle
             if (possibleRooms == null)
             {
-                possibleRooms = rooms.ToArray();
+                if (rooms.RoomsOfType[otherNode.RoomType].IsEmpty())
+                {
+                    throw new InvalidOperationException($"Rooms of type {otherNode.RoomType} is empty");
+                }
+                possibleRooms = rooms.RoomsOfType[otherNode.RoomType].ToArray();
                 possibleRooms.ShuffleInPlace(_random);
             }
             // Resume the current shuffle and try spawning the next room

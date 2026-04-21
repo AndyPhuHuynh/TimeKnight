@@ -580,6 +580,7 @@ MonoBehaviour:
   tileset: {fileID: 11400000, guid: e1d6c48de283d47479be9f4afa6f9c42, type: 2}
   terrainMap: {fileID: 481128931577898239}
   <ConnectionMap>k__BackingField: {fileID: 3014429979749415719}
+  <RoomType>k__BackingField: 2
   connectionList:
   - type: 0
     centerOffset: {x: -4, y: -1, z: 0}

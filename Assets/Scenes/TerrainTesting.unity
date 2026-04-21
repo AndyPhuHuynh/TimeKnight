@@ -148,10 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3000b846d6fd84af5813eefe1d2f4650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.LevelGenerator
-  rooms:
-  - {fileID: 8624496213323838614, guid: 7146e492972be47449f4cfbbf937a797, type: 3}
-  - {fileID: 4003372969044752731, guid: d18668ceb2be64268acf7f796cedbbed, type: 3}
-  - {fileID: 6339041048670927376, guid: a2d4fa491429e4c079206d96dae596f2, type: 3}
+  rooms: {fileID: 11400000, guid: 0cf5ace715e924c5ba76d1cf7b72dbf7, type: 2}
   seed: 5
 --- !u!4 &156726567
 Transform:
@@ -220,6 +217,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -287,7 +288,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

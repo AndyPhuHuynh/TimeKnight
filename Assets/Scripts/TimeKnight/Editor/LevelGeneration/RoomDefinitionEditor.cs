@@ -10,7 +10,7 @@ namespace TimeKnight.Editor.LevelGeneration
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(RoomDefinition))]
-    public class RoomEditor : UnityEditor.Editor
+    public class RoomDefinitionEditor : UnityEditor.Editor
     {
         private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition)!;
         
@@ -46,6 +46,7 @@ namespace TimeKnight.Editor.LevelGeneration
                 foreach (var room in RoomTargets)
                 {
                     room?.BakeConnections();
+                    ReinitializeAllRegistries();
                 }
             }
             
@@ -77,6 +78,17 @@ namespace TimeKnight.Editor.LevelGeneration
                 {
                     room.BakeConnections();
                 }
+            }
+        }
+
+        private static void ReinitializeAllRegistries()
+        {
+            var guids = AssetDatabase.FindAssets($"t:{nameof(RoomRegistry)}");
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var registry = AssetDatabase.LoadAssetAtPath<RoomRegistry>(path);
+                registry?.Initialize();
             }
         }
     }

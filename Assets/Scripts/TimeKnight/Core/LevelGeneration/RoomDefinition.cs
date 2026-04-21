@@ -9,10 +9,15 @@ namespace TimeKnight.Core.LevelGeneration
 {
     public class RoomDefinition : MonoBehaviour
     {
+        [Header("Tiles")]
         [SerializeField] private Tileset tileset = null!;
         [SerializeField] private Tilemap terrainMap = null!;
         [field: SerializeField] public Tilemap ConnectionMap { get; private set; } = null!;
-
+        
+        [Header("Type")]
+        [field: SerializeField] public RoomType RoomType { get; private set; }
+        
+        [Header("Connections")]
         [SerializeField, ReadOnly] private List<ConnectionDefinition> connectionList = new();
         public IReadOnlyList<ConnectionDefinition> ConnectionList => connectionList;
         
@@ -21,6 +26,7 @@ namespace TimeKnight.Core.LevelGeneration
             Validation.NotNull(this, tileset, nameof(tileset));
             Validation.NotNull(this, terrainMap, nameof(terrainMap));
             Validation.NotNull(this, ConnectionMap, nameof(ConnectionMap));
+            if (RoomType == RoomType.None) Debug.LogError($"RoomType on {gameObject.name} is None", this);
         }
 
         public void BakeConnections()
