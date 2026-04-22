@@ -19,10 +19,7 @@ namespace TimeKnight.Editor.LevelGeneration
             Tilemap.tilemapTileChanged += OnConnectionTilemapChanged;
             Undo.undoRedoPerformed += OnUndoRedo;
             
-            foreach (var room in RoomTargets)
-            {
-                room?.BakeConnections();
-            }
+            BakeAllConnections();
         }
 
         public void OnDisable()
@@ -41,42 +38,34 @@ namespace TimeKnight.Editor.LevelGeneration
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
-                foreach (var room in RoomTargets)
-                {
-                    room?.BakeConnections();
-                }
-                ReinitializeAllRegistries();
+                BakeAllConnections();
             }
             
             GUILayout.Space(10);
             EditorGUILayout.HelpBox("Connections bake automatically on tile or inspector change.", MessageType.Info);
             
             if (!GUILayout.Button("Force Re-Bake Connections")) return;
-            foreach (var room in RoomTargets)
-            {
-                room?.BakeConnections();
-            }
+            BakeAllConnections();
         }
         
         private void OnUndoRedo()
         {
+            BakeAllConnections();
+        }
+
+        private void OnConnectionTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] _)
+        {
+            BakeAllConnections();
+        }
+
+        private void BakeAllConnections()
+        {
             if (targets == null || targets.Length == 0) return;
             foreach (var room in RoomTargets)
             {
                 room?.BakeConnections();
             }
-        }
-
-        private void OnConnectionTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] _)
-        {
-            if (targets == null || targets.Length == 0) return;
-            foreach (var room in RoomTargets)
-            {
-                if (room != null && tilemap == room.ConnectionMap)
-                {
-                    room.BakeConnections();
-                }
-            }
+            ReinitializeAllRegistries();
         }
 
         private static void ReinitializeAllRegistries()
