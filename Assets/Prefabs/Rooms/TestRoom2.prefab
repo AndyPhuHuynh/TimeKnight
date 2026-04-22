@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1177021484382169856}
   - component: {fileID: 2105961624510763720}
   - component: {fileID: 4003372969044752731}
+  - component: {fileID: -4895793706547055085}
   m_Layer: 0
   m_Name: TestRoom2
   m_TagString: Untagged
@@ -68,6 +69,18 @@ MonoBehaviour:
     centerOffset: {x: -4, y: -1, z: 0}
   - type: 1
     centerOffset: {x: -1, y: -1, z: 0}
+--- !u!114 &-4895793706547055085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890179764782157776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef2827337864eaa963ef43921258a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.ExampleRoomBehavior
 --- !u!1 &4533180398642016195
 GameObject:
   m_ObjectHideFlags: 0

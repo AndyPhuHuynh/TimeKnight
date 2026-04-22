@@ -16,8 +16,6 @@ namespace TimeKnight.Editor.LevelGeneration
         
         public void OnEnable()
         {
-            if (target == null) return;
-            
             Tilemap.tilemapTileChanged += OnConnectionTilemapChanged;
             Undo.undoRedoPerformed += OnUndoRedo;
             
@@ -46,8 +44,8 @@ namespace TimeKnight.Editor.LevelGeneration
                 foreach (var room in RoomTargets)
                 {
                     room?.BakeConnections();
-                    ReinitializeAllRegistries();
                 }
+                ReinitializeAllRegistries();
             }
             
             GUILayout.Space(10);

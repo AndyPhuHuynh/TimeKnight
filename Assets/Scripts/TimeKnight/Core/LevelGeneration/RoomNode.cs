@@ -3,55 +3,52 @@ using System.Linq;
 using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-    public class ConnectionInstance
+    public class ConnectionNode
     {
         public ConnectionDefinition Definition;
-        public RoomInstance? ConnectedRoom;
+        public RoomNode? ConnectedRoom;
         
         public bool IsConnected => ConnectedRoom != null;
     }
     
-    public class RoomInstance
+    // Represents the placement of a room and it's connections before it is instantiated
+    public class RoomNode
     {
-        private RoomDefinition _definition = null!;
-        private ConnectionInstance[] _connections = null!;
-        private Vector3 _worldPos;
-
-        private Vector3 GetConnectionPosition(ConnectionDefinition connection)
-        {
-            return _worldPos + connection.centerOffset;
-        }
-
+        public RoomDefinition Definition { get; private set; } = null!;
+        private ConnectionNode[] _connections = null!;
+        public Vector3 WorldPos { get; private set; }
+        
         public List<Vector3Int> GetTileWorldPositions()
         {
-            var localPositions = _definition.GetTileLocalPositions();
-            var flooredWorldPos = _worldPos.FloorToInt();
+            var localPositions = Definition.GetTileLocalPositions();
+            var flooredWorldPos = WorldPos.FloorToInt();
             return localPositions.Select(pos => flooredWorldPos + pos).ToList();
         }
         
-        public static RoomInstance FromStart(RoomDefinition definition)
+        private RoomNode() {}
+        
+        public static RoomNode FromStart(RoomDefinition definition)
         {
-            var connections = definition.ConnectionList.Select(connectionDef => new ConnectionInstance 
+            var connections = definition.ConnectionList.Select(connectionDef => new ConnectionNode 
             {
                 Definition = connectionDef,
                 ConnectedRoom = null
             }).ToArray();
             
-            return new RoomInstance
+            return new RoomNode
             {
-                _definition = definition,
+                Definition = definition,
                 _connections = connections,
-                _worldPos = Vector3.zero
+                WorldPos = Vector3.zero
             };
         }
 
         // Checks if a valid connection exists out of this room into the other room with the connection type
-        private RoomInstance? PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
+        private RoomNode? PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Check if this room even has that connection type available.
             var thisConnections = _connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
@@ -71,9 +68,10 @@ namespace TimeKnight.Core.LevelGeneration
             {
                 foreach (var otherConnection in otherConnections)
                 {
-                    var newCenterPos = GetConnectionPosition(thisConnection.Definition) + 
-                                 thisConnection.Definition.type.GetUnitVector() - 
-                                 otherConnection.centerOffset;
+                    var newCenterPos = WorldPos + 
+                                       thisConnection.Definition.centerOffset +
+                                       thisConnection.Definition.type.GetUnitVector() - 
+                                       otherConnection.centerOffset;
                     var newCenterPosInt = newCenterPos.FloorToInt();
                     
                     // Check for tilemap collisions
@@ -84,11 +82,11 @@ namespace TimeKnight.Core.LevelGeneration
                     if (collisionFound) continue;
                     
                     // Initialize the connections
-                    var newConnections = new ConnectionInstance[other.ConnectionList.Count];
+                    var newConnections = new ConnectionNode[other.ConnectionList.Count];
                     for (var i = 0; i < other.ConnectionList.Count; i++)
                     {
                         var connection = other.ConnectionList[i];
-                        newConnections[i] = new ConnectionInstance
+                        newConnections[i] = new ConnectionNode
                         {
                             Definition = connection,
                             ConnectedRoom = connection == otherConnection ? this : null
@@ -96,11 +94,11 @@ namespace TimeKnight.Core.LevelGeneration
                     }
                     
                     // Initialize the new room instance
-                    var newInstance = new RoomInstance
+                    var newInstance = new RoomNode
                     {
-                        _definition = other,
+                        Definition = other,
                         _connections = newConnections,
-                        _worldPos = newCenterPos,
+                        WorldPos = newCenterPos,
                     };
                     
                     // Set the connection on this instance
@@ -113,7 +111,7 @@ namespace TimeKnight.Core.LevelGeneration
             return null;
         }
         
-        public RoomInstance? CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles, Random random)
+        public RoomNode? CreateConnection(RoomDefinition other, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Find matching connection between this room and the other new room
             var directions = EnumUtils.GetEnumValues<ConnectionType>();
@@ -122,12 +120,6 @@ namespace TimeKnight.Core.LevelGeneration
             return directions
                 .Select(dir => PlaceConnection(other, dir, occupiedTiles, random))
                 .FirstOrDefault(newRoom => newRoom != null);
-        }
-
-        public void Instantiate(string name)
-        {
-            _definition = Object.Instantiate(_definition, _worldPos, Quaternion.identity);
-            _definition.gameObject.name = name;
         }
         
         public void RemoveConnections()

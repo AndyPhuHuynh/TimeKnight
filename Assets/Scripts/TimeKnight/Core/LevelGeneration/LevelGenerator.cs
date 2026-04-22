@@ -59,6 +59,15 @@ namespace TimeKnight.Core.LevelGeneration
                 OtherNode = start,
             };
         }
+
+        public static GenerationStep FromEdge(LevelNode existing, LevelNode other)
+        {
+            return new GenerationStep
+            {
+                ExistingNode = existing,
+                OtherNode = other
+            };
+        }
     }
     
     public class LevelGenerator : MonoBehaviour
@@ -68,7 +77,7 @@ namespace TimeKnight.Core.LevelGeneration
 
         private Random _random = null!;
         
-        private readonly Dictionary<LevelNode, RoomInstance> _roomMap = new();
+        private readonly Dictionary<LevelNode, RoomNode> _roomNodeMap = new();
         private readonly HashSet<Vector3Int> _occupiedTiles = new();
 
         private void OnValidate()
@@ -99,13 +108,12 @@ namespace TimeKnight.Core.LevelGeneration
             var success = GenerateGraph(startRoom);
             if (!success)
             {
-                Debug.LogError("Unable to find a valid configuration for the level generation");
-                return;
+                throw new InvalidOperationException("Unable to find a valid configuration for the level generation");
             }
-
-            foreach (var (node, instance) in _roomMap)
+            
+            foreach (var (レヴェルノド, ルームノド) in _roomNodeMap)
             {
-                instance.Instantiate(node.Name);
+                RoomSpawn.FromNode(ルームノド, レヴェルノド.Name); 
             }
         }
 
@@ -145,7 +153,7 @@ namespace TimeKnight.Core.LevelGeneration
                     }
                     
                     // Undo the generation of the last room
-                    var roomInstanceToRemove = _roomMap[lastHistory.OtherNode];
+                    var roomInstanceToRemove = _roomNodeMap[lastHistory.OtherNode];
                     roomInstanceToRemove.RemoveConnections();
                     UnregisterRoom(roomInstanceToRemove);
 
@@ -164,7 +172,7 @@ namespace TimeKnight.Core.LevelGeneration
 
         private bool IsEdgeCreated(LevelNodeEdge edge)
         {
-            return _roomMap.ContainsKey(edge.First) && _roomMap.ContainsKey(edge.Second);
+            return _roomNodeMap.ContainsKey(edge.First) && _roomNodeMap.ContainsKey(edge.Second);
         }
 
         private void AddEdges(LevelNode existingNode, Stack<GenerationStep> edgesToConnect)
@@ -172,15 +180,11 @@ namespace TimeKnight.Core.LevelGeneration
             foreach (var edge in existingNode.Edges.Where(edge => !IsEdgeCreated(edge)))
             {
                 var otherNode = edge.Other(existingNode);
-                edgesToConnect.Push(new GenerationStep
-                {
-                    ExistingNode = existingNode,
-                    OtherNode = otherNode,
-                });
+                edgesToConnect.Push(GenerationStep.FromEdge(existingNode, otherNode));
             }
         }
 
-        private void RegisterRoom(RoomInstance room)
+        private void RegisterRoom(RoomNode room)
         {
             var positions = room.GetTileWorldPositions();
             foreach (var pos in 
@@ -193,7 +197,7 @@ namespace TimeKnight.Core.LevelGeneration
             }
         }
 
-        private void UnregisterRoom(RoomInstance room)
+        private void UnregisterRoom(RoomNode room)
         {
             var positions = room.GetTileWorldPositions();
             positions.ForEach(pos => _occupiedTiles.Remove(pos));
@@ -225,12 +229,12 @@ namespace TimeKnight.Core.LevelGeneration
                 // Generate room
                 var roomGen = 
                     step.ExistingNode is not null ?
-                        _roomMap[step.ExistingNode].CreateConnection(step.RoomShuffle[i], _occupiedTiles, _random) :
-                        RoomInstance.FromStart(step.RoomShuffle[i]);
+                        _roomNodeMap[step.ExistingNode].CreateConnection(step.RoomShuffle[i], _occupiedTiles, _random) :
+                        RoomNode.FromStart(step.RoomShuffle[i]);
                 if (roomGen == null) continue;
                 
-                _roomMap[step.OtherNode] = roomGen;
-                RegisterRoom(_roomMap[step.OtherNode]);
+                _roomNodeMap[step.OtherNode] = roomGen;
+                RegisterRoom(_roomNodeMap[step.OtherNode]);
 
                 return true;
             }
