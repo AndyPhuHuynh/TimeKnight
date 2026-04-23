@@ -1,15 +1,16 @@
-using System;
-using TimeKnight.Core.Player;
 using UnityEngine;
+using TimeKnight.Core.Player;
+using System;
 
 namespace TimeKnight.Core.Enemy
 {
-    public class BasicEnemy : MonoBehaviour, IDamageable
+    public class Skeleton : MonoBehaviour, IDamageable
     {
+        [Header("Attack")]
         [SerializeField] private int maxHealth = 5;
         [SerializeField] private int playerCollisionDamage = 3;
         private int _currentHealth;
-        
+
         private void Awake()
         {
             _currentHealth = maxHealth;

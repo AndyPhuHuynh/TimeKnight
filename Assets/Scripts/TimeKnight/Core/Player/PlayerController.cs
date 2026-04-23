@@ -10,7 +10,7 @@ namespace TimeKnight.Core.Player
 	{
 		private PlayerAnimator _animator = null!;
 		private static Transform _playerTransform = null!;
-		public Vector3 PlayerPosition => _playerTransform.position;
+		public static Vector3 PlayerPosition => _playerTransform.position;
 		
 		[Header("Input Reader")]
 		[SerializeField] private InputReader input = null!;
