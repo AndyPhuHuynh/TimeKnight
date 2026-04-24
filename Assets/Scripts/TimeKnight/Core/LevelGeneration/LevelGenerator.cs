@@ -4,6 +4,7 @@ using System.Linq;
 using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
@@ -74,6 +75,7 @@ namespace TimeKnight.Core.LevelGeneration
     {
         [SerializeField] private RoomRegistry rooms = null!;
         [SerializeField] private int seed;
+        [SerializeField] private Tilemap terrainTilemap = null!;
 
         private Random _random = null!;
         
@@ -83,6 +85,7 @@ namespace TimeKnight.Core.LevelGeneration
         private void OnValidate()
         {
             Validation.NotNull(this, rooms, nameof(rooms));
+            Validation.NotNull(this, terrainTilemap, nameof(terrainTilemap));
         }
         
         private void Awake()
@@ -111,9 +114,9 @@ namespace TimeKnight.Core.LevelGeneration
                 throw new InvalidOperationException("Unable to find a valid configuration for the level generation");
             }
             
-            foreach (var (レヴェルノド, ルームノド) in _roomNodeMap)
+            foreach (var (_, ルームノド) in _roomNodeMap)
             {
-                RoomSpawn.FromNode(ルームノド, レヴェルノド.Name); 
+                RoomSpawn.FromNode(ルームノド, terrainTilemap); 
             }
         }
 
@@ -187,20 +190,23 @@ namespace TimeKnight.Core.LevelGeneration
         private void RegisterRoom(RoomNode room)
         {
             var positions = room.GetTileWorldPositions();
-            foreach (var pos in 
-                     from pos in positions 
-                     where !_occupiedTiles.Add(pos)
-                     select pos)
+            if (positions.Any(p => _occupiedTiles.Contains(p.Key)))
             {
-                throw new ArgumentException("Attempting to register overlapping room. " +
-                                            $"{pos} is already in the occupied tiles.");
+                throw new ArgumentException("Overlapping room detected.");
+            }
+            foreach (var pos in positions)
+            {
+                _occupiedTiles.Add(pos.Key);
             }
         }
 
         private void UnregisterRoom(RoomNode room)
         {
             var positions = room.GetTileWorldPositions();
-            positions.ForEach(pos => _occupiedTiles.Remove(pos));
+            foreach (var pos in positions.Keys)
+            {
+                _occupiedTiles.Remove(pos);
+            }
         }
         
         private bool GenerateConnectedRoom(GenerationStep step)

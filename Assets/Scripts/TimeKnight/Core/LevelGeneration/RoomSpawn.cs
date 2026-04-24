@@ -1,34 +1,23 @@
-using UnityEngine;
-using Object = UnityEngine.Object;
+using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-	// Represents a Room that has been spawned and instantiated into the scene
-	public class RoomSpawn
+	public static class RoomSpawn
 	{
-		public RoomDefinition InstantiatedDefinition { get; private set; }= null!;
-		private IRoomBehavior[] _behaviors = null!;
-
-		private RoomSpawn() {}
-
-		public static RoomSpawn FromNode(RoomNode node, string objectName)
+		public static void FromNode(RoomNode node, Tilemap tilemap)
 		{
-			var obj = Object.Instantiate(node.Definition, node.WorldPos, Quaternion.identity);
-			obj.name = objectName;
-			
-			var behaviors = obj.GetComponentsInChildren<IRoomBehavior>();
-			var roomSpawn = new RoomSpawn
+			var positions = node.GetTileWorldPositions();
+			foreach (var (pos, tile) in positions)
 			{
-				InstantiatedDefinition = obj,
-				_behaviors =  behaviors,
-			};
-			
+				tilemap.SetTile(pos, tile);
+			}
+			tilemap.RefreshAllTiles();
+
+			var behaviors = node.GetAllBehaviors();
 			foreach (var behavior in behaviors)
 			{
-				behavior.OnSpawn(roomSpawn);
+				behavior.OnSpawn();
 			}
-			
-			return roomSpawn;
 		}
 	}
 }

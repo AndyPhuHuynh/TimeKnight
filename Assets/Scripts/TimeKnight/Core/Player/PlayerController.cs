@@ -90,7 +90,7 @@ namespace TimeKnight.Core.Player
 			horizontalMovement.StopMove();
 		}
 		
-		#endregion
+		#endregion	
 		
 		#region Jump
 

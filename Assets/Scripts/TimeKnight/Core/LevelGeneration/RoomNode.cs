@@ -3,6 +3,7 @@ using System.Linq;
 using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
@@ -18,19 +19,26 @@ namespace TimeKnight.Core.LevelGeneration
     // Represents the placement of a room and it's connections before it is instantiated
     public class RoomNode
     {
-        public RoomDefinition Definition { get; private set; } = null!;
+        private RoomDefinition _definition = null!;
         private ConnectionNode[] _connections = null!;
         public Vector3 WorldPos { get; private set; }
-        
-        public List<Vector3Int> GetTileWorldPositions()
-        {
-            var localPositions = Definition.GetTileLocalPositions();
-            var flooredWorldPos = WorldPos.FloorToInt();
-            return localPositions.Select(pos => flooredWorldPos + pos).ToList();
-        }
-        
+
         private RoomNode() {}
-        
+
+        public Dictionary<Vector3Int, TileBase> GetTileWorldPositions()
+        {
+            var localPositions = _definition.GetTileLocalPositions();
+            var flooredWorldPos = WorldPos.FloorToInt();
+            return localPositions.ToDictionary(
+                kvp => kvp.Key + flooredWorldPos,
+                kvp => kvp.Value);
+        }
+
+        public IRoomBehavior[] GetAllBehaviors()
+        {
+            return _definition.GetComponentsInChildren<IRoomBehavior>();
+        }
+
         public static RoomNode FromStart(RoomDefinition definition)
         {
             var connections = definition.ConnectionList.Select(connectionDef => new ConnectionNode 
@@ -41,7 +49,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             return new RoomNode
             {
-                Definition = definition,
+                _definition = definition,
                 _connections = connections,
                 WorldPos = Vector3.zero
             };
@@ -75,7 +83,7 @@ namespace TimeKnight.Core.LevelGeneration
                     var newCenterPosInt = newCenterPos.FloorToInt();
                     
                     // Check for tilemap collisions
-                    var collisionFound = localTilePositions
+                    var collisionFound = localTilePositions.Keys
                         .Select(localPos => newCenterPosInt + localPos)
                         .Where(occupiedTiles.Contains)
                         .Any();
@@ -96,7 +104,7 @@ namespace TimeKnight.Core.LevelGeneration
                     // Initialize the new room instance
                     var newInstance = new RoomNode
                     {
-                        Definition = other,
+                        _definition = other,
                         _connections = newConnections,
                         WorldPos = newCenterPos,
                     };

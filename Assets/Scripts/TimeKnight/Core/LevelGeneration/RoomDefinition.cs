@@ -62,14 +62,14 @@ namespace TimeKnight.Core.LevelGeneration
             throw new ArgumentException($"Invalid tile on connection tileset: {tile.name}");
         }
 
-        public List<Vector3Int> GetTileLocalPositions()
+        public Dictionary<Vector3Int, TileBase> GetTileLocalPositions()
         {
-            var result = new List<Vector3Int>();
+            var result = new Dictionary<Vector3Int, TileBase>();
             foreach (var pos in terrainMap.cellBounds.allPositionsWithin)
             {
                 var tile = terrainMap.GetTile(pos);
                 if (tile is null) continue;
-                result.Add(pos);
+                result.Add(pos, tile);
             }
             return result;
         }
