@@ -62,6 +62,11 @@ namespace TimeKnight.Core.LevelGeneration
             throw new ArgumentException($"Invalid tile on connection tileset: {tile.name}");
         }
 
+        public Vector3 GetCenter()
+        {
+            return terrainMap.localBounds.center;
+        }
+        
         public Dictionary<Vector3Int, TileBase> GetTileLocalPositions()
         {
             var result = new Dictionary<Vector3Int, TileBase>();

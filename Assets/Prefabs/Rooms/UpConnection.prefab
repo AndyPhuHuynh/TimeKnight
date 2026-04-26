@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5607373739745221389}
   - component: {fileID: 2439679117439628475}
   - component: {fileID: 9106080394966577514}
+  - component: {fileID: 4732580252518636326}
   m_Layer: 0
   m_Name: UpConnection
   m_TagString: Untagged
@@ -33,6 +34,8 @@ Transform:
   m_Children:
   - {fileID: 3154591419334005469}
   - {fileID: 5162116518945774421}
+  - {fileID: 4148126905150462796}
+  - {fileID: 2675998739510909607}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &2439679117439628475
@@ -70,6 +73,21 @@ MonoBehaviour:
     centerOffset: {x: -7, y: 0, z: 0}
   - type: 1
     centerOffset: {x: 7, y: 0, z: 0}
+--- !u!114 &4732580252518636326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677535271027985423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a0625d10664b5d90e60c3cb7174713, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.Rooms.EnemyRoom
+  enemies:
+  - {fileID: 8546327243298629311}
+  - {fileID: 7649560252601722708}
 --- !u!1 &7944756468248012677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,3 +1077,149 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 8960193168498949034}
+--- !u!1001 &546712645061286673
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5607373739745221389}
+    m_Modifications:
+    - target: {fileID: 3740554761877569470, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_Name
+      value: Test Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.36729395
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+--- !u!4 &4148126905150462796 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+  m_PrefabInstance: {fileID: 546712645061286673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8546327243298629311 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8146157516579503534, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+  m_PrefabInstance: {fileID: 546712645061286673}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c6e8f9684a9a540b00a9ae42dd8148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Enemy.BasicEnemy
+--- !u!1001 &1955764677394602746
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5607373739745221389}
+    m_Modifications:
+    - target: {fileID: 3740554761877569470, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_Name
+      value: Test Enemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.62
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+--- !u!4 &2675998739510909607 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4469623825854382173, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+  m_PrefabInstance: {fileID: 1955764677394602746}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7649560252601722708 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8146157516579503534, guid: 12a5271e0603d43439f618bfd177b5e1, type: 3}
+  m_PrefabInstance: {fileID: 1955764677394602746}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c6e8f9684a9a540b00a9ae42dd8148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Enemy.BasicEnemy

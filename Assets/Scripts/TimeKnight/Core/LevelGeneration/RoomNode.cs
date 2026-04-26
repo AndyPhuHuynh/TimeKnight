@@ -19,7 +19,7 @@ namespace TimeKnight.Core.LevelGeneration
     // Represents the placement of a room and it's connections before it is instantiated
     public class RoomNode
     {
-        private RoomDefinition _definition = null!;
+        public RoomDefinition Definition = null!;
         private ConnectionNode[] _connections = null!;
         public Vector3 WorldPos { get; private set; }
 
@@ -27,16 +27,16 @@ namespace TimeKnight.Core.LevelGeneration
 
         public Dictionary<Vector3Int, TileBase> GetTileWorldPositions()
         {
-            var localPositions = _definition.GetTileLocalPositions();
+            var localPositions = Definition.GetTileLocalPositions();
             var flooredWorldPos = WorldPos.FloorToInt();
             return localPositions.ToDictionary(
                 kvp => kvp.Key + flooredWorldPos,
                 kvp => kvp.Value);
         }
 
-        public IRoomBehavior[] GetAllBehaviors()
+        public IRoomBehavior[] GetBehaviors()
         {
-            return _definition.GetComponentsInChildren<IRoomBehavior>();
+            return Definition.GetComponentsInChildren<IRoomBehavior>();
         }
 
         public static RoomNode FromStart(RoomDefinition definition)
@@ -49,7 +49,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             return new RoomNode
             {
-                _definition = definition,
+                Definition = definition,
                 _connections = connections,
                 WorldPos = Vector3.zero
             };
@@ -104,7 +104,7 @@ namespace TimeKnight.Core.LevelGeneration
                     // Initialize the new room instance
                     var newInstance = new RoomNode
                     {
-                        _definition = other,
+                        Definition = other,
                         _connections = newConnections,
                         WorldPos = newCenterPos,
                     };

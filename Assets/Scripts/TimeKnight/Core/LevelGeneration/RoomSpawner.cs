@@ -2,7 +2,7 @@ using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-	public static class RoomSpawn
+	public static class RoomSpawner
 	{
 		public static void FromNode(RoomNode node, Tilemap tilemap)
 		{
@@ -13,10 +13,10 @@ namespace TimeKnight.Core.LevelGeneration
 			}
 			tilemap.RefreshAllTiles();
 
-			var behaviors = node.GetAllBehaviors();
+			var behaviors = node.GetBehaviors();
 			foreach (var behavior in behaviors)
 			{
-				behavior.OnSpawn();
+				behavior.OnSpawn(node);
 			}
 		}
 	}

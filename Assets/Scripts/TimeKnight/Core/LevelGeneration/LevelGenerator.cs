@@ -116,7 +116,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             foreach (var (_, ルームノド) in _roomNodeMap)
             {
-                RoomSpawn.FromNode(ルームノド, terrainTilemap); 
+                RoomSpawner.FromNode(ルームノド, terrainTilemap); 
             }
         }
 
