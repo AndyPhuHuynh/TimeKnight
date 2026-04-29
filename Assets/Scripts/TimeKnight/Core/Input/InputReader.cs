@@ -4,8 +4,6 @@ using UnityEngine.InputSystem;
 
 namespace TimeKnight.Core.Input
 {
-    // TODO: Change sword and interaction maps to be under gameplay map
-    
     [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
     public class InputReader : ScriptableObject
     {

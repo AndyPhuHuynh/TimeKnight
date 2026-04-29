@@ -65,18 +65,7 @@ namespace TimeKnight.Editor.LevelGeneration
             {
                 room?.BakeConnections();
             }
-            ReinitializeAllRegistries();
-        }
-
-        private static void ReinitializeAllRegistries()
-        {
-            var guids = AssetDatabase.FindAssets($"t:{nameof(RoomRegistry)}");
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var registry = AssetDatabase.LoadAssetAtPath<RoomRegistry>(path);
-                registry?.Initialize();
-            }
+            RoomRegistry.ReinitializeAllRegistries();
         }
     }
 }

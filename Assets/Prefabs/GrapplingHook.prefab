@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8314082572367751717}
   - component: {fileID: 2395162639635163423}
-  - component: {fileID: 9121998680109703908}
   - component: {fileID: 8504072050259591554}
   - component: {fileID: 644152655253807856}
   m_Layer: 0
-  m_Name: hook Tip
+  m_Name: HookTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,8 +79,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 201516983
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1957907319812023177, guid: ad8f08a55bf983a49a1a7c2d69a9017e, type: 3}
@@ -94,19 +93,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &9121998680109703908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 793656920509642054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d0ff98e7a91b8c4dbd65bd34a650a35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  _parentHook: {fileID: 7635791607736975652}
 --- !u!50 &8504072050259591554
 Rigidbody2D:
   serializedVersion: 5
@@ -190,9 +176,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6076415798483156566}
   - component: {fileID: 8675257863141165982}
-  - component: {fileID: 7635791607736975652}
   m_Layer: 0
-  m_Name: Grappling Hook
+  m_Name: GrapplingHook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -259,8 +244,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 201516983
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: eefc055c063fb08459a5e1e9c44173b9, type: 3}
@@ -273,22 +258,3 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &7635791607736975652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6218011807847909229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b34195b1a8e8c743a4f805ff384e6ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GrapplingHook
-  tipTransform: {fileID: 8314082572367751717}
-  baseLength: 1
-  maxLength: 25
-  fireSpeed: 70
-  retractSpeed: 75
-  pullSpeed: 30
-  playerController: {fileID: 0}

@@ -27,7 +27,16 @@ namespace TimeKnight.Core.LevelGeneration
 
         public Dictionary<Vector3Int, TileBase> GetTileWorldPositions()
         {
-            var localPositions = Definition.GetTileLocalPositions();
+            var localPositions = Definition.GetTerrainLocalPositions();
+            var flooredWorldPos = WorldPos.FloorToInt();
+            return localPositions.ToDictionary(
+                kvp => kvp.Key + flooredWorldPos,
+                kvp => kvp.Value);
+        }
+        
+        public Dictionary<Vector3Int, TileBase> GetBackgroundWorldPositions()
+        {
+            var localPositions = Definition.GetBackgroundLocalPositions();
             var flooredWorldPos = WorldPos.FloorToInt();
             return localPositions.ToDictionary(
                 kvp => kvp.Key + flooredWorldPos,
@@ -71,7 +80,7 @@ namespace TimeKnight.Core.LevelGeneration
             otherConnections.ShuffleInPlace(random);
             
             // Iterate through every pair of connections
-            var localTilePositions = other.GetTileLocalPositions();
+            var localTilePositions = other.GetTerrainLocalPositions();
             foreach (var thisConnection in thisConnections)
             {
                 foreach (var otherConnection in otherConnections)

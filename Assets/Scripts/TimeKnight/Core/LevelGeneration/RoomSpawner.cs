@@ -4,14 +4,21 @@ namespace TimeKnight.Core.LevelGeneration
 {
 	public static class RoomSpawner
 	{
-		public static void FromNode(RoomNode node, Tilemap tilemap)
+		public static void FromNode(RoomNode node, Tilemap terrain, Tilemap background)
 		{
-			var positions = node.GetTileWorldPositions();
-			foreach (var (pos, tile) in positions)
+			var terrainTiles = node.GetTileWorldPositions();
+			foreach (var (pos, tile) in terrainTiles)
 			{
-				tilemap.SetTile(pos, tile);
+				terrain.SetTile(pos, tile);
 			}
-			tilemap.RefreshAllTiles();
+			terrain.RefreshAllTiles();
+			
+			var backgroundTiles = node.GetBackgroundWorldPositions();
+			foreach (var (pos, tile) in backgroundTiles)
+			{
+				background.SetTile(pos, tile);
+			}
+			background.RefreshAllTiles();
 
 			var behaviors = node.GetBehaviors();
 			foreach (var behavior in behaviors)

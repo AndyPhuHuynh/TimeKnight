@@ -19,10 +19,6 @@ namespace TimeKnight.Core.LevelGeneration
 		
 		private void OnEnable()
 		{
-			foreach (var type in allValidTypes)
-			{
-				RoomsOfType[type] = new List<RoomDefinition>();
-			}
 			Initialize();
 		}
 		
@@ -30,7 +26,14 @@ namespace TimeKnight.Core.LevelGeneration
 		{
 			foreach (var type in allValidTypes)
 			{
-				RoomsOfType[type].Clear();
+				if (RoomsOfType.TryGetValue(type, out var rooms))
+				{
+					rooms.Clear();	
+				}
+				else
+				{
+					RoomsOfType[type] = new List<RoomDefinition>();
+				}
 			}
 			
 			for (var i = 0; i < AllRooms.Count; i++)
@@ -58,6 +61,19 @@ namespace TimeKnight.Core.LevelGeneration
 			}
 #if UNITY_EDITOR
 			UnityEditor.EditorUtility.SetDirty(this);
+#endif
+		}
+		
+		public static void ReinitializeAllRegistries()
+		{
+#if UNITY_EDITOR
+			var guids = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(RoomRegistry)}");
+			foreach (var guid in guids)
+			{
+				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+				var registry = UnityEditor.AssetDatabase.LoadAssetAtPath<RoomRegistry>(path);
+				registry?.Initialize();
+			}
 #endif
 		}
 	}

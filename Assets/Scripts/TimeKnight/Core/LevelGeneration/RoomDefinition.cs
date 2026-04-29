@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TimeKnight.Attributes;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -12,7 +13,8 @@ namespace TimeKnight.Core.LevelGeneration
         [Header("Tiles")]
         [SerializeField] private Tileset tileset = null!;
         [SerializeField] private Tilemap terrainMap = null!;
-        [field: SerializeField] public Tilemap ConnectionMap { get; private set; } = null!;
+        [SerializeField] private Tilemap backgroundMap = null!;
+        [SerializeField] private Tilemap connectionMap = null!;
         
         [Header("Type")]
         [field: SerializeField] public RoomType RoomType { get; private set; } = RoomType.None;
@@ -25,7 +27,8 @@ namespace TimeKnight.Core.LevelGeneration
         {
             Validation.NotNull(this, tileset, nameof(tileset));
             Validation.NotNull(this, terrainMap, nameof(terrainMap));
-            Validation.NotNull(this, ConnectionMap, nameof(ConnectionMap));
+            Validation.NotNull(this, backgroundMap, nameof(backgroundMap));
+            Validation.NotNull(this, connectionMap, nameof(connectionMap));
 
             if (RoomType == RoomType.None) Debug.LogWarning($"RoomType on {gameObject.name} is None", this);
         }
@@ -33,9 +36,9 @@ namespace TimeKnight.Core.LevelGeneration
         public void BakeConnections()
         {
             connectionList.Clear();
-            foreach (var pos in ConnectionMap.cellBounds.allPositionsWithin)
+            foreach (var pos in connectionMap.cellBounds.allPositionsWithin)
             {
-                var tile = ConnectionMap.GetTile(pos);
+                var tile = connectionMap.GetTile(pos);
                 if (!IsConnectionTile(tile)) continue;
                 connectionList.Add(new ConnectionDefinition
                 {
@@ -44,6 +47,7 @@ namespace TimeKnight.Core.LevelGeneration
                 });
             }
 #if UNITY_EDITOR
+            RoomRegistry.ReinitializeAllRegistries();
             UnityEditor.EditorUtility.SetDirty(this);
 #endif
         }
@@ -67,17 +71,8 @@ namespace TimeKnight.Core.LevelGeneration
         {
             return terrainMap.localBounds.center;
         }
-        
-        public Dictionary<Vector3Int, TileBase> GetTileLocalPositions()
-        {
-            var result = new Dictionary<Vector3Int, TileBase>();
-            foreach (var pos in terrainMap.cellBounds.allPositionsWithin)
-            {
-                var tile = terrainMap.GetTile(pos);
-                if (tile is null) continue;
-                result.Add(pos, tile);
-            }
-            return result;
-        }
+
+        public Dictionary<Vector3Int, TileBase> GetTerrainLocalPositions() => terrainMap.GetLocalPositions();
+        public Dictionary<Vector3Int, TileBase> GetBackgroundLocalPositions() => backgroundMap.GetLocalPositions();
     }
 }

@@ -73,9 +73,13 @@ namespace TimeKnight.Core.LevelGeneration
     
     public class LevelGenerator : MonoBehaviour
     {
+        [Header("Configuration")]
         [SerializeField] private RoomRegistry rooms = null!;
         [SerializeField] private int seed;
+        
+        [Header("Tilemaps")]
         [SerializeField] private Tilemap terrainTilemap = null!;
+        [SerializeField] private Tilemap backgroundTilemap = null!;
 
         private Random _random = null!;
         
@@ -86,6 +90,7 @@ namespace TimeKnight.Core.LevelGeneration
         {
             Validation.NotNull(this, rooms, nameof(rooms));
             Validation.NotNull(this, terrainTilemap, nameof(terrainTilemap));
+            Validation.NotNull(this, backgroundTilemap, nameof(backgroundTilemap));
         }
         
         private void Awake()
@@ -98,15 +103,20 @@ namespace TimeKnight.Core.LevelGeneration
             _random = new Random(seed);
             
             var startRoom = new LevelNode("start", RoomType.Start);
-            var secondRoom = new LevelNode("2", RoomType.Enemy);
-            var thirdRoom = new LevelNode("3", RoomType.Enemy);
-            var room4 = new LevelNode("4", RoomType.Enemy);
-            var room5 = new LevelNode("5", RoomType.Enemy);
+            var path1Room1 = new LevelNode("path1room1", RoomType.Enemy);
+            var path1Room2 = new LevelNode("path1room2", RoomType.Start);
             
-            LevelNode.Connect(startRoom, secondRoom);
-            LevelNode.Connect(secondRoom, thirdRoom);
-            LevelNode.Connect(thirdRoom, room4);
-            LevelNode.Connect(startRoom, room5);
+            var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
+            var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
+            var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
+            
+            
+            LevelNode.Connect(startRoom, path1Room1);
+            LevelNode.Connect(path1Room1, path1Room2);
+            
+            LevelNode.Connect(startRoom, path2Room1);
+            LevelNode.Connect(path2Room1, path2Room2);
+            LevelNode.Connect(path2Room2, path2Room3);
             
             var success = GenerateGraph(startRoom);
             if (!success)
@@ -116,7 +126,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             foreach (var (_, ルームノド) in _roomNodeMap)
             {
-                RoomSpawner.FromNode(ルームノド, terrainTilemap); 
+                RoomSpawner.FromNode(ルームノド, terrainTilemap, backgroundTilemap); 
             }
         }
 
