@@ -9,13 +9,16 @@ namespace TimeKnight.Core.LevelGeneration
 {
     public class RoomDefinition : MonoBehaviour
     {
+        [Header("Base Prefab Settings")]
+        [SerializeField] private bool isBase;
+        
         [Header("Tiles")]
         [SerializeField] private Tileset tileset = null!;
         [SerializeField] private Tilemap terrainMap = null!;
         [field: SerializeField] public Tilemap ConnectionMap { get; private set; } = null!;
         
         [Header("Type")]
-        [field: SerializeField] public RoomType RoomType { get; private set; }
+        [field: SerializeField] public RoomType RoomType { get; private set; } = RoomType.None;
         
         [Header("Connections")]
         [SerializeField, ReadOnly] private List<ConnectionDefinition> connectionList = new();
@@ -26,6 +29,13 @@ namespace TimeKnight.Core.LevelGeneration
             Validation.NotNull(this, tileset, nameof(tileset));
             Validation.NotNull(this, terrainMap, nameof(terrainMap));
             Validation.NotNull(this, ConnectionMap, nameof(ConnectionMap));
+
+            if (isBase) return;
+            if (RoomType == RoomType.None) Debug.LogError($"RoomType on {gameObject.name} is None", this);
+        }
+
+        private void OnEnable()
+        {
             if (RoomType == RoomType.None) Debug.LogError($"RoomType on {gameObject.name} is None", this);
         }
 

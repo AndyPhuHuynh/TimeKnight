@@ -41,7 +41,11 @@ namespace TimeKnight.Core.LevelGeneration
 					Debug.LogError($"RoomRegistry: Room at index {i} is null", this);
 					continue;
 				}
-				if (room.RoomType == RoomType.None) Debug.LogError($"RoomType on {room.name} is None", this);
+				if (room.RoomType == RoomType.None)
+				{
+					Debug.LogError($"RoomType on {room.name} is None", room.gameObject);
+					continue;
+				}
 				RoomsOfType[room.RoomType].Add(room);
 			}
 
