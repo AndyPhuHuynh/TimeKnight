@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.LevelGeneration.RoomRegistry
   <AllRooms>k__BackingField:
   - {fileID: 9004045755459012788, guid: 769ea42e6e5914f49aa931c53014b012, type: 3}
-  - {fileID: 9106080394966577514, guid: 3ab4f3db26d474e0086adbec0edf5e49, type: 3}
+  - {fileID: 8804684839621508299, guid: faae44b516ed34c6f9666fa0178496e0, type: 3}
