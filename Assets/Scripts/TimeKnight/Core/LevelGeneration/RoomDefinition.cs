@@ -6,11 +6,6 @@ using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.SceneManagement;
-#endif
-
 namespace TimeKnight.Core.LevelGeneration
 {
     public class RoomDefinition : MonoBehaviour
@@ -53,7 +48,7 @@ namespace TimeKnight.Core.LevelGeneration
                 });
             }
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
+            UnityEditor.EditorUtility.SetDirty(this);
 #endif
         }
 
@@ -72,11 +67,7 @@ namespace TimeKnight.Core.LevelGeneration
             throw new ArgumentException($"Invalid tile on connection tileset: {tile.name}");
         }
 
-        public Vector3 GetCenter()
-        {
-            return terrainMap.localBounds.center;
-        }
-
+        public Vector3 GetCenter() => terrainMap.localBounds.center;
         public Dictionary<Vector3Int, TileBase> GetTerrainLocalPositions() => terrainMap.GetLocalPositions();
         public Dictionary<Vector3Int, TileBase> GetBackgroundLocalPositions() => backgroundMap.GetLocalPositions();
     }
