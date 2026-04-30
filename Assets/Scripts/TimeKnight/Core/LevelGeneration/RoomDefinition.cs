@@ -35,7 +35,7 @@ namespace TimeKnight.Core.LevelGeneration
             Validation.NotNull(this, backgroundMap, nameof(backgroundMap));
             Validation.NotNull(this, connectionMap, nameof(connectionMap));
 
-            if (IsBasePrefab()) return;
+            if (Validation.IsExactPrefabAtPath(gameObject, Paths.RoomBase)) return;
             if (RoomType == RoomType.None) Debug.LogWarning($"RoomType on {gameObject.name} is None", this);
         }
         
@@ -53,44 +53,7 @@ namespace TimeKnight.Core.LevelGeneration
                 });
             }
 #if UNITY_EDITOR
-            RoomRegistry.ReinitializeAllRegistries();
             EditorUtility.SetDirty(this);
-#endif
-        }
-
-        private bool IsBasePrefab()
-        {
-#if UNITY_EDITOR
-            // Check if we're currently editing this object in Prefab Mode
-            try
-            {
-                var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
-                if (prefabStage != null && prefabStage.IsPartOfPrefabContents(gameObject))
-                {
-                    var stagePath = prefabStage.assetPath;
-                    if (string.IsNullOrEmpty(stagePath)) return true;
-                    return stagePath.Contains(Paths.RoomBase);
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                // Not safe to query prefab stage yet (called during Awake/OnEnable).
-                // Fall through to asset path check below.
-            }
-            // Check if this is a prefab asset in the projects tab
-            var partOfPrefab = PrefabUtility.IsPartOfPrefabAsset(gameObject);
-            if (!partOfPrefab) return false;
-            
-            // Check the path
-            var path = AssetDatabase.GetAssetPath(gameObject);
-            
-            // If we click off the item in the project tab, this returns an empty string
-            // Return true here just to be safe
-            if (string.IsNullOrEmpty(path)) return true;
-
-            return path.Contains(Paths.RoomBase);
-#else
-            return false;
 #endif
         }
 

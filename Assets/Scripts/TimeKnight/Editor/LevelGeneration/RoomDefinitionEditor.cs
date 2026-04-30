@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Core.LevelGeneration;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -38,7 +39,7 @@ namespace TimeKnight.Editor.LevelGeneration
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
-                BakeAllConnections();
+                EditorApplication.delayCall += BakeAllConnections;
             }
             
             GUILayout.Space(10);
@@ -65,6 +66,20 @@ namespace TimeKnight.Editor.LevelGeneration
             {
                 room?.BakeConnections();
             }
+            
+            // Save prefab stage if we're currently editing a prefab
+            var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                // This saves the prefab stage contents back to the asset on disk
+                PrefabUtility.SaveAsPrefabAsset(
+                    prefabStage.prefabContentsRoot,
+                    prefabStage.assetPath
+                );
+            }
+            
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             RoomRegistry.ReinitializeAllRegistries();
         }
     }

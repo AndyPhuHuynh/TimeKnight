@@ -1,4 +1,11 @@
 using UnityEngine;
+using Object = UnityEngine.Object;
+
+#if UNITY_EDITOR
+using System;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
 namespace TimeKnight.Utils
 {
@@ -11,6 +18,43 @@ namespace TimeKnight.Utils
 			{
 				Debug.LogError($"{fieldName} on {owner.name} is not assigned!", owner);
 			}
+		}
+		
+		public static bool IsExactPrefabAtPath(GameObject gameObject, string pathToCheck)
+		{
+#if UNITY_EDITOR
+			// Check if we're currently editing this object in Prefab Mode
+			try
+			{
+				var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+				if (prefabStage != null && prefabStage.IsPartOfPrefabContents(gameObject))
+				{
+					var stagePath = prefabStage.assetPath;
+					if (string.IsNullOrEmpty(stagePath)) return true;
+					return stagePath.Contains(pathToCheck);
+				}
+			}
+			catch (InvalidOperationException)
+			{
+				// Not safe to query prefab stage yet (called during Awake/OnEnable).
+				// Fall through to asset path check below.
+			}
+            
+			// Check if this is a prefab asset in the projects tab
+			var partOfPrefab = PrefabUtility.IsPartOfPrefabAsset(gameObject);
+			if (!partOfPrefab) return false;
+			
+			// Could be in a prefab stage that isn't ready yet
+			// Check the asset path via the prefab object itself as a fallback
+			var sourcePrefab = PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject);
+			if (sourcePrefab == null) return false;
+			
+			var sourcePath = AssetDatabase.GetAssetPath(sourcePrefab);
+			if (string.IsNullOrEmpty(sourcePath)) return true;
+			return sourcePath.Contains(pathToCheck);
+#else
+            return false;
+#endif
 		}
 	}
 }
