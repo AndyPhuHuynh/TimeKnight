@@ -76,6 +76,7 @@ namespace TimeKnight.Core.LevelGeneration
         [Header("Configuration")]
         [SerializeField] private RoomRegistry rooms = null!;
         [SerializeField] private int seed;
+        [SerializeField] private TileBase defaultBackgroundTile = null!;
         
         [Header("Tilemaps")]
         [SerializeField] private Tilemap terrainTilemap = null!;
@@ -89,6 +90,7 @@ namespace TimeKnight.Core.LevelGeneration
         private void OnValidate()
         {
             Validation.NotNull(this, rooms, nameof(rooms));
+            Validation.NotNull(this, defaultBackgroundTile, nameof(defaultBackgroundTile));
             Validation.NotNull(this, terrainTilemap, nameof(terrainTilemap));
             Validation.NotNull(this, backgroundTilemap, nameof(backgroundTilemap));
         }
@@ -110,7 +112,6 @@ namespace TimeKnight.Core.LevelGeneration
             var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
             var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
             
-            
             LevelNode.Connect(startRoom, path1Room1);
             LevelNode.Connect(path1Room1, path1Room2);
             
@@ -128,6 +129,7 @@ namespace TimeKnight.Core.LevelGeneration
             {
                 RoomSpawner.FromNode(ルームノド, terrainTilemap, backgroundTilemap); 
             }
+            FillBackground();
         }
 
         private bool GenerateGraph(LevelNode start)
@@ -256,6 +258,17 @@ namespace TimeKnight.Core.LevelGeneration
             }
 
             return false;
+        }
+
+        private void FillBackground()
+        {
+            foreach (var pos in backgroundTilemap.cellBounds.allPositionsWithin)
+            {
+                if (!backgroundTilemap.HasTile(pos))
+                {
+                    backgroundTilemap.SetTile(pos, defaultBackgroundTile);
+                }
+            }
         }
     }
 }
