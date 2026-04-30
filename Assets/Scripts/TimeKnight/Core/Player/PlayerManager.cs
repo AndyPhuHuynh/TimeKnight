@@ -1,22 +1,34 @@
 using System;
 using System.Collections;
+using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 
 namespace TimeKnight.Core.Player
 {
     public class PlayerManager : MonoBehaviour
     {
-        // TODO: Finalize how we handle health. right now I'm thinking all health is integer, and we round when calculating damage.
         public int maxHealth = 10;
         public int Health { get; private set; }
-        public event Action<int> MaxHealthChanged = delegate {}; 
-        public event Action<int> HealthChanged = delegate {};
+        public event Action<int> MaxHealthChanged = delegate { };
+        public event Action<int> HealthChanged = delegate { };
+        [Header("Knockback Application")]
+        [SerializeField] private Rigidbody2D rb = null!;
+        [SerializeField] private InputReader inputReader = null!;
+        [Header("Player Stats")]
         [SerializeField] private float baseDamage = 2;
         [SerializeField] private float critChance = 0.1f;
         [SerializeField] private float critDamageMultiplier = 2.0f;
         [SerializeField] private float damageResistance = 1.0f;
         [SerializeField] private float damageRecoveryTime = 1f;
+        [SerializeField] private float knockbackStunTime = 0.5f;
         private bool _isInvincible;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, rb, "Rigidbody2D");
+            Validation.NotNull(this, inputReader, "Input Reader");
+        }
 
         private void Awake()
         {
@@ -41,7 +53,21 @@ namespace TimeKnight.Core.Player
         public void Damage(float damage)
         {
             if (_isInvincible) return;
-            
+
+            ApplyDamage(damage);
+        }
+
+        public void Damage(float damage, Vector2 knockback)
+        {
+            if (_isInvincible) return;
+
+            ApplyDamage(damage);
+            StartCoroutine(KnockbackStun());
+            Combat.ApplyKnockback(rb, knockback);
+        }
+
+        private void ApplyDamage(float damage)
+        {
             StartCoroutine(DamageInvulnerability());
             Health -= (int)Math.Round(damage * damageResistance);
             HealthChanged.Invoke(Health);
@@ -57,6 +83,22 @@ namespace TimeKnight.Core.Player
                 yield return null;
             }
             _isInvincible = false;
+        }
+
+        private IEnumerator KnockbackStun()
+        {
+            float timePassed = 0;
+            InputState initialState = inputReader.SaveState();
+            inputReader.SetMapStatus(InputStatus.Disabled, ActionMaps.Every);
+            while (timePassed < knockbackStunTime)
+            {
+                timePassed += Time.deltaTime;
+                yield return null;
+            }
+
+            // Reset x velocity 
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
+            inputReader.RestoreState(initialState);
         }
     }
 }

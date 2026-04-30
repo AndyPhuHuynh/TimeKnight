@@ -17,9 +17,12 @@ namespace TimeKnight.Core.Sword
         [SerializeField] private float attackRadius = 0.5f;
         [SerializeField] private LayerMask attackableLayer;
         [SerializeField] private float attackCooldown = 1;
+        [SerializeField] private float horizontalKnockbackForce = 6f;
+        [SerializeField] private float verticalKnockbackForce = 4f;
 
         private bool _isSwordingSwinging;
         private float _attackTimer;
+        private Coroutine? _swordHitboxCoroutine = null;
 
         // Collision management
         private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
@@ -52,9 +55,16 @@ namespace TimeKnight.Core.Sword
         
         public void BeginSwing()
         {
+            // End Old sword hit if one was happening.
+            if (_swordHitboxCoroutine != null)
+            {
+                StopCoroutine(_swordHitboxCoroutine);
+                _previouslyDamagedThisAttack.Clear();
+            }
+
             _attackTimer = 0;
             _isSwordingSwinging = true;
-            StartCoroutine(DamageWhileAttackActive());
+            _swordHitboxCoroutine = StartCoroutine(DamageWhileAttackActive());
         }
 
         public void EndSwing()
@@ -75,8 +85,11 @@ namespace TimeKnight.Core.Sword
 
                     // Ignore enemies that have already been hit with this swing.
                     if (iDamageable == null || _previouslyDamagedThisAttack.Contains(iDamageable)) continue;
+
+                    // Knockback calculated here because we need the position of the enemy for calculations.                    
+                    Vector2 knockback = Combat.CalculateKnockback(PlayerController.PlayerPosition, hit.gameObject.transform.position, horizontalKnockbackForce, verticalKnockbackForce);
+                    iDamageable.Damage(damage, knockback);
                     
-                    iDamageable.Damage(damage);
                     _previouslyDamagedThisAttack.Add(iDamageable);
                 }
 
@@ -85,6 +98,7 @@ namespace TimeKnight.Core.Sword
 
             // Clear out previously damaged objects so they can be hit on the next sword swing.
             _previouslyDamagedThisAttack.Clear();
+            _swordHitboxCoroutine = null;
         }
 
         private void OnDrawGizmosSelected()

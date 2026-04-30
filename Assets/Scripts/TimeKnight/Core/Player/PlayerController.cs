@@ -11,6 +11,7 @@ namespace TimeKnight.Core.Player
 		private PlayerAnimator _animator = null!;
 		private static Transform _playerTransform = null!;
 		public static Vector3 PlayerPosition => _playerTransform.position;
+		public static bool IsPlayerFacingLeft => _playerTransform.localScale.x < 0;
 		
 		[Header("Input Reader")]
 		[SerializeField] private InputReader input = null!;

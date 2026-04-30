@@ -473,11 +473,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   maxHealth: 10
+  rb: {fileID: 6837310045875004360}
+  inputReader: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   baseDamage: 2
   critChance: 0.1
   critDamageMultiplier: 2
   damageResistance: 1
   damageRecoveryTime: 1
+  knockbackStunTime: 0.2
 --- !u!1 &8894625496495905059
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,6 +859,14 @@ PrefabInstance:
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: attackableLayer.m_Bits
       value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: verticalKnockbackForce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: horizontalKnockbackForce
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5772134652196904952, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: m_Enabled
