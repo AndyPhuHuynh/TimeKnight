@@ -1,3 +1,4 @@
+using TimeKnight.Core.GrapplingHook;
 using TimeKnight.Core.Input;
 using TimeKnight.Utils;
 using UnityEngine;
@@ -132,8 +133,10 @@ namespace TimeKnight.Core.Player
 
 		private void OnGrappleStopCancelled(InputAction.CallbackContext _)
 		{
-			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
 			jumpMovement.StopJump();
+			
+			if (grapplingHookMovement.HookState == HookState.Stuck) return;
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
 		}
 
 		private void OnGrappleEnterIdle()
