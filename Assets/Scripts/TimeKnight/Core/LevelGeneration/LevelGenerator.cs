@@ -105,17 +105,17 @@ namespace TimeKnight.Core.LevelGeneration
             _random = new Random(seed);
             
             var startRoom = new LevelNode("start", RoomType.Start);
-            var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
             var path1Room1 = new LevelNode("path1room1", RoomType.Enemy);
-            var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room2", RoomType.Connection);
             var path1Room2 = new LevelNode("path1room2", RoomType.Start);
+            var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
+            var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room1ToRoom2", RoomType.Connection);
             
-            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
             var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
-            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room2", RoomType.Connection);
             var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
-            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room3", RoomType.Connection);
             var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
+            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
+            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room1ToRoom2", RoomType.Connection);
+            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room2ToRoom3", RoomType.Connection);
             
             LevelNode.Connect(startRoom, connectionStartToPath1Room1);
             LevelNode.Connect(connectionStartToPath1Room1, path1Room1);
