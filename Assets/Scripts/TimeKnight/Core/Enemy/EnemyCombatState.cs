@@ -8,7 +8,7 @@ namespace TimeKnight.Core.Enemy
     }
 
     
-    public static class HookStateExtensions
+    public static class EnemyCombatStateExtensions
     {
         public static bool IsNone       (this EnemyCombatState state) => state == EnemyCombatState.None;
         public static bool IsAttacking  (this EnemyCombatState state) => state == EnemyCombatState.Attacking;
