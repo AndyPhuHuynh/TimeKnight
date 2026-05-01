@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 4937219000441004003}
   - component: {fileID: 8447727882354268754}
   m_Layer: 7
-  m_Name: Connections
+  m_Name: ConnectionTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -297,7 +297,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2501658473828904779}
+  m_Father: {fileID: 4953803845503419905}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &4937219000441004003
 Tilemap:
@@ -429,6 +429,39 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
+--- !u!1 &3779323982793354225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4953803845503419905}
+  m_Layer: 0
+  m_Name: Connections
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4953803845503419905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3779323982793354225}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8315810576678037378}
+  - {fileID: 4359310702045608216}
+  m_Father: {fileID: 2501658473828904779}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5068005915265985069
 GameObject:
   m_ObjectHideFlags: 0
@@ -613,7 +646,7 @@ Transform:
   m_Children:
   - {fileID: 414929723093851784}
   - {fileID: 1000360429524042043}
-  - {fileID: 8315810576678037378}
+  - {fileID: 4953803845503419905}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &6401884137827935007
@@ -644,5 +677,37 @@ MonoBehaviour:
   terrainMap: {fileID: 8455174159908593746}
   backgroundMap: {fileID: 6844752954745531388}
   connectionMap: {fileID: 4937219000441004003}
+  connectionFillContainer: {fileID: 8410283831923294787}
   <RoomType>k__BackingField: 0
   connectionList: []
+--- !u!1 &8410283831923294787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4359310702045608216}
+  m_Layer: 0
+  m_Name: ConnectionFillContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4359310702045608216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8410283831923294787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4953803845503419905}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

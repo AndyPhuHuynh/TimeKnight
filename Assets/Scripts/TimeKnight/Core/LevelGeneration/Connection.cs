@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Core.LevelGeneration
 {
@@ -16,7 +17,8 @@ namespace TimeKnight.Core.LevelGeneration
     {
         public ConnectionType type;
         public Vector3 centerOffset;
-
+        public Tilemap? fillTilemap;
+        
         public static bool operator==(ConnectionDefinition a, ConnectionDefinition b)
         {
             return a.type == b.type  && a.centerOffset == b.centerOffset;

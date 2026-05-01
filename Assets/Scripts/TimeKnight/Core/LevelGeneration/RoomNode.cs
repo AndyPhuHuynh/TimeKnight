@@ -3,7 +3,6 @@ using System.Linq;
 using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
@@ -20,27 +19,23 @@ namespace TimeKnight.Core.LevelGeneration
     public class RoomNode
     {
         public RoomDefinition Definition = null!;
-        private ConnectionNode[] _connections = null!;
+        public ConnectionNode[] Connections = null!;
         public Vector3 WorldPos { get; private set; }
 
         private RoomNode() {}
 
-        public Dictionary<Vector3Int, TileBase> GetTileWorldPositions()
+        public IEnumerable<TileEntry> GetTileWorldPositions()
         {
-            var localPositions = Definition.GetTerrainLocalPositions();
             var flooredWorldPos = WorldPos.FloorToInt();
-            return localPositions.ToDictionary(
-                kvp => kvp.Key + flooredWorldPos,
-                kvp => kvp.Value);
+            return Definition.GetTerrainLocalTiles().Select(
+                t => new TileEntry(t.Position + flooredWorldPos, t.Tile));
         }
         
-        public Dictionary<Vector3Int, TileBase> GetBackgroundWorldPositions()
+        public IEnumerable<TileEntry> GetBackgroundWorldPositions()
         {
-            var localPositions = Definition.GetBackgroundLocalPositions();
             var flooredWorldPos = WorldPos.FloorToInt();
-            return localPositions.ToDictionary(
-                kvp => kvp.Key + flooredWorldPos,
-                kvp => kvp.Value);
+            return Definition.GetBackgroundLocalTiles().Select(
+                t => new TileEntry(t.Position + flooredWorldPos, t.Tile));
         }
 
         public IRoomBehavior[] GetBehaviors()
@@ -59,7 +54,7 @@ namespace TimeKnight.Core.LevelGeneration
             return new RoomNode
             {
                 Definition = definition,
-                _connections = connections,
+                Connections = connections,
                 WorldPos = Vector3.zero
             };
         }
@@ -68,7 +63,7 @@ namespace TimeKnight.Core.LevelGeneration
         private RoomNode? PlaceConnection(RoomDefinition other, ConnectionType type, HashSet<Vector3Int> occupiedTiles, Random random)
         {
             // Check if this room even has that connection type available.
-            var thisConnections = _connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
+            var thisConnections = Connections.Where(c => c.Definition.type == type && !c.IsConnected).ToList();
             if (thisConnections.IsEmpty()) return null;
             
             // Check if the other room has the matching connection type
@@ -80,7 +75,7 @@ namespace TimeKnight.Core.LevelGeneration
             otherConnections.ShuffleInPlace(random);
             
             // Iterate through every pair of connections
-            var localTilePositions = other.GetTerrainLocalPositions();
+            var localTiles = other.GetTerrainLocalTiles().ToArray();
             foreach (var thisConnection in thisConnections)
             {
                 foreach (var otherConnection in otherConnections)
@@ -92,8 +87,8 @@ namespace TimeKnight.Core.LevelGeneration
                     var newCenterPosInt = newCenterPos.FloorToInt();
                     
                     // Check for tilemap collisions
-                    var collisionFound = localTilePositions.Keys
-                        .Select(localPos => newCenterPosInt + localPos)
+                    var collisionFound = localTiles
+                        .Select(localTile => newCenterPosInt + localTile.Position)
                         .Where(occupiedTiles.Contains)
                         .Any();
                     if (collisionFound) continue;
@@ -114,7 +109,7 @@ namespace TimeKnight.Core.LevelGeneration
                     var newInstance = new RoomNode
                     {
                         Definition = other,
-                        _connections = newConnections,
+                        Connections = newConnections,
                         WorldPos = newCenterPos,
                     };
                     
@@ -141,9 +136,9 @@ namespace TimeKnight.Core.LevelGeneration
         
         public void RemoveConnections()
         {
-            foreach (var connection in _connections.Where(c => c.IsConnected))
+            foreach (var connection in Connections.Where(c => c.IsConnected))
             {
-                var matchingConnections = connection.ConnectedRoom!._connections.Where(c => c.ConnectedRoom == this);
+                var matchingConnections = connection.ConnectedRoom!.Connections.Where(c => c.ConnectedRoom == this);
                 foreach (var matchingConnection in matchingConnections)
                 {
                     matchingConnection.ConnectedRoom = null;

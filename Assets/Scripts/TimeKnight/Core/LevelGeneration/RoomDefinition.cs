@@ -14,7 +14,10 @@ namespace TimeKnight.Core.LevelGeneration
         [SerializeField] private Tileset tileset = null!;
         [SerializeField] private Tilemap terrainMap = null!;
         [SerializeField] private Tilemap backgroundMap = null!;
+        
+        [Header("Connections")]
         [SerializeField] private Tilemap connectionMap = null!;
+        [SerializeField] private GameObject connectionFillContainer = null!;
         
         [Header("Type")]
         [field: SerializeField] public RoomType RoomType { get; private set; } = RoomType.None;
@@ -29,6 +32,7 @@ namespace TimeKnight.Core.LevelGeneration
             Validation.NotNull(this, terrainMap, nameof(terrainMap));
             Validation.NotNull(this, backgroundMap, nameof(backgroundMap));
             Validation.NotNull(this, connectionMap, nameof(connectionMap));
+            Validation.NotNull(this, connectionFillContainer, nameof(connectionFillContainer));
 
             if (Validation.IsExactPrefabAtPath(gameObject, Paths.RoomBase)) return;
             if (RoomType == RoomType.None) Debug.LogWarning($"RoomType on {gameObject.name} is None", this);
@@ -39,12 +43,22 @@ namespace TimeKnight.Core.LevelGeneration
             connectionList.Clear();
             foreach (var pos in connectionMap.cellBounds.allPositionsWithin)
             {
-                var tile = connectionMap.GetTile(pos);
-                if (!IsConnectionTile(tile)) continue;
+                var connectionTile = connectionMap.GetTile(pos);
+                if (!IsConnectionTile(connectionTile)) continue;
+
+                Tilemap? fillTiles = null;
+                foreach (var fillTilemap in connectionFillContainer.transform.GetComponentsInChildren<Tilemap>())
+                {
+                    if (fillTilemap.GetTile(pos) is null) continue;
+                    fillTiles = fillTilemap; 
+                    break;
+                }
+                
                 connectionList.Add(new ConnectionDefinition
                 {
-                    type = GetConnectionType(tile),
-                    centerOffset = pos
+                    type = GetConnectionType(connectionTile),
+                    centerOffset = pos,
+                    fillTilemap = fillTiles
                 });
             }
 #if UNITY_EDITOR
@@ -68,7 +82,7 @@ namespace TimeKnight.Core.LevelGeneration
         }
 
         public Vector3 GetCenter() => terrainMap.localBounds.center;
-        public Dictionary<Vector3Int, TileBase> GetTerrainLocalPositions() => terrainMap.GetLocalPositions();
-        public Dictionary<Vector3Int, TileBase> GetBackgroundLocalPositions() => backgroundMap.GetLocalPositions();
+        public IEnumerable<TileEntry> GetTerrainLocalTiles() => terrainMap.GetLocalTiles();
+        public IEnumerable<TileEntry> GetBackgroundLocalTiles() => backgroundMap.GetLocalTiles();
     }
 }

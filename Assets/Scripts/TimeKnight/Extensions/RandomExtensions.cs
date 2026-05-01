@@ -3,7 +3,7 @@ using Random = System.Random;
 
 namespace TimeKnight.Extensions
 {
-    public static class RandomUtils
+    public static class RandomExtensions
     {
         public static T? GetRandomElement<T>(this IReadOnlyList<T> list, Random random)
         {

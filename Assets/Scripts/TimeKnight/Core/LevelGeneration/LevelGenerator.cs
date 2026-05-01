@@ -110,8 +110,11 @@ namespace TimeKnight.Core.LevelGeneration
             var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room2", RoomType.Connection);
             var path1Room2 = new LevelNode("path1room2", RoomType.Start);
             
+            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
             var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
+            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room2", RoomType.Connection);
             var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
+            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room3", RoomType.Connection);
             var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
             
             LevelNode.Connect(startRoom, connectionStartToPath1Room1);
@@ -119,9 +122,12 @@ namespace TimeKnight.Core.LevelGeneration
             LevelNode.Connect(path1Room1, connectionPath1Room1ToRoom2);
             LevelNode.Connect(connectionPath1Room1ToRoom2, path1Room2);
             
-            LevelNode.Connect(startRoom, path2Room1);
-            LevelNode.Connect(path2Room1, path2Room2);
-            LevelNode.Connect(path2Room2, path2Room3);
+            LevelNode.Connect(startRoom, connectionStartToPath2Room1);
+            LevelNode.Connect(connectionStartToPath2Room1, path2Room1);
+            LevelNode.Connect(path2Room1, connectionPath2Room1ToRoom2);
+            LevelNode.Connect(connectionPath2Room1ToRoom2, path2Room2);
+            LevelNode.Connect(path2Room2, connectionPath2Room2ToRoom3);
+            LevelNode.Connect(connectionPath2Room2ToRoom3, path2Room3);
             
             var success = GenerateGraph(startRoom);
             if (!success)
@@ -205,23 +211,23 @@ namespace TimeKnight.Core.LevelGeneration
 
         private void RegisterRoom(RoomNode room)
         {
-            var positions = room.GetTileWorldPositions();
-            if (positions.Any(p => _occupiedTiles.Contains(p.Key)))
+            var tiles = room.GetTileWorldPositions().ToArray();
+            if (tiles.Any(p => _occupiedTiles.Contains(p.Position)))
             {
                 throw new ArgumentException("Overlapping room detected.");
             }
-            foreach (var pos in positions)
+            foreach (var tile in tiles)
             {
-                _occupiedTiles.Add(pos.Key);
+                _occupiedTiles.Add(tile.Position);
             }
         }
 
         private void UnregisterRoom(RoomNode room)
         {
-            var positions = room.GetTileWorldPositions();
-            foreach (var pos in positions.Keys)
+            var tiles = room.GetTileWorldPositions();
+            foreach (var tile in tiles)
             {
-                _occupiedTiles.Remove(pos);
+                _occupiedTiles.Remove(tile.Position);
             }
         }
         
