@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TimeKnight.Extensions;
+using TimeKnight.Utils;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 namespace TimeKnight.Core.LevelGeneration
@@ -27,11 +29,13 @@ namespace TimeKnight.Core.LevelGeneration
     public class LevelNode
     {
         public readonly string Name;
+        public readonly RoomType RoomType;
         public readonly List<LevelNodeEdge> Edges = new();
 
-        public LevelNode(string name)
+        public LevelNode(string name, RoomType roomType)
         {
             Name = name;
+            RoomType = roomType;
         }
         
         public static void Connect(LevelNode first, LevelNode second)
@@ -42,105 +46,149 @@ namespace TimeKnight.Core.LevelGeneration
         }
     }
 
-    public class GenerationHistory
+    public class GenerationStep
     {
         public LevelNode? ExistingNode;
-        public LevelNode GeneratedNode = null!;
+        public LevelNode OtherNode = null!;
         public RoomDefinition[]? RoomShuffle;
-        public int GeneratedIndex;
+        public int ShuffleIndex;
+
+        public static GenerationStep FromStart(LevelNode start)
+        {
+            return new GenerationStep
+            {
+                OtherNode = start,
+            };
+        }
+
+        public static GenerationStep FromEdge(LevelNode existing, LevelNode other)
+        {
+            return new GenerationStep
+            {
+                ExistingNode = existing,
+                OtherNode = other
+            };
+        }
     }
     
     public class LevelGenerator : MonoBehaviour
     {
-        [SerializeField] private List<RoomDefinition> rooms = new();
+        [Header("Configuration")]
+        [SerializeField] private RoomRegistry rooms = null!;
         [SerializeField] private int seed;
+        [SerializeField] private TileBase defaultBackgroundTile = null!;
+        
+        [Header("Tilemaps")]
+        [SerializeField] private Tilemap terrainTilemap = null!;
+        [SerializeField] private Tilemap backgroundTilemap = null!;
 
         private Random _random = null!;
         
-        private readonly Dictionary<LevelNode, RoomInstance> _roomMap = new();
-        private readonly HashSet<Vector3Int> _occupiedTiles = new(); 
+        private readonly Dictionary<LevelNode, RoomNode> _roomNodeMap = new();
+        private readonly HashSet<Vector3Int> _occupiedTiles = new();
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, rooms, nameof(rooms));
+            Validation.NotNull(this, defaultBackgroundTile, nameof(defaultBackgroundTile));
+            Validation.NotNull(this, terrainTilemap, nameof(terrainTilemap));
+            Validation.NotNull(this, backgroundTilemap, nameof(backgroundTilemap));
+        }
         
         private void Awake()
         {
-            if (rooms.IsEmpty())
+            if (rooms.AllRooms.IsEmpty())
             {
                 Debug.LogWarning("No rooms found");
             }
 
             _random = new Random(seed);
             
-            var startRoom = new LevelNode("start");
-            var secondRoom = new LevelNode("2");
-            var thirdRoom = new LevelNode("3");
-            var room4 = new LevelNode("4");
-            var room5 = new LevelNode("5");
+            var startRoom = new LevelNode("start", RoomType.Start);
+            var path1Room1 = new LevelNode("path1room1", RoomType.Enemy);
+            var path1Room2 = new LevelNode("path1room2", RoomType.Start);
+            var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
+            var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room1ToRoom2", RoomType.Connection);
             
-            LevelNode.Connect(startRoom, secondRoom);
-            LevelNode.Connect(secondRoom, thirdRoom);
-            LevelNode.Connect(thirdRoom, room4);
-            LevelNode.Connect(startRoom, room5);
+            var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
+            var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
+            var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
+            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
+            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room1ToRoom2", RoomType.Connection);
+            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room2ToRoom3", RoomType.Connection);
+            
+            LevelNode.Connect(startRoom, connectionStartToPath1Room1);
+            LevelNode.Connect(connectionStartToPath1Room1, path1Room1);
+            LevelNode.Connect(path1Room1, connectionPath1Room1ToRoom2);
+            LevelNode.Connect(connectionPath1Room1ToRoom2, path1Room2);
+            
+            LevelNode.Connect(startRoom, connectionStartToPath2Room1);
+            LevelNode.Connect(connectionStartToPath2Room1, path2Room1);
+            LevelNode.Connect(path2Room1, connectionPath2Room1ToRoom2);
+            LevelNode.Connect(connectionPath2Room1ToRoom2, path2Room2);
+            LevelNode.Connect(path2Room2, connectionPath2Room2ToRoom3);
+            LevelNode.Connect(connectionPath2Room2ToRoom3, path2Room3);
             
             var success = GenerateGraph(startRoom);
             if (!success)
             {
-                Debug.LogError("Unable to find a valid configuration for the level generation");
-                return;
+                throw new InvalidOperationException("Unable to find a valid configuration for the level generation");
             }
-
-            foreach (var (node, instance) in _roomMap)
+            
+            foreach (var (_, ルームノド) in _roomNodeMap)
             {
-                instance.Instantiate(node.Name);
+                RoomSpawner.FromNode(ルームノド, terrainTilemap, backgroundTilemap); 
             }
+            FillBackground();
         }
 
         private bool GenerateGraph(LevelNode start)
         {
-            var edgesToConnect = new Stack<GenerationHistory>();
-            var history = new Stack<GenerationHistory>();
+            var stepsToGenerate = new Stack<GenerationStep>();
+            var history = new Stack<GenerationStep>();
 
             // Generate the starting room
-            var startHistory = GenerateConnectedRoom(null, start);
-            if (startHistory == null) return false;
+            var startStep = GenerationStep.FromStart(start);
+            var startSuccess = GenerateConnectedRoom(startStep);
+            if (!startSuccess) return false;
             
-            AddEdges(start, edgesToConnect);
-            history.Push(startHistory);
+            AddEdges(start, stepsToGenerate);
+            history.Push(startStep);
             
             // Generate connections
-            while (!edgesToConnect.IsEmpty())
+            while (!stepsToGenerate.IsEmpty())
             {
-                var edge = edgesToConnect.Pop();
+                var step = stepsToGenerate.Pop();
                     
                 // Attempt room generation
-                var generationHistory = GenerateConnectedRoom(edge.ExistingNode, edge.GeneratedNode, edge.RoomShuffle, edge.GeneratedIndex);
-                
-                // If generation fails undo
-                if (generationHistory is null)
+                var generationSuccess = GenerateConnectedRoom(step);
+                if (!generationSuccess)
                 {
                     // Get last placed history
                     if (history.IsEmpty()) return false;
                     var lastHistory = history.Pop();
                     
                     // Pop all things from stack connected to the room we are about to undo
-                    while (!edgesToConnect.IsEmpty())
+                    while (!stepsToGenerate.IsEmpty())
                     {
-                        var edgeToRemove = edgesToConnect.Peek();
-                        if (edgeToRemove.ExistingNode != lastHistory.GeneratedNode && 
-                            edgeToRemove.GeneratedNode != lastHistory.GeneratedNode) break;
-                        edgesToConnect.Pop();
+                        var edgeToRemove = stepsToGenerate.Peek();
+                        if (edgeToRemove.ExistingNode != lastHistory.OtherNode && 
+                            edgeToRemove.OtherNode != lastHistory.OtherNode) break;
+                        stepsToGenerate.Pop();
                     }
                     
                     // Undo the generation of the last room
-                    var roomInstanceToRemove = _roomMap[lastHistory.GeneratedNode];
+                    var roomInstanceToRemove = _roomNodeMap[lastHistory.OtherNode];
                     roomInstanceToRemove.RemoveConnections();
                     UnregisterRoom(roomInstanceToRemove);
 
                     // Place the history back on the edgesToConnect stack
-                    edgesToConnect.Push(lastHistory);
+                    stepsToGenerate.Push(lastHistory);
                 }
                 else
                 {
-                    AddEdges(edge.GeneratedNode, edgesToConnect);
-                    history.Push(generationHistory);
+                    AddEdges(step.OtherNode, stepsToGenerate);
+                    history.Push(step);
                 }
             }
 
@@ -149,84 +197,88 @@ namespace TimeKnight.Core.LevelGeneration
 
         private bool IsEdgeCreated(LevelNodeEdge edge)
         {
-            return _roomMap.ContainsKey(edge.First) && _roomMap.ContainsKey(edge.Second);
+            return _roomNodeMap.ContainsKey(edge.First) && _roomNodeMap.ContainsKey(edge.Second);
         }
 
-        private void AddEdges(LevelNode existingNode, Stack<GenerationHistory> edgesToConnect)
+        private void AddEdges(LevelNode existingNode, Stack<GenerationStep> edgesToConnect)
         {
             foreach (var edge in existingNode.Edges.Where(edge => !IsEdgeCreated(edge)))
             {
                 var otherNode = edge.Other(existingNode);
-                edgesToConnect.Push(new GenerationHistory
-                {
-                    ExistingNode = existingNode,
-                    GeneratedNode = otherNode,
-                });
+                edgesToConnect.Push(GenerationStep.FromEdge(existingNode, otherNode));
             }
         }
 
-        private void RegisterRoom(RoomInstance room)
+        private void RegisterRoom(RoomNode room)
         {
-            var positions = room.GetTileWorldPositions();
-            foreach (var pos in 
-                     from pos in positions 
-                     where !_occupiedTiles.Add(pos)
-                     select pos)
+            var tiles = room.GetTileWorldPositions().ToArray();
+            if (tiles.Any(p => _occupiedTiles.Contains(p.Position)))
             {
-                throw new ArgumentException("Attempting to register overlapping room. " +
-                                            $"{pos} is already in the occupied tiles.");
+                throw new ArgumentException("Overlapping room detected.");
+            }
+            foreach (var tile in tiles)
+            {
+                _occupiedTiles.Add(tile.Position);
             }
         }
 
-        private void UnregisterRoom(RoomInstance room)
+        private void UnregisterRoom(RoomNode room)
         {
-            var positions = room.GetTileWorldPositions();
-            positions.ForEach(pos => _occupiedTiles.Remove(pos));
+            var tiles = room.GetTileWorldPositions();
+            foreach (var tile in tiles)
+            {
+                _occupiedTiles.Remove(tile.Position);
+            }
         }
         
-        private GenerationHistory? GenerateConnectedRoom(
-            LevelNode? existingNode,
-            LevelNode otherNode,
-            RoomDefinition[]? possibleRooms = null,
-            int possibleRoomsIndex = 0)
+        private bool GenerateConnectedRoom(GenerationStep step)
         {
             // Start from a new shuffle
-            if (possibleRooms == null)
+            if (step.RoomShuffle == null)
             {
-                possibleRooms = rooms.ToArray();
-                possibleRooms.ShuffleInPlace(_random);
+                if (rooms.RoomsOfType[step.OtherNode.RoomType].IsEmpty())
+                {
+                    throw new InvalidOperationException($"Rooms of type {step.OtherNode.RoomType} is empty");
+                }
+                step.RoomShuffle = rooms.RoomsOfType[step.OtherNode.RoomType].ToArray();
+                step.RoomShuffle.ShuffleInPlace(_random);
             }
             // Resume the current shuffle and try spawning the next room
             else
             {
-                possibleRoomsIndex++;
+                step.ShuffleIndex++;
             }
 
-            for (var i = possibleRoomsIndex; i < possibleRooms.Length; i++)
+            for (var i = step.ShuffleIndex; i < step.RoomShuffle.Length; i++)
             {
                 // If the room doesn't support the amount of connections that we need
-                if (possibleRooms[i].ConnectionList.Count < otherNode.Edges.Count) continue;
+                if (step.RoomShuffle[i].ConnectionList.Count < step.OtherNode.Edges.Count) continue;
                 
                 // Generate room
                 var roomGen = 
-                    existingNode is not null ?
-                        _roomMap[existingNode].CreateConnection(possibleRooms[i], _occupiedTiles, _random) :
-                        RoomInstance.FromStart(possibleRooms[i]);
+                    step.ExistingNode is not null ?
+                        _roomNodeMap[step.ExistingNode].CreateConnection(step.RoomShuffle[i], _occupiedTiles, _random) :
+                        RoomNode.FromStart(step.RoomShuffle[i]);
                 if (roomGen == null) continue;
                 
-                _roomMap[otherNode] = roomGen;
-                RegisterRoom(_roomMap[otherNode]);
+                _roomNodeMap[step.OtherNode] = roomGen;
+                RegisterRoom(_roomNodeMap[step.OtherNode]);
 
-                return new GenerationHistory
-                {
-                    ExistingNode   = existingNode,
-                    GeneratedNode  = otherNode,
-                    RoomShuffle    = possibleRooms,
-                    GeneratedIndex = i
-                };
+                return true;
             }
 
-            return null;
+            return false;
+        }
+
+        private void FillBackground()
+        {
+            foreach (var pos in backgroundTilemap.cellBounds.allPositionsWithin)
+            {
+                if (!backgroundTilemap.HasTile(pos))
+                {
+                    backgroundTilemap.SetTile(pos, defaultBackgroundTile);
+                }
+            }
         }
     }
 }
