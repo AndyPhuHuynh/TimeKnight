@@ -49,13 +49,14 @@ namespace TimeKnight.Core.Input
             _actions = null;
         }
 
-        private static PlayerInputActions CreateActions()
-        {
-            var actions = new PlayerInputActions();
-            actions.Gameplay.Enable();
-            actions.Gameplay.GrappleStop.Disable();
-            actions.Dialogue.Disable();
-            return actions;
+        private PlayerInputActions CreateActions()
+        { 
+            _actions = new PlayerInputActions();
+            SetMapStatus(InputStatus.Enabled, ActionMaps.Gameplay);
+            SetMapStatus(InputStatus.Disabled, ActionMaps.Dialogue);
+            SetMapStatus(InputStatus.Enabled, ActionMaps.Global);
+            SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
+            return _actions;
         }
 
         public void SetMapStatus(InputStatus status, ActionMaps map)
@@ -63,6 +64,7 @@ namespace TimeKnight.Core.Input
             var op = status == InputStatus.Disabled ? DisableMap : EnableMap;
             if ((map & ActionMaps.Gameplay) != 0) op(Actions.Gameplay);
             if ((map & ActionMaps.Dialogue) != 0) op(Actions.Dialogue);
+            if ((map & ActionMaps.Global)   != 0) op(Actions.Global);
         }
 
         public void SetActionStatus(InputStatus status, GameplayActions action)
@@ -81,6 +83,12 @@ namespace TimeKnight.Core.Input
         {
             var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
             if ((action & DialogueActions.Advance) != 0) op(Actions.Dialogue.Advance);
+        }
+        
+        public void SetActionStatus(InputStatus status, GlobalActions action)
+        {
+            var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
+            if ((action & GlobalActions.Pause) != 0) op(Actions.Global.Pause);
         }
 
         public InputState SaveState()

@@ -12,8 +12,11 @@ namespace TimeKnight.Core.Input
 	public enum ActionMaps
 	{
 		None = 0,
+		
 		Gameplay = 1 << 0,
 		Dialogue = 1 << 1,
+		Global   = 1 << 2,
+		
 		Every = -1
 	}
 
@@ -44,10 +47,18 @@ namespace TimeKnight.Core.Input
 		Advance = 1 << 0
 	}
 
+	[Flags]
+	public enum GlobalActions
+	{
+		None = 0,
+		Pause = 1 << 0
+	}
+
 	public struct InputState
 	{
 		public ActionMaps ActionMaps;
 		public GameplayActions GameplayActions;
 		public DialogueActions DialogueActions;
+		public GlobalActions GlobalActions;
 	}
 }
