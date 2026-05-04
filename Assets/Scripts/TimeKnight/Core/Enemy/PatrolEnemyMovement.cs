@@ -24,25 +24,24 @@ namespace TimeKnight.Core.Enemy
         public event Action<EnemyPatrolState> OnEnemyStateExit = delegate { };
         public event Action<EnemyPatrolState> OnEnemyStateEnter = delegate { };
 
-        [Header("Patrol AI")]
+        [Header("Patrol Properties")]
         [SerializeField] private float patrolWalkSpeed = 3f;
         [SerializeField] private float patrolRange = 10f;
         private Vector3 _patrolAnchor;
         private float _teleportReturnTime = 10f;
         private float _timeAwayFromPatrol = 0f;
 
-        [Header("Chase AI")]
+        [Header("Chase Properties")]
         [SerializeField] private float chaseRange = 5f;
         [SerializeField] private float chaseWalkSpeed = 4f;
         [SerializeField] private float minimumPlayerDistance = 0.2f;
-
         public bool IsPlayerChaseable { get; private set; }
 
-        [Header("Lost Sight AI")]
+        [Header("Lost Sight Properties")]
         [SerializeField] private float lostSightPatrolCooldown = 5f;
         private float _lostSightTimer = 0f;
 
-        [Header("Collision")]
+        [Header("Collision Checking")]
         [SerializeField] private Vector3 wallCheckOffset = new Vector3(1f, 0f, 0f);
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.5f, 1f);
         [SerializeField] private Vector3 ledgeCheckOffset = new Vector3(1f, 0f, 0f);
@@ -53,13 +52,13 @@ namespace TimeKnight.Core.Enemy
         // Directional variables
         private bool _isFacingLeft => transform.localScale.x < 0;
         private int _directionModifier => _isFacingLeft ? -1 : 1;
-        private float _baseScaleX;
+        private float _baseTransformXScale;
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
             _patrolAnchor = transform.position;
-            _baseScaleX = Math.Abs(transform.localScale.x);
+            _baseTransformXScale = Math.Abs(transform.localScale.x);
         }
 
         private void Start()
@@ -100,14 +99,19 @@ namespace TimeKnight.Core.Enemy
                 return;
             }
 
-            // Only flip if we are moving away from patrol range, or if we are within patrol range and hit a wall, or if we reach a ledge
-            if (IsMovingOutOfPatrolRange() || !IsOutOfPatrolRRange() && (IsHittingWall() || IsNearLedge()))
+            bool _isMovingOutOfPatrolRange = IsMovingOutOfPatrolRange();
+            bool _isOutOfPatrolRange = IsOutOfPatrolRange();
+            bool _isHittingWall = IsHittingWall();
+            bool _isNearLedge = IsNearLedge();
+
+            // 1. Check if the enemy needs to be flipped. We need to flip if we are moving away from patrol zone, or if we are in patrol zone but hitting wall or ledge.
+            if (_isMovingOutOfPatrolRange || !_isOutOfPatrolRange && (_isHittingWall || _isNearLedge))
             {
                 FlipPatrolDirection();
             }
 
-
-            if (IsOutOfPatrolRRange())
+            // 2. Calculate if we are away from zone, and teleport back if timer reaches end.
+            if (_isOutOfPatrolRange)
             {
                 _timeAwayFromPatrol += Time.deltaTime;
             }
@@ -121,9 +125,9 @@ namespace TimeKnight.Core.Enemy
                 transform.position = _patrolAnchor;
             }
 
-            // If we are out of patrol range and reach a wall or a ledge, set linear velocity to 0 because there is something in our way.
-            // The return to patrol teleport will take over from here when timer is up.
-            if (IsOutOfPatrolRRange() && (IsHittingWall() || IsNearLedge()))
+           // 3. If we are out of patrol range and hitting wall or near a ledge, stop moving - the return to teleport timer will bring enemy back.
+           //    Otherwise move like normal.
+            if (_isOutOfPatrolRange && (_isHittingWall || _isNearLedge))
             {
                 _rb.linearVelocityX = 0;
             }
@@ -194,15 +198,6 @@ namespace TimeKnight.Core.Enemy
         {
             if (CurrentState == newState) return;
 
-            // First exit existing state;
-            switch (CurrentState)
-            {
-                case EnemyPatrolState.Patrol:
-                case EnemyPatrolState.Chase:
-                case EnemyPatrolState.LostSight:
-                case EnemyPatrolState.TooClose:
-                    break;
-            }
             OnEnemyStateExit.Invoke(CurrentState);
 
             // Perform actions needed for entering new state, then enter new state;
@@ -226,10 +221,12 @@ namespace TimeKnight.Core.Enemy
         {
             _rb.linearVelocityX = 0;
             _isAiPaused = true;
+            OnEnemyStateExit.Invoke(CurrentState);
         }
 
         public void ResumeAI()
         {
+            OnEnemyStateEnter.Invoke(CurrentState);
             _isAiPaused = false;
         }
         #endregion
@@ -250,14 +247,14 @@ namespace TimeKnight.Core.Enemy
         private void FaceRight()
         {
             Vector3 scale = transform.localScale;
-            scale.x = _baseScaleX;
+            scale.x = _baseTransformXScale;
             transform.localScale = scale;
         }
 
         private void FaceLeft()
         {
             Vector3 scale = transform.localScale;
-            scale.x = -_baseScaleX;
+            scale.x = -_baseTransformXScale;
             transform.localScale = scale;
         }
         #endregion
@@ -298,7 +295,7 @@ namespace TimeKnight.Core.Enemy
             return false;
         }
 
-        private bool IsOutOfPatrolRRange()
+        private bool IsOutOfPatrolRange()
         {
             return GetAbsoluteHorizontalDistanceTo(_patrolAnchor) > patrolRange;
         }

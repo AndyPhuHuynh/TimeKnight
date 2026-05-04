@@ -14,38 +14,39 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [Header("Enemy Properties")]
         [SerializeField] private int maxHealth = 5;
         [SerializeField] private int playerCollisionDamage = 3;
-        [Header("Attack Properties")]
-        [SerializeField] private float attackCooldown = 2f;
-        [SerializeField] private float attackRange = 2f;
-        [SerializeField] private float attackDamage = 2f;
-        [SerializeField] private float horizontalKnockbackForce = 6f;
-        [SerializeField] private float verticalKnockbackForce = 4f;
-        [SerializeField] private Transform attackTransform = null!;
-        [SerializeField] private float attackHitboxRadius = 0.5f;
-        private float _attackTimer;
         private int _currentHealth;
 
-        // State Management
-        private PatrolEnemyMovement _patrolScript = null!;
+        [Header("Attack Damage Properties")]
+        [SerializeField] private float attackDamage = 2f;
+        [SerializeField] private float attackCooldown = 2f;
+        [SerializeField] private float horizontalKnockbackForce = 6f;
+        [SerializeField] private float verticalKnockbackForce = 4f;
+        private float _attackTimer;
+        private bool _attackTimerReady => _attackTimer >= attackCooldown;
 
-        [Header("Animation Management")]
-        [SerializeField] private float flashWhenHitDuration = 0.8f;
+        [Header("Attack Hitbox Properties")]
+        [SerializeField] private float attackPlayerRange = 2f;
+        [SerializeField] private float attackHitboxRadius = 0.5f;
+        [SerializeField] private Transform attackTransform = null!;
+
+        [Header("Hit While Attacking Properties")]
+        [SerializeField] private float flashDurationWhenHit = 0.8f;
         [SerializeField] private Color flashColor;
+        private Color _baseSpriteColor;
+
+        // Animation State Management
+        private PatrolEnemyMovement _patrolScript = null!;
         private Animator _skeletonAnimator = null!;
         private readonly int _lostSightTriggerHash = Animator.StringToHash("LostSight");
         private readonly int _walkingTriggerHash = Animator.StringToHash("Walking");
         private readonly int _tooCloseTriggerHash = Animator.StringToHash("TooClose");
         private readonly int _damagedTriggerHash = Animator.StringToHash("Damaged");
         private readonly int _attackTriggerHash = Animator.StringToHash("Attack");
-        private Color _baseSpriteColor;
 
-        // Combat management
-
+        // Combat State management
         private EnemyCombatState _combatState = EnemyCombatState.None;
-
-        private bool _attackTimerReady => _attackTimer >= attackCooldown;
         private bool _isHitboxActive = false;
-        private Coroutine? _isBeingDamagedCoroutine = null;
+        private Coroutine? _receiveKnockbackCoroutine = null;
 
         private void Awake()
         {
@@ -55,17 +56,16 @@ namespace TimeKnight.Core.Enemy.Skeleton
             _skeletonAnimator = GetComponent<Animator>();
             _patrolScript = GetComponent<PatrolEnemyMovement>();
             _currentHealth = maxHealth;
-            _attackTimer = attackCooldown + 1;
+            _attackTimer = attackCooldown;
         }
 
         private void Update()
         {
-            // If statement prevents attack timer growing very large when going a long time without attacking.
-            if (_attackTimer < attackCooldown + 2 && !_combatState.IsAttacking())
+            if (!_attackTimerReady && !_combatState.IsAttacking())
             {
                 _attackTimer += Time.deltaTime;
             }
-            if (CanAttackPlayer())
+            else if (CanAttackPlayer())
             {
                 _combatState = EnemyCombatState.Attacking;
                 StartCoroutine(AttackPlayer());
@@ -100,22 +100,23 @@ namespace TimeKnight.Core.Enemy.Skeleton
             }
         }
 
+        // Called From animation clips to exit combat animations.
         public void ResetCombatState()
         {
             _combatState = EnemyCombatState.None;
         }
-
         #endregion
 
         #region Receiving Damage From PLayer
-
         public void Damage(float damage, Vector2? knockback)
         {
-            // First determine if enemy should die.
             _currentHealth -= (int)Math.Round(damage);
-            if (_currentHealth <= 0) Die();
+            if (_currentHealth <= 0)
+            {
+                Die();
+                return;
+            }
 
-            // If enemy is attacking, then don't play damaged animation.
             if (_combatState.IsAttacking())
             {
                 StartCoroutine(FlashWhenHit());
@@ -123,29 +124,27 @@ namespace TimeKnight.Core.Enemy.Skeleton
             else
             {
                 _combatState = EnemyCombatState.BeingDamaged;
-                // Exit Damage coroutine prematurely if hit in quick succession. This prevents the reset animation UpdateAnimation be called in between hits.
-                if (_isBeingDamagedCoroutine != null) StopCoroutine(_isBeingDamagedCoroutine);
-                _isBeingDamagedCoroutine = StartCoroutine(PlayDamagedAnimationWhenHit(knockback));
+                // Exit Damage coroutine prematurely if hit in quick succession. This prevents resuming AI prematurely between hits.
+                if (_receiveKnockbackCoroutine != null) StopCoroutine(_receiveKnockbackCoroutine);
+                _receiveKnockbackCoroutine = StartCoroutine(ReceiveKnockbackWhenHit(knockback));
             }
         }
 
-        // This only runs when the skeleton is damaged while it is attacking.
+        // This only runs when the skeleton is damaged while it is attacking the player.
         private IEnumerator FlashWhenHit()
         {
             float flashTimer = 0f;
 
             _sr.color = flashColor;
-            while (flashTimer < flashWhenHitDuration)
+            while (flashTimer < flashDurationWhenHit)
             {
                 flashTimer += Time.deltaTime;
                 yield return null;
             }
             _sr.color = _baseSpriteColor;
-            yield return null;
         }
 
-        // This coroutine will end when either the skeleton is damaged again, or when the damage animation finishes and DamageAnimationComplete is called.
-        private IEnumerator PlayDamagedAnimationWhenHit(Vector2? knockback)
+        private IEnumerator ReceiveKnockbackWhenHit(Vector2? knockback)
         {
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_damagedTriggerHash);
@@ -162,11 +161,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 yield return null;
             }
 
-            // Reset animation to its previous state before resuming AI.
-            UpdateAnimation(_patrolScript.CurrentState);
             _patrolScript.ResumeAI();
-
-            _isBeingDamagedCoroutine = null;
+            _receiveKnockbackCoroutine = null;
         }
 
         private void Die()
@@ -178,17 +174,18 @@ namespace TimeKnight.Core.Enemy.Skeleton
         #region Dealing Damage To Player
         private bool CanAttackPlayer()
         {
-            bool isPlayerInRange = Vector3.Distance(PlayerController.PlayerPosition, transform.position) <= attackRange;
-            return isPlayerInRange && _attackTimerReady && _combatState.IsNone();
+            bool isPlayerInRange = Vector3.Distance(PlayerController.PlayerPosition, transform.position) <= attackPlayerRange;
+            return isPlayerInRange && _attackTimerReady && !_combatState.IsBeingDamaged();
         }
 
         private IEnumerator AttackPlayer()
         {
-            _attackTimer = 0;
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
+            _attackTimer = 0;
             _isHitboxActive = false;
             bool _wasPlayerHit = false;
+
             while (_combatState.IsAttacking())
             {
                 // Don't check physics casts when enemy already hit player or hitbox is inactive.
@@ -211,10 +208,10 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 yield return null;
             }
 
-            UpdateAnimation(_patrolScript.CurrentState);
             _patrolScript.ResumeAI();
         }
 
+        // These are called from the animator to sync hitbox to sprite animation.
         public void EnableHitbox()
         {
             _isHitboxActive = true;

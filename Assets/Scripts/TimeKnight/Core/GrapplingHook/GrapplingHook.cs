@@ -54,6 +54,8 @@ namespace TimeKnight.Core.GrapplingHook
 
         public void TransitionTo(HookState newState)
         {
+            if (CurrentState == newState) return;
+
             // Exit current state
             switch (CurrentState)
             {
@@ -67,7 +69,6 @@ namespace TimeKnight.Core.GrapplingHook
             }
 
             // Set new state
-            if (CurrentState == newState) return;
             CurrentState = newState;
 
             // Enter new state

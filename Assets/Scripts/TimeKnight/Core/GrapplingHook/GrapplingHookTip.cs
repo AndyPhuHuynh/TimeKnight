@@ -13,7 +13,7 @@ namespace TimeKnight.Core.GrapplingHook
             Validation.NotNull(this, parentHook, nameof(parentHook));
         }
         
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerStay2D(Collider2D collision)
         {
             if (!IsCollisionLayerGrappleSurface(collision)) return;
             
