@@ -617,8 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerGrapplingHookController
   playerBody: {fileID: 6837310045875004360}
-  grapplingHook: {fileID: 2457989635044707339}
-  grapplingHookTip: {fileID: 1867474069997170146}
+  grapplingHook: {fileID: 7141687716842176141}
 --- !u!1001 &6693219694085021491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -692,74 +691,24 @@ PrefabInstance:
     - {fileID: 9121998680109703908, guid: 2a207593321961b43aedb874c256b74f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6218011807847909229, guid: 2a207593321961b43aedb874c256b74f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2457989635044707339}
-    - targetCorrespondingSourceObject: {fileID: 793656920509642054, guid: 2a207593321961b43aedb874c256b74f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1867474069997170146}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a207593321961b43aedb874c256b74f, type: 3}
 --- !u!4 &626233582204936549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6076415798483156566, guid: 2a207593321961b43aedb874c256b74f, type: 3}
   m_PrefabInstance: {fileID: 6693219694085021491}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &768364091741018206 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6218011807847909229, guid: 2a207593321961b43aedb874c256b74f, type: 3}
+--- !u!114 &7141687716842176141 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4611484784692289982, guid: 2a207593321961b43aedb874c256b74f, type: 3}
   m_PrefabInstance: {fileID: 6693219694085021491}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2457989635044707339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 768364091741018206}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e8e590fb1c743fb9269895d040f9d5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.GrapplingHook.GrapplingHook
-  tipTransform: {fileID: 3423467810262152470}
-  tipSprite: {fileID: 9069761889267594796}
-  baseLength: 1
-  maxLength: 10
-  fireSpeed: 25
-  retractSpeed: 25
-  pullSpeed: 10
-  <GrappleSurfaceLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!4 &3423467810262152470 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8314082572367751717, guid: 2a207593321961b43aedb874c256b74f, type: 3}
-  m_PrefabInstance: {fileID: 6693219694085021491}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6332260202998917749 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 793656920509642054, guid: 2a207593321961b43aedb874c256b74f, type: 3}
-  m_PrefabInstance: {fileID: 6693219694085021491}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1867474069997170146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6332260202998917749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a16637f6f6cd44a3a884f34d94aa939f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.GrapplingHook.GrapplingHookTip
-  parentHook: {fileID: 2457989635044707339}
---- !u!212 &9069761889267594796 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2395162639635163423, guid: 2a207593321961b43aedb874c256b74f, type: 3}
-  m_PrefabInstance: {fileID: 6693219694085021491}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6815756744552052167
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,7 +13,6 @@ namespace TimeKnight.Core.Player
 
         [Header("Grappling Hook")]
         [SerializeField] private GrapplingHook.GrapplingHook grapplingHook = null!;
-        [SerializeField] private GrapplingHookTip grapplingHookTip = null!;
         
         public event Action OnGrappleEnterIdle = delegate { };
         public event Action OnGrappleExitIdle = delegate { };
@@ -26,7 +25,6 @@ namespace TimeKnight.Core.Player
         {
             Validation.NotNull(this, playerBody, nameof(playerBody));
             Validation.NotNull(this, grapplingHook, nameof(grapplingHook));
-            Validation.NotNull(this, grapplingHookTip, nameof(grapplingHookTip));
         }
 
         private void OnEnable()
@@ -45,7 +43,6 @@ namespace TimeKnight.Core.Player
 
         public void StartGrappling()
         {
-            if (grapplingHookTip.IsTipTouchingGround) return;
             grapplingHook.TransitionTo(HookState.Extending);
         }
 
