@@ -51,7 +51,11 @@ namespace TimeKnight.Core.Input
 	public enum GlobalActions
 	{
 		None = 0,
-		Pause = 1 << 0
+		
+		OpenPause  = 1 << 0,
+		ClosePause = 1 << 1,
+		
+		Every = -1
 	}
 
 	public struct InputState

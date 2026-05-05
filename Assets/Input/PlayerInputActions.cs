@@ -346,9 +346,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ""id"": ""ec9fd0ff-f389-4629-8d96-e3b8809cf02a"",
             ""actions"": [
                 {
-                    ""name"": ""Pause"",
+                    ""name"": ""OpenPauseMenu"",
                     ""type"": ""Button"",
                     ""id"": ""fa10069a-8592-424c-9c2c-887c1369614c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ClosePauseMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""a92d93f3-b897-4c9e-85db-e0cd4064f906"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -363,7 +372,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Pause"",
+                    ""action"": ""OpenPauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d42adec-2a92-406d-b0de-214bc7dbe39d"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClosePauseMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -403,7 +423,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Dialogue_Advance = m_Dialogue.FindAction("Advance", throwIfNotFound: true);
         // Global
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
-        m_Global_Pause = m_Global.FindAction("Pause", throwIfNotFound: true);
+        m_Global_OpenPauseMenu = m_Global.FindAction("OpenPauseMenu", throwIfNotFound: true);
+        m_Global_ClosePauseMenu = m_Global.FindAction("ClosePauseMenu", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -744,7 +765,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     // Global
     private readonly InputActionMap m_Global;
     private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
-    private readonly InputAction m_Global_Pause;
+    private readonly InputAction m_Global_OpenPauseMenu;
+    private readonly InputAction m_Global_ClosePauseMenu;
     /// <summary>
     /// Provides access to input actions defined in input action map "Global".
     /// </summary>
@@ -757,9 +779,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public GlobalActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Global/Pause".
+        /// Provides access to the underlying input action "Global/OpenPauseMenu".
         /// </summary>
-        public InputAction @Pause => m_Wrapper.m_Global_Pause;
+        public InputAction @OpenPauseMenu => m_Wrapper.m_Global_OpenPauseMenu;
+        /// <summary>
+        /// Provides access to the underlying input action "Global/ClosePauseMenu".
+        /// </summary>
+        public InputAction @ClosePauseMenu => m_Wrapper.m_Global_ClosePauseMenu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -786,9 +812,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_GlobalActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_GlobalActionsCallbackInterfaces.Add(instance);
-            @Pause.started += instance.OnPause;
-            @Pause.performed += instance.OnPause;
-            @Pause.canceled += instance.OnPause;
+            @OpenPauseMenu.started += instance.OnOpenPauseMenu;
+            @OpenPauseMenu.performed += instance.OnOpenPauseMenu;
+            @OpenPauseMenu.canceled += instance.OnOpenPauseMenu;
+            @ClosePauseMenu.started += instance.OnClosePauseMenu;
+            @ClosePauseMenu.performed += instance.OnClosePauseMenu;
+            @ClosePauseMenu.canceled += instance.OnClosePauseMenu;
         }
 
         /// <summary>
@@ -800,9 +829,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="GlobalActions" />
         private void UnregisterCallbacks(IGlobalActions instance)
         {
-            @Pause.started -= instance.OnPause;
-            @Pause.performed -= instance.OnPause;
-            @Pause.canceled -= instance.OnPause;
+            @OpenPauseMenu.started -= instance.OnOpenPauseMenu;
+            @OpenPauseMenu.performed -= instance.OnOpenPauseMenu;
+            @OpenPauseMenu.canceled -= instance.OnOpenPauseMenu;
+            @ClosePauseMenu.started -= instance.OnClosePauseMenu;
+            @ClosePauseMenu.performed -= instance.OnClosePauseMenu;
+            @ClosePauseMenu.canceled -= instance.OnClosePauseMenu;
         }
 
         /// <summary>
@@ -929,11 +961,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IGlobalActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "OpenPauseMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPause(InputAction.CallbackContext context);
+        void OnOpenPauseMenu(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ClosePauseMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnClosePauseMenu(InputAction.CallbackContext context);
     }
 }
