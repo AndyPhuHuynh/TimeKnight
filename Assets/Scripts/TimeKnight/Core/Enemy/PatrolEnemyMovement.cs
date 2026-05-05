@@ -152,16 +152,7 @@ namespace TimeKnight.Core.Enemy
                 return;
             }
 
-            bool isPlayerToRight = _playerPosition.x > transform.position.x;
-
-            if (isPlayerToRight)
-            {
-                FaceRight();
-            }
-            else
-            {
-                FaceLeft();
-            }
+            FacePlayer();
 
             _rb.linearVelocityX = chaseWalkSpeed * _directionModifier;
         }
@@ -172,10 +163,12 @@ namespace TimeKnight.Core.Enemy
             if (IsPlayerChaseable)
             {
                 TransitionTo(EnemyPatrolState.Chase);
+                return;
             }
             else if (_lostSightTimer >= lostSightPatrolCooldown)
             {
                 TransitionTo(EnemyPatrolState.Patrol);
+                return;
             }
 
             _rb.linearVelocityX = 0;
@@ -190,7 +183,10 @@ namespace TimeKnight.Core.Enemy
             if (GetAbsoluteHorizontalDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
             {
                 TransitionTo(EnemyPatrolState.Chase);
+                return;
             }
+            
+            FacePlayer();
             _rb.linearVelocityX = 0;
         }
 
@@ -232,6 +228,20 @@ namespace TimeKnight.Core.Enemy
         #endregion
 
         #region Direction Manipulators
+
+        private void FacePlayer()
+        {
+            bool isPlayerToRight = _playerPosition.x > transform.position.x;
+
+            if (isPlayerToRight)
+            {
+                FaceRight();
+            }
+            else
+            {
+                FaceLeft();
+            }
+        }
         private void FlipPatrolDirection()
         {
             if (_isFacingLeft)
