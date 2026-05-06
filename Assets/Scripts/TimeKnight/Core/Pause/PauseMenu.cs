@@ -7,6 +7,8 @@ namespace TimeKnight.Core.Pause
 {
 	public class PauseMenu : MonoBehaviour
 	{
+		private CanvasGroup _cg = null!;
+		
 		[Header("Volume Controls")]
 		[SerializeField] private Slider masterSlider = null!;
 		[SerializeField] private Slider soundFXSlider = null!;
@@ -14,6 +16,8 @@ namespace TimeKnight.Core.Pause
 
 		[Header("Back Button")]
 		[SerializeField] private Button backButton = null!;
+
+		private CanvasGroupController _cgController = null!;
 		
 		private void OnValidate()
 		{
@@ -25,16 +29,23 @@ namespace TimeKnight.Core.Pause
 
 		private void Awake()
 		{
+			_cg = GetComponent<CanvasGroup>();
+			_cgController = new CanvasGroupController(this, _cg);
+			Validation.NotFound(this, _cg, nameof(_cg));
+			
+			backButton.onClick.AddListener(CloseMenu);
+		}
+
+		private void Start()
+		{
 			masterSlider.onValueChanged.AddListener(AudioMixerManager.Instance.SetMasterVolume);
 			soundFXSlider.onValueChanged.AddListener(AudioMixerManager.Instance.SetSoundFXVolume);
 			musicSlider.onValueChanged.AddListener(AudioMixerManager.Instance.SetMusicVolume);
-			backButton.onClick.AddListener(CloseMenu);
 		}
 
 		public void OpenMenu()
 		{
-			Debug.Log("Opening menu");
-			gameObject.SetActive(true);
+			_cgController.FadeIn(1);
 			masterSlider.value = AudioMixerManager.Instance.GetMasterVolume();
 			soundFXSlider.value = AudioMixerManager.Instance.GetSoundFXVolume();
 			musicSlider.value = AudioMixerManager.Instance.GetMusicVolume();
@@ -42,7 +53,7 @@ namespace TimeKnight.Core.Pause
 
 		public void CloseMenu()
 		{
-			gameObject.SetActive(false);
+			_cgController.FadeOut(1);
 		}
 	}
 }
