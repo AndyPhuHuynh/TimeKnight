@@ -14,10 +14,16 @@ namespace TimeKnight.Core.Audio
 			Validation.NotNull(this, musicSource, nameof(musicSource));
 		}
 
-		public void PlayClip(AudioClip clip)
+		public void PlayMusic(AudioClip clip)
 		{
 			musicSource.clip = clip;
 			musicSource.Play();
+		}
+		
+		public void PlaySoundEffect(AudioClip clip)
+		{
+			soundFXSource.clip = clip;
+			soundFXSource.Play();
 		}
 	}
 }
