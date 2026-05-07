@@ -47,6 +47,9 @@ TagManager:
   - name: Terrain
     uniqueID: 2025505353
     locked: 0
+  - name: NPC
+    uniqueID: 1979098653
+    locked: 0
   - name: Enemy
     uniqueID: 3156840869
     locked: 0
