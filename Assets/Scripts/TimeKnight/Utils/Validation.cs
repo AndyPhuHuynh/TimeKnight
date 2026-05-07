@@ -20,6 +20,15 @@ namespace TimeKnight.Utils
 			}
 		}
 		
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public static void NotFound(Object owner, Object field, string fieldName)
+		{
+			if (field == null)
+			{
+				Debug.LogError($"{fieldName} on {owner.name} was not found!", owner);
+			}
+		}
+		
 		public static bool IsExactPrefabAtPath(GameObject gameObject, string pathToCheck)
 		{
 #if UNITY_EDITOR

@@ -49,13 +49,17 @@ namespace TimeKnight.Core.Input
             _actions = null;
         }
 
-        private static PlayerInputActions CreateActions()
-        {
-            var actions = new PlayerInputActions();
-            actions.Gameplay.Enable();
-            actions.Gameplay.GrappleStop.Disable();
-            actions.Dialogue.Disable();
-            return actions;
+        private PlayerInputActions CreateActions()
+        { 
+            _actions = new PlayerInputActions();
+            SetMapStatus(InputStatus.Enabled, ActionMaps.Gameplay);
+            SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
+            
+            SetMapStatus(InputStatus.Disabled, ActionMaps.Dialogue);
+            
+            SetMapStatus(InputStatus.Enabled, ActionMaps.Global);
+            SetActionStatus(InputStatus.Disabled, GlobalActions.ClosePause);
+            return _actions;
         }
 
         public void SetMapStatus(InputStatus status, ActionMaps map)
@@ -63,6 +67,7 @@ namespace TimeKnight.Core.Input
             var op = status == InputStatus.Disabled ? DisableMap : EnableMap;
             if ((map & ActionMaps.Gameplay) != 0) op(Actions.Gameplay);
             if ((map & ActionMaps.Dialogue) != 0) op(Actions.Dialogue);
+            if ((map & ActionMaps.Global)   != 0) op(Actions.Global);
         }
 
         public void SetActionStatus(InputStatus status, GameplayActions action)
@@ -82,12 +87,20 @@ namespace TimeKnight.Core.Input
             var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
             if ((action & DialogueActions.Advance) != 0) op(Actions.Dialogue.Advance);
         }
+        
+        public void SetActionStatus(InputStatus status, GlobalActions action)
+        {
+            var op = status == InputStatus.Disabled ? DisableAction : EnableAction;
+            if ((action & GlobalActions.OpenPause) != 0) op(Actions.Global.OpenPauseMenu);
+            if ((action & GlobalActions.ClosePause) != 0) op(Actions.Global.ClosePauseMenu);
+        }
 
         public InputState SaveState()
         {
             var map = ActionMaps.None;
             var gameplayActions = GameplayActions.None;
             var dialogueActions = DialogueActions.None;
+            var globalActions   = GlobalActions.None;
             
             if (Actions.Gameplay.enabled) map |= ActionMaps.Gameplay;
             if (Actions.Dialogue.enabled) map |= ActionMaps.Dialogue;
@@ -101,12 +114,16 @@ namespace TimeKnight.Core.Input
             if (Actions.Gameplay.InteractionNavigate.enabled) gameplayActions |= GameplayActions.InteractionNavigate;
             
             if (Actions.Dialogue.Advance.enabled) dialogueActions |= DialogueActions.Advance;
+
+            if (Actions.Global.OpenPauseMenu.enabled) globalActions |= GlobalActions.OpenPause;
+            if (Actions.Global.ClosePauseMenu.enabled) globalActions |= GlobalActions.ClosePause;
             
             return new InputState
             {
-                ActionMaps =  map,
-                GameplayActions =  gameplayActions,
-                DialogueActions =  dialogueActions,
+                ActionMaps = map,
+                GameplayActions = gameplayActions,
+                DialogueActions = dialogueActions,
+                GlobalActions   = globalActions
             };
         }
 

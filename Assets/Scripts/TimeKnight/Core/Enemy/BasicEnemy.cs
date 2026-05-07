@@ -23,7 +23,7 @@ namespace TimeKnight.Core.Enemy
             }
         }
 
-        public void Damage(float damage)
+        public void Damage(float damage, Vector2? knockback = null)
         {
             _currentHealth -= (int)Math.Round(damage);
             if (_currentHealth <= 0) Die();

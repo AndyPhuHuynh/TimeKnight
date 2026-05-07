@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using TimeKnight.Core.Enemy;
 using UnityEngine;
 
 namespace TimeKnight.Core.LevelGeneration.Rooms
 {
 	public class EnemyRoom : MonoBehaviour, IRoomBehavior
 	{
-		[SerializeField] private List<BasicEnemy> enemies = new();
+		[SerializeField] private List<GameObject> enemies = new();
 		
 		public void OnSpawn(RoomNode roomNode)
 		{

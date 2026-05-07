@@ -138,8 +138,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 178, y: -52}
-  m_SizeDelta: {x: 292.4306, y: 38.6858}
+  m_AnchoredPosition: {x: 161.95032, y: -49.87677}
+  m_SizeDelta: {x: 260.3313, y: 34.4393}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3670389563401751046
 MonoBehaviour:
@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   healthFillSlider: {fileID: 3670389563401751046}
+  playerManager: {fileID: 0}
 --- !u!1 &7913350427699754255
 GameObject:
   m_ObjectHideFlags: 0

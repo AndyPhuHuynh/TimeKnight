@@ -11,6 +11,7 @@ namespace TimeKnight.Editor.Input
         private bool _mapsFoldout = true;
         private bool _gameplayFoldout = true;
         private bool _dialogueFoldout = true;
+        private bool _globalFoldout = true;
 
         public override void OnInspectorGUI()
         {
@@ -34,6 +35,7 @@ namespace TimeKnight.Editor.Input
                 EditorGUI.indentLevel++;
                 DrawFlag("Gameplay", (state.ActionMaps & ActionMaps.Gameplay) != 0);
                 DrawFlag("Dialogue", (state.ActionMaps & ActionMaps.Dialogue) != 0);
+                DrawFlag("Global",   (state.ActionMaps & ActionMaps.Global) != 0);
                 EditorGUI.indentLevel--;
             }
 
@@ -56,6 +58,15 @@ namespace TimeKnight.Editor.Input
             {
                 EditorGUI.indentLevel++;
                 DrawFlag("Advance", (state.DialogueActions & DialogueActions.Advance) != 0);
+                EditorGUI.indentLevel--;
+            }
+            
+            _globalFoldout = EditorGUILayout.Foldout(_globalFoldout, "Global Actions", true);
+            if (_globalFoldout)
+            {
+                EditorGUI.indentLevel++;
+                DrawFlag("Open Pause Menu", (state.GlobalActions & GlobalActions.OpenPause) != 0);
+                DrawFlag("Close Pause Menu", (state.GlobalActions & GlobalActions.ClosePause) != 0);
                 EditorGUI.indentLevel--;
             }
 

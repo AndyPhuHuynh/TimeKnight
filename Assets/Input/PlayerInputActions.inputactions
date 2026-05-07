@@ -217,7 +217,7 @@
                 {
                     "name": "",
                     "id": "f4e958e5-e23b-4522-9275-6491818918aa",
-                    "path": "<Keyboard>/f",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -250,6 +250,54 @@
                     "processors": "",
                     "groups": "",
                     "action": "Advance",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Global",
+            "id": "ec9fd0ff-f389-4629-8d96-e3b8809cf02a",
+            "actions": [
+                {
+                    "name": "OpenPauseMenu",
+                    "type": "Button",
+                    "id": "fa10069a-8592-424c-9c2c-887c1369614c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ClosePauseMenu",
+                    "type": "Button",
+                    "id": "a92d93f3-b897-4c9e-85db-e0cd4064f906",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "91c68ab4-cc6f-4fe0-b76c-d18d6ab4956f",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenPauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d42adec-2a92-406d-b0de-214bc7dbe39d",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClosePauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

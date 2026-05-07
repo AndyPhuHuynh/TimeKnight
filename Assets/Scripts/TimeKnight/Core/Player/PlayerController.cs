@@ -10,6 +10,9 @@ namespace TimeKnight.Core.Player
 	public class PlayerController : MonoBehaviour
 	{
 		private PlayerAnimator _animator = null!;
+		private static Transform _playerTransform = null!;
+		public static Vector3 PlayerPosition => _playerTransform.position;
+		public static bool IsPlayerFacingLeft => _playerTransform.localScale.x < 0;
 		
 		[Header("Input Reader")]
 		[SerializeField] private InputReader input = null!;
@@ -33,6 +36,7 @@ namespace TimeKnight.Core.Player
 
 		private void Awake()
 		{
+			_playerTransform = transform;
 			_animator = GetComponent<PlayerAnimator>();
 		}
 
@@ -78,7 +82,8 @@ namespace TimeKnight.Core.Player
 		
 		private void OnHorizontalMoveStarted(InputAction.CallbackContext ctx)
 		{
-			horizontalMovement.StartMove(ctx.ReadValue<float>());
+			// This lambda is needed because if player changes directions on the same frame OnHorizontalMoveCanceled doesn't get called.
+			horizontalMovement.StartMove(() => {return ctx.ReadValue<float>();});
 		}
 
 		private void OnHorizontalMovePerformed(InputAction.CallbackContext ctx)

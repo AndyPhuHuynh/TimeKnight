@@ -1,0 +1,547 @@
+fileFormatVersion: 2
+guid: 4cac9b32324faab48b1387a46cfae617
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3126683620843890373
+    second: Skeleton_01_White_Die_0
+  - first:
+      213: -4792073381274871194
+    second: Skeleton_01_White_Die_1
+  - first:
+      213: -3693591020534159362
+    second: Skeleton_01_White_Die_2
+  - first:
+      213: -4190859776521849221
+    second: Skeleton_01_White_Die_3
+  - first:
+      213: -2614083693325109951
+    second: Skeleton_01_White_Die_4
+  - first:
+      213: 7666049041284283081
+    second: Skeleton_01_White_Die_5
+  - first:
+      213: 5214378806866150792
+    second: Skeleton_01_White_Die_6
+  - first:
+      213: 6287184137453963316
+    second: Skeleton_01_White_Die_7
+  - first:
+      213: 5098245024391853593
+    second: Skeleton_01_White_Die_8
+  - first:
+      213: -2528561047893845536
+    second: Skeleton_01_White_Die_9
+  - first:
+      213: 4151090436001872706
+    second: Skeleton_01_White_Die_10
+  - first:
+      213: -4529498223495090129
+    second: Skeleton_01_White_Die_11
+  - first:
+      213: -7950930363075554929
+    second: Skeleton_01_White_Die_12
+  - first:
+      213: -6240805555082207699
+    second: Skeleton_01_White_Die_13
+  - first:
+      213: -2649349075863083527
+    second: Skeleton_01_White_Die_14
+  - first:
+      213: -5339926127216709289
+    second: Skeleton_01_White_Die_15
+  - first:
+      213: -5949889030747125460
+    second: Skeleton_01_White_Die_16
+  - first:
+      213: 5085853610462903757
+    second: Skeleton_01_White_Die_17
+  - first:
+      213: -6005802875518550437
+    second: Skeleton_01_White_Die_18
+  - first:
+      213: -3032604601866577483
+    second: Skeleton_01_White_Die_19
+  - first:
+      213: -7736599243540203539
+    second: Skeleton_01_White_Die_20
+  - first:
+      213: 4942658049051541567
+    second: Skeleton_01_White_Die_21
+  - first:
+      213: 3713730997769844150
+    second: Skeleton_01_White_Die_22
+  - first:
+      213: 4030989905940434525
+    second: Skeleton_01_White_Die_23
+  - first:
+      213: -5349573012897673630
+    second: Skeleton_01_White_Die_24
+  - first:
+      213: -2741990909589972737
+    second: Skeleton_01_White_Die_25
+  - first:
+      213: -7145377627461308073
+    second: Skeleton_01_White_Die_26
+  - first:
+      213: -7397505576419177416
+    second: Skeleton_01_White_Die_27
+  - first:
+      213: -6040227197823628172
+    second: Skeleton_01_White_Die_28
+  - first:
+      213: -3381536099087392220
+    second: Skeleton_01_White_Die_29
+  - first:
+      213: -1038625054402965006
+    second: Skeleton_01_White_Die_30
+  - first:
+      213: 6596303679569440041
+    second: Skeleton_01_White_Die_31
+  - first:
+      213: 2692666494999029416
+    second: Skeleton_01_White_Die_32
+  - first:
+      213: -5401594282278338745
+    second: Skeleton_01_White_Die_33
+  - first:
+      213: -3660589905374285995
+    second: Skeleton_01_White_Die_34
+  - first:
+      213: -2803223968981049420
+    second: Skeleton_01_White_Die_35
+  - first:
+      213: 5182269913681719399
+    second: Skeleton_01_White_Die_36
+  - first:
+      213: -6476629973948884033
+    second: Skeleton_01_White_Die_37
+  - first:
+      213: -8403835247490152371
+    second: Skeleton_01_White_Die_38
+  - first:
+      213: 2163424935675260448
+    second: Skeleton_01_White_Die_39
+  - first:
+      213: -6091892551713642148
+    second: Skeleton_01_White_Die_40
+  - first:
+      213: 4695474802795208272
+    second: Skeleton_01_White_Die_41
+  - first:
+      213: 7279563930476431150
+    second: Skeleton_01_White_Die_42
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c6ae61ff26346b20800000000000000
+      internalID: 3126683620843890373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66a918336a22f7db0800000000000000
+      internalID: -4792073381274871194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef72d7b498abdbcc0800000000000000
+      internalID: -3693591020534159362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7631f4cc3317d5c0800000000000000
+      internalID: -4190859776521849221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_4
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 145373e1bb8e8bbd0800000000000000
+      internalID: -2614083693325109951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_5
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ca39709cf6436a60800000000000000
+      internalID: 7666049041284283081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_6
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 885059bd5e13d5840800000000000000
+      internalID: 5214378806866150792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_7
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4380a6e79a0904750800000000000000
+      internalID: 6287184137453963316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_8
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91677c886da90c640800000000000000
+      internalID: 5098245024391853593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_9
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e9d563bf1fb8ecd0800000000000000
+      internalID: -2528561047893845536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_10
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24bb96412c2ab9930800000000000000
+      internalID: 4151090436001872706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_11
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f20ffc13d5df321c0800000000000000
+      internalID: -4529498223495090129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_01_White_Die_12
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 700badba780c92d408c6953fc8ea74b4
+      internalID: -7950930363075554929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 7d59130c6a3ea0a40b10d0d4dad8e350
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":1,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Skeleton_01_White_Die_0: 3126683620843890373
+      Skeleton_01_White_Die_1: -4792073381274871194
+      Skeleton_01_White_Die_10: 4151090436001872706
+      Skeleton_01_White_Die_11: -4529498223495090129
+      Skeleton_01_White_Die_12: -7950930363075554929
+      Skeleton_01_White_Die_2: -3693591020534159362
+      Skeleton_01_White_Die_3: -4190859776521849221
+      Skeleton_01_White_Die_4: -2614083693325109951
+      Skeleton_01_White_Die_5: 7666049041284283081
+      Skeleton_01_White_Die_6: 5214378806866150792
+      Skeleton_01_White_Die_7: 6287184137453963316
+      Skeleton_01_White_Die_8: 5098245024391853593
+      Skeleton_01_White_Die_9: -2528561047893845536
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

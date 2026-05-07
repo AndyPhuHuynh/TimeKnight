@@ -8,11 +8,12 @@ namespace TimeKnight.Core.HUD
     public class HealthBar : MonoBehaviour
     {
         [SerializeField] private Slider healthFillSlider = null!;
-        [SerializeField] private PlayerManager playerManager = null!;
+        private PlayerManager playerManager = null!;
 
-        private void OnValidate()
+        private void Awake()
         {
-            Validation.NotNull(this, healthFillSlider, nameof(healthFillSlider));
+            // This must be run in awake in order for the syncing to occur in enable correctly; because enable happens after awake.
+            playerManager = GameObject.FindWithTag("Player").GetComponentInChildren<PlayerManager>();
         }
 
         private void OnEnable()
