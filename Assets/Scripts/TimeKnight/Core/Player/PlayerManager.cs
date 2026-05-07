@@ -12,9 +12,11 @@ namespace TimeKnight.Core.Player
         public int Health { get; private set; }
         public event Action<int> MaxHealthChanged = delegate { };
         public event Action<int> HealthChanged = delegate { };
+        
         [Header("Knockback Application")]
         [SerializeField] private Rigidbody2D rb = null!;
         [SerializeField] private InputReader inputReader = null!;
+        
         [Header("Player Stats")]
         [SerializeField] private float baseDamage = 2;
         [SerializeField] private float critChance = 0.1f;

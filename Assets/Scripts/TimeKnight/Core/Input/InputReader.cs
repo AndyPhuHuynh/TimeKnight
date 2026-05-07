@@ -1,10 +1,13 @@
 using System;
+using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace TimeKnight.Core.Input
 {
-    [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
+    [CreateAssetMenu(
+        fileName = ScriptableObjectStrings.InputReaderFileName, 
+        menuName = ScriptableObjectStrings.InputReaderMenuName)]
     public class InputReader : ScriptableObject
     {
         private PlayerInputActions? _actions; 

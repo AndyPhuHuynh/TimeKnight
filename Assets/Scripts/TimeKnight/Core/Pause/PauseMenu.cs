@@ -55,5 +55,10 @@ namespace TimeKnight.Core.Pause
 		{
 			_cgController.FadeOut(0.2f);
 		}
+
+		public void CloseMenuImmediate()
+		{
+			_cgController.FadeOut(0.0f);
+		}
 	}
 }
