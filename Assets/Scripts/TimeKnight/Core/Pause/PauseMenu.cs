@@ -45,10 +45,10 @@ namespace TimeKnight.Core.Pause
 
 		public void OpenMenu()
 		{
-			_cgController.FadeIn(0.2f);
 			masterSlider.value = AudioMixerManager.Instance.GetMasterVolume();
 			soundFXSlider.value = AudioMixerManager.Instance.GetSoundFXVolume();
 			musicSlider.value = AudioMixerManager.Instance.GetMusicVolume();
+			_cgController.FadeIn(0.2f);
 		}
 
 		public void CloseMenu()
