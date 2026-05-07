@@ -79,8 +79,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 201516983
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3753825769889500098, guid: cb273e2bb5accd943861388f3b647b8b, type: 3}
@@ -111,10 +111,7 @@ MonoBehaviour:
   attackableLayer:
     serializedVersion: 2
     m_Bits: 64
-  animator: {fileID: 0}
-  attackClip: {fileID: 7400000, guid: 0724fe8737dca1e429c495b1d14bbe7e, type: 2}
   attackCooldown: 1
-  swordSwinging: 0
 --- !u!1 &6057171879231415389
 GameObject:
   m_ObjectHideFlags: 0

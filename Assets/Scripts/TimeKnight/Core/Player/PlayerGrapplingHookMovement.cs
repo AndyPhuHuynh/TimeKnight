@@ -14,6 +14,7 @@ namespace TimeKnight.Core.Player
         [Header("Grappling Hook")]
         [SerializeField] private GrapplingHook.GrapplingHook grapplingHook = null!;
         
+        public HookState HookState => grapplingHook.CurrentState;
         public event Action OnGrappleEnterIdle = delegate { };
         public event Action OnGrappleExitIdle = delegate { };
         public event Action<Vector3> OnGrappleEnterStuck = delegate { };
