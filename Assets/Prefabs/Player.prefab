@@ -165,6 +165,8 @@ Transform:
   - {fileID: 7539210274489630923}
   - {fileID: 1454893393823989388}
   - {fileID: 4144812076972265265}
+  - {fileID: 6651725087338108765}
+  - {fileID: 1325804833885357264}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2744465954188697043
@@ -213,7 +215,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 201516983
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2311659948842064771, guid: c507c7b053f8d6742b36b57eb70e6df0, type: 3}
@@ -381,6 +383,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerAnimator
   sword: {fileID: 5134453458329420300}
+--- !u!1 &8104092448658591349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6651725087338108765}
+  - component: {fileID: 3658448055264808980}
+  m_Layer: 8
+  m_Name: TimePowers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6651725087338108765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104092448658591349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2567960917763861338}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3658448055264808980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104092448658591349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34802d061ea3ab545bad65743d7e5618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.TimePower.TimeManager
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +664,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerGrapplingHookController
   playerBody: {fileID: 6837310045875004360}
   grapplingHook: {fileID: 7141687716842176141}
+--- !u!1 &9183594252824692492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1325804833885357264}
+  - component: {fileID: 4562621451094218696}
+  m_Layer: 8
+  m_Name: TimePowers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1325804833885357264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9183594252824692492}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2567960917763861338}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4562621451094218696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9183594252824692492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34802d061ea3ab545bad65743d7e5618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.TimePower.TimeManager
 --- !u!1001 &6693219694085021491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -633,6 +723,18 @@ PrefabInstance:
     - target: {fileID: 2395162639635163423, guid: 2a207593321961b43aedb874c256b74f, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611484784692289982, guid: 2a207593321961b43aedb874c256b74f, type: 3}
+      propertyPath: fireSpeed
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611484784692289982, guid: 2a207593321961b43aedb874c256b74f, type: 3}
+      propertyPath: pullSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611484784692289982, guid: 2a207593321961b43aedb874c256b74f, type: 3}
+      propertyPath: retractSpeed
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6076415798483156566, guid: 2a207593321961b43aedb874c256b74f, type: 3}
       propertyPath: m_LocalScale.x

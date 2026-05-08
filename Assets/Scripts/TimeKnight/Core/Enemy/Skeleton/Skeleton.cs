@@ -3,6 +3,7 @@ using TimeKnight.Core.Player;
 using System;
 using System.Collections;
 using TimeKnight.Utils;
+using TimeKnight.Core.TimePower;
 
 namespace TimeKnight.Core.Enemy.Skeleton
 {
@@ -15,6 +16,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [SerializeField] private int maxHealth = 5;
         [SerializeField] private int playerCollisionDamage = 3;
         private int _currentHealth;
+        private float _baseGravity;
+        private float _maxKnockbackDuration = 0.3f;
 
         [Header("Attack Damage Properties")]
         [SerializeField] private float attackDamage = 2f;
@@ -39,36 +42,40 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private Animator _skeletonAnimator = null!;
         private readonly int _lostSightTriggerHash = Animator.StringToHash("LostSight");
         private readonly int _walkingTriggerHash = Animator.StringToHash("Walking");
-        private readonly int _tooCloseTriggerHash = Animator.StringToHash("TooClose");
+        private readonly int _idleTriggerHash = Animator.StringToHash("Idle");
         private readonly int _damagedTriggerHash = Animator.StringToHash("Damaged");
         private readonly int _attackTriggerHash = Animator.StringToHash("Attack");
 
         // Combat State management
         private EnemyCombatState _combatState = EnemyCombatState.None;
         private bool _isHitboxActive = false;
-        private Coroutine? _receiveKnockbackCoroutine = null;
+        private CoWrapper _activeCombatCoWrapper = null!;   // One CoWrapper is used for all combat actions as they are mutually exclusive.
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
             _sr = GetComponent<SpriteRenderer>();
-            _baseSpriteColor = _sr.color;
             _skeletonAnimator = GetComponent<Animator>();
             _patrolScript = GetComponent<PatrolEnemyMovement>();
             _currentHealth = maxHealth;
             _attackTimer = attackCooldown;
+            _activeCombatCoWrapper = new CoWrapper(this);
+            _baseGravity = _rb.gravityScale;
+            _baseSpriteColor = _sr.color;
         }
 
         private void Update()
         {
-            if (!_attackTimerReady && !_combatState.IsAttacking())
+            HandleTimeDilation();
+            
+            if (!_attackTimerReady)
             {
-                _attackTimer += Time.deltaTime;
+                _attackTimer += TimeManager.CustomDelta;
             }
-            else if (CanAttackPlayer())
+            if (CanAttackPlayer())
             {
                 _combatState = EnemyCombatState.Attacking;
-                StartCoroutine(AttackPlayer());
+                StartCombatCoroutine(AttackPlayer());
             }
         }
 
@@ -90,8 +97,10 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 case EnemyPatrolState.LostSight:
                     _skeletonAnimator.SetTrigger(_lostSightTriggerHash);
                     break;
+                case EnemyPatrolState.PatrolStuck:
+                case EnemyPatrolState.ChaseStuck:
                 case EnemyPatrolState.TooClose:
-                    _skeletonAnimator.SetTrigger(_tooCloseTriggerHash);
+                    _skeletonAnimator.SetTrigger(_idleTriggerHash);
                     break;
                 case EnemyPatrolState.Chase:
                 case EnemyPatrolState.Patrol:
@@ -124,9 +133,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
             else
             {
                 _combatState = EnemyCombatState.BeingDamaged;
-                // Exit Damage coroutine prematurely if hit in quick succession. This prevents resuming AI prematurely between hits.
-                if (_receiveKnockbackCoroutine != null) StopCoroutine(_receiveKnockbackCoroutine);
-                _receiveKnockbackCoroutine = StartCoroutine(ReceiveKnockbackWhenHit(knockback));
+                StartCombatCoroutine(ReceiveKnockbackWhenHit(knockback));
             }
         }
 
@@ -138,7 +145,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
             _sr.color = flashColor;
             while (flashTimer < flashDurationWhenHit)
             {
-                flashTimer += Time.deltaTime;
+                flashTimer += TimeManager.CustomDelta;
                 yield return null;
             }
             _sr.color = _baseSpriteColor;
@@ -148,7 +155,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         {
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_damagedTriggerHash);
-
+            float _currentKnockbackDuration = 0;
             // Knockback applied after movement AI paused.
             if (knockback != null)
             {
@@ -158,11 +165,17 @@ namespace TimeKnight.Core.Enemy.Skeleton
             // Wait for animation to finish.
             while (_combatState.IsBeingDamaged())
             {
+                // This uses regular Time.deltaTime so enemy doesn't slide for super long when time is slowed down.
+                _currentKnockbackDuration += Time.deltaTime;
+                if (_currentKnockbackDuration >= _maxKnockbackDuration)
+                {
+                    _rb.linearVelocity = new Vector2(0, _rb.linearVelocityY);
+                }
+                
                 yield return null;
             }
 
             _patrolScript.ResumeAI();
-            _receiveKnockbackCoroutine = null;
         }
 
         private void Die()
@@ -175,7 +188,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private bool CanAttackPlayer()
         {
             bool isPlayerInRange = Vector3.Distance(PlayerController.PlayerPosition, transform.position) <= attackPlayerRange;
-            return isPlayerInRange && _attackTimerReady && !_combatState.IsBeingDamaged();
+            return isPlayerInRange && _attackTimerReady && _combatState.IsNone();
         }
 
         private IEnumerator AttackPlayer()
@@ -222,17 +235,31 @@ namespace TimeKnight.Core.Enemy.Skeleton
             _isHitboxActive = false;
         }
 
+        // Player Contact Collision Damage
         private void OnTriggerStay2D(Collider2D collision)
         {
             if (collision.gameObject.TryGetComponent(out PlayerManager player))
             {
                 Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
-
                 player.Damage(playerCollisionDamage, knockback);
             }
         }
 
         #endregion
+        
+        #region Time Dilation Management
+        private void HandleTimeDilation()
+        {
+            _rb.gravityScale = _baseGravity * TimeManager.CurrentTimeModifier;
+            _skeletonAnimator.speed = TimeManager.CurrentTimeModifier;
+        }
+        #endregion
+
+        private void StartCombatCoroutine(IEnumerator combatCoroutine)
+        {
+            _activeCombatCoWrapper.Stop();
+            _activeCombatCoWrapper.Start(combatCoroutine);
+        }
 
         private void OnDrawGizmosSelected()
         {

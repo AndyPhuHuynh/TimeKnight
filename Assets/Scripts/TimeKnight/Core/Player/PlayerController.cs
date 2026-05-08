@@ -57,6 +57,7 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleEnterIdle  += OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   += OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck += OnGrappleEnterStuck;
+			grapplingHookMovement.OnGrappleUpdateStuck += OnGrappleUpdateStuck;
 		}
 
 		private void OnDisable()
@@ -76,6 +77,7 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleEnterIdle  -= OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   -= OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck -= OnGrappleEnterStuck;
+			grapplingHookMovement.OnGrappleUpdateStuck -= OnGrappleUpdateStuck;
 		}
 
 		#region Horizontal Movement
@@ -158,6 +160,11 @@ namespace TimeKnight.Core.Player
 		{
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop); 
+		}
+
+		private void OnGrappleUpdateStuck()
+		{
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop);
 		}
 		
 		#endregion

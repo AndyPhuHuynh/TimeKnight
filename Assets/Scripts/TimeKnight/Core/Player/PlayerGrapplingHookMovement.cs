@@ -17,6 +17,7 @@ namespace TimeKnight.Core.Player
         public HookState HookState => grapplingHook.CurrentState;
         public event Action OnGrappleEnterIdle = delegate { };
         public event Action OnGrappleExitIdle = delegate { };
+        public event Action OnGrappleUpdateStuck = delegate { };
         public event Action<Vector3> OnGrappleEnterStuck = delegate { };
 
         private bool _isBeingPulled;
@@ -33,6 +34,7 @@ namespace TimeKnight.Core.Player
             grapplingHook.OnEnterIdle  += OnEnterIdle;
             grapplingHook.OnExitIdle   += OnExitIdle;
             grapplingHook.OnEnterStuck += OnEnterStuck;
+            grapplingHook.OnUpdateStuck += OnUpdateStuck;
         }
 
         private void OnDisable()
@@ -40,6 +42,7 @@ namespace TimeKnight.Core.Player
             grapplingHook.OnEnterIdle  -= OnEnterIdle;
             grapplingHook.OnExitIdle   -= OnExitIdle;
             grapplingHook.OnEnterStuck -= OnEnterStuck;
+            grapplingHook.OnUpdateStuck -= OnUpdateStuck;
         }
 
         public void StartGrappling()
@@ -72,6 +75,11 @@ namespace TimeKnight.Core.Player
         {
             StartCoroutine(PullPlayer(collisionPoint, grapplingHook.PullSpeed));
             OnGrappleEnterStuck.Invoke(collisionPoint);
+        }
+
+        private void OnUpdateStuck()
+        {
+            OnGrappleUpdateStuck.Invoke();
         }
 
         private IEnumerator PullPlayer(Vector3 targetPosition, float pullSpeed)

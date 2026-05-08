@@ -29,6 +29,7 @@ namespace TimeKnight.Core.GrapplingHook
         public event Action OnEnterIdle =  delegate {};
         public event Action OnExitIdle = delegate {};
         public event Action<Vector3> OnEnterStuck = delegate {};
+        public event Action OnUpdateStuck = delegate {};
 
         // Hook Rotation Management
         private Vector3 _collisionPoint;
@@ -205,6 +206,7 @@ namespace TimeKnight.Core.GrapplingHook
         {
             while (CurrentState.IsStuck())
             {
+                OnUpdateStuck.Invoke();
                 RotateGrapplingHook(_collisionPoint);
                 float distance = GetDistanceTo(_collisionPoint);
                 UpdateLength(distance);
