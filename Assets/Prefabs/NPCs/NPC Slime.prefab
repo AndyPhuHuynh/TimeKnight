@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6808614761305370748}
   - component: {fileID: 9176078670761983463}
   m_Layer: 0
-  m_Name: Slime
+  m_Name: NPC Slime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.07, y: -1.04, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalScale: {x: 10.028999, y: 10.028999, z: 10.028999}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -7282886668606283007, guid: 8e01958893b4a1d48a916abc8f124efa, type: 3}
+  m_Sprite: {fileID: -7282886668606283007, guid: 100957030bd870e428d86065c57bd39b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -127,17 +127,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.0056564957, y: 0.026970834}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.12, y: 1.32}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 2.12, y: 1.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.12, y: 1.32}
+  m_Size: {x: 0.21483445, y: 0.13841233}
   m_EdgeRadius: 0
 --- !u!114 &9176078670761983463
 MonoBehaviour:

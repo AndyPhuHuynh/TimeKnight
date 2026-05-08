@@ -2046,11 +2046,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 220200844515659051, guid: be13850873b1f3949a3f89c05f288cce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.85
+      value: 3.26
       objectReference: {fileID: 0}
     - target: {fileID: 220200844515659051, guid: be13850873b1f3949a3f89c05f288cce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.21
+      value: -1.47
       objectReference: {fileID: 0}
     - target: {fileID: 220200844515659051, guid: be13850873b1f3949a3f89c05f288cce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2086,7 +2086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3242725771080668104, guid: be13850873b1f3949a3f89c05f288cce, type: 3}
       propertyPath: m_Name
-      value: Slime
+      value: NPC Slime
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
