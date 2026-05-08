@@ -62,22 +62,7 @@ namespace TimeKnight.Editor.LevelGeneration
 
         private void BakeAllConnections()
         {
-            if (_pendingBaking != null)
-            {
-                EditorApplication.delayCall -= BakeAllConnections;
-            }
-
-            _pendingBaking = () =>
-            {
-                _pendingBaking = null;
-                BakeAllConnectionsLogic();
-            };
-            
-            EditorApplication.delayCall += BakeAllConnections;
-        }
-
-        private void BakeAllConnectionsLogic()
-        {
+            Debug.Log("Baking all connections");
             if (targets == null || targets.Length == 0) return;
             foreach (var room in RoomTargets)
             {
@@ -96,7 +81,6 @@ namespace TimeKnight.Editor.LevelGeneration
             }
             
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
             RoomRegistry.ReinitializeAllRegistries();
         }
     }
