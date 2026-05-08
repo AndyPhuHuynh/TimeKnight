@@ -20,7 +20,7 @@ namespace TimeKnight.Core.Audio
 		private CoWrapper _fadeOut = null!;
 
 		private const float FadeInSeconds = 5.0f;
-		private const float FadeOutSeconds = 1.0f;
+		private const float FadeOutSeconds = 2.0f;
 		
 		private void OnValidate()
 		{
@@ -81,11 +81,9 @@ namespace TimeKnight.Core.Audio
 		{
 			if (!IsPlayingMusic())
 			{
-				Debug.Log("Not playing music");
 				_fadeIn.Start(FadeInMusicCoroutine(_current, clip));
 				return;
 			}
-			Debug.Log("PLaying music, attempting to switch");
 			(_current, _other) = (_other, _current);
 			_fadeIn.Start(FadeInMusicCoroutine(_current, clip));
 			_fadeOut.Start(FadeOutMusicCoroutine(_other));

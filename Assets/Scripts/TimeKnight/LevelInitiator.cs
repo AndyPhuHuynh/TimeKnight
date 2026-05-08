@@ -1,4 +1,5 @@
 using TimeKnight.Core;
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Dialogue;
 using TimeKnight.Core.HUD;
 using TimeKnight.Core.Interaction;
@@ -13,6 +14,9 @@ namespace TimeKnight
 	{
 		[SerializeField] private GameObject uiContainer = null!;
 
+		[Header("Audio")]
+		[SerializeField] private AudioClip levelAudio = null!;
+		
 		[Header("Prefabs")]
 		[SerializeField] private GameObject player = null!;
 		[SerializeField] private PlayerStatsDisplay playerStatsDisplay = null!;
@@ -26,6 +30,7 @@ namespace TimeKnight
 		private void OnValidate()
 		{
 			Validation.NotNull(this, uiContainer, nameof(uiContainer));
+			Validation.NotNull(this, levelAudio, nameof(levelAudio));
 			Validation.NotNull(this, player, nameof(player));
 			Validation.NotNull(this, playerStatsDisplay, nameof(playerStatsDisplay));
 			Validation.NotNull(this, dialogueManager, nameof(dialogueManager));
@@ -54,6 +59,8 @@ namespace TimeKnight
 			pauseMenu.CloseMenuImmediate();
 			
 			cameraScript.Initialize(player);
+			
+			AudioManager.Instance.FadeInMusic(levelAudio);
 		} 
 	}
 }
