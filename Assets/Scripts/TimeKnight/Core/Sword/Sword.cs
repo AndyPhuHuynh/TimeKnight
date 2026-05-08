@@ -9,8 +9,8 @@ namespace TimeKnight.Core.Sword
 {
     public class Sword : MonoBehaviour
     {
-        [Header("Player Reference")]
-        [SerializeField] private PlayerManager playerManager = null!; // Used for getting damage values
+        [Header("Player Combat Reference")]
+        [SerializeField] private PlayerCombatManager playerManager = null!; // Used for getting damage values
 
         [Header("Attack Properties")]
         [SerializeField] private Transform attackTransform = null!;
@@ -20,7 +20,7 @@ namespace TimeKnight.Core.Sword
         [SerializeField] private float horizontalKnockbackForce = 6f;
         [SerializeField] private float verticalKnockbackForce = 4f;
 
-        private bool _isSwordingSwinging;
+        private bool _isSwordSwinging;
         private float _attackTimer;
         private Coroutine? _swordHitboxCoroutine = null;
 
@@ -63,19 +63,19 @@ namespace TimeKnight.Core.Sword
             }
 
             _attackTimer = 0;
-            _isSwordingSwinging = true;
+            _isSwordSwinging = true;
             _swordHitboxCoroutine = StartCoroutine(DamageWhileAttackActive());
         }
 
         public void EndSwing()
         {
-            _isSwordingSwinging = false;
+            _isSwordSwinging = false;
         }
 
         private IEnumerator DamageWhileAttackActive()
         {
             // SwordSwinging is disabled by the animation when sword is finished swinging.
-            while (_isSwordingSwinging)
+            while (_isSwordSwinging)
             {
                 var damage = playerManager.GetCurrentDamageOutput();
                 var colliders = Physics2D.OverlapCircleAll(attackTransform.position, attackRadius, attackableLayer);

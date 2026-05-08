@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 49ff68a3f74bf064f8d5972d8977450e
+guid: ef5c4ac145d06f6488a96c13d3ed8588
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3825927049379498496
-    second: HealthBarBorder_0
+      213: 3824146322478515066
+    second: hourglass_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealthBarBorder_0
+      name: hourglass_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 262
-        height: 70
+        x: 620
+        y: 149
+        width: 1260
+        height: 2202
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0063d258e9397eac0800000000000000
-      internalID: -3825927049379498496
+      spriteID: a73c270b1d8121530800000000000000
+      internalID: 3824146322478515066
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealthBarBorder_0: -3825927049379498496
+      hourglass_0: 3824146322478515066
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

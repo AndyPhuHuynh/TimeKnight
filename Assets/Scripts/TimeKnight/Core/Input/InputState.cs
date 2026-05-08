@@ -37,6 +37,8 @@ namespace TimeKnight.Core.Input
 		InteractionInteract = 1 << 5,
 		InteractionNavigate = 1 << 6,
 		
+		SlowTime = 1 << 7,
+
 		Every = -1
 	}
 

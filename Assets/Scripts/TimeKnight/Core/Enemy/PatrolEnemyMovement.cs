@@ -1,5 +1,6 @@
 using System;
 using TimeKnight.Core.Player;
+using TimeKnight.Core.TimePower;
 using UnityEngine;
 
 namespace TimeKnight.Core.Enemy
@@ -10,8 +11,10 @@ namespace TimeKnight.Core.Enemy
         Chase,
         LostSight,
         TooClose,
+        PatrolStuck,
+        ChaseStuck
     }
-    
+
     public class PatrolEnemyMovement : MonoBehaviour
     {
         private Rigidbody2D _rb = null!;
@@ -79,8 +82,14 @@ namespace TimeKnight.Core.Enemy
                 case EnemyPatrolState.Patrol:
                     Patrol();
                     break;
+                case EnemyPatrolState.PatrolStuck:
+                    PatrolStuck();
+                    break;
                 case EnemyPatrolState.Chase:
                     Chase();
+                    break;
+                case EnemyPatrolState.ChaseStuck:
+                    ChaseStuck();
                     break;
                 case EnemyPatrolState.LostSight:
                     LostSight();
@@ -99,21 +108,26 @@ namespace TimeKnight.Core.Enemy
                 return;
             }
 
-            bool _isMovingOutOfPatrolRange = IsMovingOutOfPatrolRange();
+            // IsHittingWall and IsNearLedge are not cached because those values might be changed after calling FlipPatrolDirection.
+            bool _isMovingOutOfPatrolRange = IsMovingAwayFromPatrolRange();
             bool _isOutOfPatrolRange = IsOutOfPatrolRange();
-            bool _isHittingWall = IsHittingWall();
-            bool _isNearLedge = IsNearLedge();
 
-            // 1. Check if the enemy needs to be flipped. We need to flip if we are moving away from patrol zone, or if we are in patrol zone but hitting wall or ledge.
-            if (_isMovingOutOfPatrolRange || !_isOutOfPatrolRange && (_isHittingWall || _isNearLedge))
+            // Patrolling Has 3 Core steps
+            // 1. Make sure enemy is moving towards patrol zone, OR if they are in patrol zone - flip when hit wall or ledge
+            // 2. While walking back to patrol zone, teleport back if timer is up.
+            // 3. If enemy gets stuck walking back, transition to PatrolStuck, and wait for teleport.
+            // Finally, apply movement
+
+            // 1.
+            if (_isMovingOutOfPatrolRange || !_isOutOfPatrolRange && (IsHittingWall() || IsNearLedge()))
             {
                 FlipPatrolDirection();
             }
 
-            // 2. Calculate if we are away from zone, and teleport back if timer reaches end.
+            // 2.
             if (_isOutOfPatrolRange)
             {
-                _timeAwayFromPatrol += Time.deltaTime;
+                _timeAwayFromPatrol += TimeManager.CustomDelta;
             }
             else
             {
@@ -125,16 +139,32 @@ namespace TimeKnight.Core.Enemy
                 transform.position = _patrolAnchor;
             }
 
-           // 3. If we are out of patrol range and hitting wall or near a ledge, stop moving - the return to teleport timer will bring enemy back.
-           //    Otherwise move like normal.
-            if (_isOutOfPatrolRange && (_isHittingWall || _isNearLedge))
+            // 3.
+            if (_isOutOfPatrolRange && (IsHittingWall() || IsNearLedge()))
             {
-                _rb.linearVelocityX = 0;
+                TransitionTo(EnemyPatrolState.PatrolStuck);
+                return;
             }
-            else
+
+            _rb.linearVelocityX = patrolWalkSpeed * GetVelocityModifiers();
+        }
+
+        private void PatrolStuck()
+        {
+            if (_timeAwayFromPatrol >= _teleportReturnTime)
             {
-                _rb.linearVelocityX = patrolWalkSpeed * _directionModifier;
+                transform.position = _patrolAnchor;
+                TransitionTo(EnemyPatrolState.Patrol);
+                return;
             }
+            else if (IsPlayerChaseable)
+            {
+                TransitionTo(EnemyPatrolState.Chase);
+                return;
+            }
+
+            _rb.linearVelocityX = 0;
+            _timeAwayFromPatrol += TimeManager.CustomDelta;
         }
 
         private void Chase()
@@ -144,17 +174,37 @@ namespace TimeKnight.Core.Enemy
                 TransitionTo(EnemyPatrolState.LostSight);
                 return;
             }
-
             // If enemy is too close to the player, move into too close state
-            if (GetAbsoluteHorizontalDistanceTo(_playerPosition) <= minimumPlayerDistance)
+            else if (GetEuclideanDistanceTo(_playerPosition) <= minimumPlayerDistance)
             {
                 TransitionTo(EnemyPatrolState.TooClose);
                 return;
             }
+            else if (IsNearLedge() || IsHittingWall())
+            {
+                TransitionTo(EnemyPatrolState.ChaseStuck);
+                return;  
+            }
 
             FacePlayer();
+            _rb.linearVelocityX = chaseWalkSpeed * GetVelocityModifiers();
+        }
 
-            _rb.linearVelocityX = chaseWalkSpeed * _directionModifier;
+        private void ChaseStuck()
+        {
+            if (!IsPlayerChaseable)
+            {
+                TransitionTo(EnemyPatrolState.LostSight);
+                return;
+            }
+            else if (!IsNearLedge() && !IsHittingWall())
+            {
+                TransitionTo(EnemyPatrolState.Chase);
+                return;
+            }
+
+            FacePlayer();
+            _rb.linearVelocityX = 0;
         }
 
         private void LostSight()
@@ -172,20 +222,19 @@ namespace TimeKnight.Core.Enemy
             }
 
             _rb.linearVelocityX = 0;
-
-            _lostSightTimer += Time.deltaTime;
+            _lostSightTimer += TimeManager.CustomDelta;
         }
 
         private void TooClose()
         {
             // Don't transition back to chasing until the player is a bit past minium distance.
             // This prevents freaking out when player is at edge of minimum distance 
-            if (GetAbsoluteHorizontalDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
+            if (GetEuclideanDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
             {
                 TransitionTo(EnemyPatrolState.Chase);
                 return;
             }
-            
+
             FacePlayer();
             _rb.linearVelocityX = 0;
         }
@@ -203,6 +252,8 @@ namespace TimeKnight.Core.Enemy
                 case EnemyPatrolState.LostSight: _lostSightTimer = 0f; break;
                 case EnemyPatrolState.Chase:
                 case EnemyPatrolState.TooClose:
+                case EnemyPatrolState.PatrolStuck:
+                case EnemyPatrolState.ChaseStuck:
                     break;
             }
 
@@ -270,6 +321,11 @@ namespace TimeKnight.Core.Enemy
         #endregion
 
         #region Helper Functions
+        private float GetVelocityModifiers()
+        {
+            // Account for direction velocity should be going as well as an adjustment in magnitude from time power.
+            return _directionModifier * TimeManager.CurrentTimeModifier;
+        }
         private bool IsHittingWall()
         {
             Vector2 wallCheckPosition = GetWallCheckPosition();
@@ -286,34 +342,31 @@ namespace TimeKnight.Core.Enemy
             return !isHittingFloor;
         }
 
-        private bool IsMovingOutOfPatrolRange()
+        private bool IsMovingAwayFromPatrolRange()
         {
-            // For basic patrol enemy, we only care about horizontal distance because these enemies cannot jump.
+            // To determine if enemy is moving away from patrol range, we use signed horizontal distance because enemy cannot jump and direction matters here; so we can't use Euclidean distance.
             float horizontalDistance = GetSignedHorizontalDistanceTo(_patrolAnchor);
 
-            // If enemy moving right and has gone past patrol range in positive x, enemy out of range.
             if (!_isFacingLeft && horizontalDistance > patrolRange)
             {
+                // If enemy moving right and has gone past patrol range in positive x, enemy moving out of range.
                 return true;
             }
-            // If enemy moving left, and we went past range in negative x, enemy out of range.
             else if (_isFacingLeft && horizontalDistance < patrolRange * -1)
             {
+                // If enemy moving left, and we went past range in negative x, enemy moving out of range.
                 return true;
             }
 
             return false;
         }
 
-        private bool IsOutOfPatrolRange()
-        {
-            return GetAbsoluteHorizontalDistanceTo(_patrolAnchor) > patrolRange;
-        }
+        private bool IsOutOfPatrolRange() => GetEuclideanDistanceTo(_patrolAnchor) > patrolRange;
 
         private bool CheckIsPlayerChaseable()
         {
             // Only perform raycast if player is within chaseable range.
-            if (GetAbsoluteHorizontalDistanceTo(_playerPosition) > chaseRange) return false;
+            if (GetEuclideanDistanceTo(_playerPosition) > chaseRange) return false;
 
             Vector2 enemyPosition = transform.position;
             Vector2 playerPosition = _playerPosition;
@@ -331,26 +384,13 @@ namespace TimeKnight.Core.Enemy
             return hit.collider != null && ((1 << hit.collider.gameObject.layer) & playerLayer) != 0;
         }
 
-        private float GetSignedHorizontalDistanceTo(Vector3 other)
-        {
-            return transform.position.x - other.x;
-        }
+        private float GetSignedHorizontalDistanceTo(Vector3 other) => transform.position.x - other.x;
 
-        private float GetAbsoluteHorizontalDistanceTo(Vector3 other)
-        {
-            return Math.Abs(GetSignedHorizontalDistanceTo(other));
-        }
+        private float GetEuclideanDistanceTo(Vector2 other) => Vector2.Distance(transform.position, other);
 
-        private Vector2 GetWallCheckPosition()
-        {
-            return transform.position + new Vector3(wallCheckOffset.x * _directionModifier, wallCheckOffset.y, wallCheckOffset.z);
-        }
+        private Vector2 GetWallCheckPosition() => transform.position + new Vector3(wallCheckOffset.x * _directionModifier, wallCheckOffset.y, wallCheckOffset.z);
 
-        private Vector2 GetLedgeCheckPosition()
-        {
-            return transform.position + new Vector3(ledgeCheckOffset.x * _directionModifier, ledgeCheckOffset.y, ledgeCheckOffset.z);
-        }
-
+        private Vector2 GetLedgeCheckPosition() => transform.position + new Vector3(ledgeCheckOffset.x * _directionModifier, ledgeCheckOffset.y, ledgeCheckOffset.z);
         #endregion
 
         private void OnDrawGizmosSelected()

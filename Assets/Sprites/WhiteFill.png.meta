@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 49ff68a3f74bf064f8d5972d8977450e
+guid: 2a7c900b266ee6240957de35d67d8291
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3825927049379498496
-    second: HealthBarBorder_0
+      213: -5346117201509107271
+    second: WhiteFill_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealthBarBorder_0
+      name: WhiteFill_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 262
-        height: 70
+        width: 10
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0063d258e9397eac0800000000000000
-      internalID: -3825927049379498496
+      spriteID: 9b9b17ceab6cec5b0800000000000000
+      internalID: -5346117201509107271
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealthBarBorder_0: -3825927049379498496
+      WhiteFill_0: -5346117201509107271
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

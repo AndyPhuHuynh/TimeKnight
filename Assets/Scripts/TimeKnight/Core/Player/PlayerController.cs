@@ -1,5 +1,6 @@
 using TimeKnight.Core.GrapplingHook;
 using TimeKnight.Core.Input;
+using TimeKnight.Core.TimePower;
 using TimeKnight.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,8 +23,10 @@ namespace TimeKnight.Core.Player
 		[SerializeField] private PlayerJumpMovement jumpMovement = null!;
 		[SerializeField] private PlayerGrapplingHookMovement grapplingHookMovement = null!;
 
-		[Header("Attack")]
+		[Header("Combat")]
 		[SerializeField] private Sword.Sword sword = null!;
+		[SerializeField] private TimeManager timeManager = null!;
+		[SerializeField] private PlayerCombatManager playerManager = null!;
 		
 		private void OnValidate()
 		{
@@ -32,6 +35,8 @@ namespace TimeKnight.Core.Player
 			Validation.NotNull(this, jumpMovement, nameof(jumpMovement));
 			Validation.NotNull(this, grapplingHookMovement, nameof(grapplingHookMovement));
 			Validation.NotNull(this, sword, nameof(sword));
+			Validation.NotNull(this, timeManager, nameof(timeManager));
+			Validation.NotNull(this, playerManager, nameof(playerManager));
 		}
 
 		private void Awake()
@@ -50,6 +55,7 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.MoveJump.canceled += OnJumpCanceled;
 
 			input.Actions.Gameplay.Attack.started += OnAttackStarted;
+			input.Actions.Gameplay.SlowTime.started += OnSlowTimeStarted;
 			
 			input.Actions.Gameplay.GrappleFire.started  += OnGrappleFireStarted;
 			input.Actions.Gameplay.GrappleStop.started  += OnGrappleStopStarted;
@@ -57,6 +63,10 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleEnterIdle  += OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   += OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck += OnGrappleEnterStuck;
+			grapplingHookMovement.OnGrappleUpdateStuck += OnGrappleUpdateStuck;
+
+			playerManager.OnPlayerStunBegin += OnPlayerStunBegin;
+			playerManager.OnPlayerStunEnd += OnPlayerStunEnd;
 		}
 
 		private void OnDisable()
@@ -69,6 +79,7 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.MoveJump.canceled -= OnJumpCanceled;
 			
 			input.Actions.Gameplay.Attack.started -= OnAttackStarted;
+			input.Actions.Gameplay.SlowTime.started -= OnSlowTimeStarted;
 			
 			input.Actions.Gameplay.GrappleFire.started  -= OnGrappleFireStarted;
 			input.Actions.Gameplay.GrappleStop.started  -= OnGrappleStopStarted;
@@ -76,6 +87,10 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleEnterIdle  -= OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   -= OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck -= OnGrappleEnterStuck;
+			grapplingHookMovement.OnGrappleUpdateStuck -= OnGrappleUpdateStuck;
+
+			playerManager.OnPlayerStunBegin -= OnPlayerStunBegin;
+			playerManager.OnPlayerStunEnd -= OnPlayerStunEnd;
 		}
 
 		#region Horizontal Movement
@@ -112,12 +127,42 @@ namespace TimeKnight.Core.Player
 		
 		#endregion
 		
-		#region Attack
+		#region Combat
 
 		private void OnAttackStarted(InputAction.CallbackContext _)
 		{
 			if (!sword.CanAttack()) return;
 			_animator.SetTrigger(_animator.AttackTriggerHash);
+		}
+
+		private void OnSlowTimeStarted(InputAction.CallbackContext _)
+		{
+			timeManager.ActivateSlowTime();
+		}
+
+		private void OnPlayerStunBegin()
+		{
+			input.SetMapStatus(InputStatus.Disabled, ActionMaps.Gameplay);
+			// Interrupt grappling hook if it's being preformed.
+			if (grapplingHookMovement.HookState.IsStuck() || grapplingHookMovement.HookState.IsExtending())
+			{
+				grapplingHookMovement.InterruptGrapple();
+			}
+		}
+
+		private void OnPlayerStunEnd()
+		{	
+			input.SetMapStatus(InputStatus.Enabled, ActionMaps.Gameplay);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);	// Disable grapple stop because we know at this point the grappling hook is either idle or retracting.
+			// Only enable GrappleFire if the hook is done retracting.
+			if (grapplingHookMovement.HookState.IsIdle())
+			{
+				input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
+			}
+			else
+			{
+				input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleFire);
+			}
 		}
 		
 		#endregion
@@ -126,6 +171,9 @@ namespace TimeKnight.Core.Player
 
 		private void OnGrappleFireStarted(InputAction.CallbackContext _)
 		{
+			// Prevent player from interacting with NPC while grappling.
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionInteract);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionNavigate);
 			grapplingHookMovement.StartGrappling();
 		}
 
@@ -140,12 +188,15 @@ namespace TimeKnight.Core.Player
 		{
 			jumpMovement.StopJump();
 			
-			if (grapplingHookMovement.HookState == HookState.Stuck) return;
+			if (grapplingHookMovement.HookState.IsStuck()) return;
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleStop);
 		}
 
 		private void OnGrappleEnterIdle()
 		{
+			// Resume NPC interaction when grappling hook is finished.
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionInteract);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionNavigate);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
 		}
 
@@ -158,6 +209,11 @@ namespace TimeKnight.Core.Player
 		{
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop); 
+		}
+
+		private void OnGrappleUpdateStuck()
+		{
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop);
 		}
 		
 		#endregion

@@ -4,3 +4,4 @@ Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pa
 
 hook.png generated with Chat GPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16 bit art style
 chain.png: https://www.shutterstock.com/search/pixelated-chain
+Hourglass: https://pngtree.com/freepng/hourglass-sandglass-pixel-art-vector_17240782.html
