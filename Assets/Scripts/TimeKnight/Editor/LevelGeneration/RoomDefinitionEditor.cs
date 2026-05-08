@@ -14,6 +14,7 @@ namespace TimeKnight.Editor.LevelGeneration
     public class RoomDefinitionEditor : UnityEditor.Editor
     {
         private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition)!;
+        private System.Action? _pendingBaking;
         
         public void OnEnable()
         {
@@ -60,6 +61,22 @@ namespace TimeKnight.Editor.LevelGeneration
         }
 
         private void BakeAllConnections()
+        {
+            if (_pendingBaking != null)
+            {
+                EditorApplication.delayCall -= BakeAllConnections;
+            }
+
+            _pendingBaking = () =>
+            {
+                _pendingBaking = null;
+                BakeAllConnectionsLogic();
+            };
+            
+            EditorApplication.delayCall += BakeAllConnections;
+        }
+
+        private void BakeAllConnectionsLogic()
         {
             if (targets == null || targets.Length == 0) return;
             foreach (var room in RoomTargets)

@@ -41,17 +41,6 @@ namespace TimeKnight.Core.LevelGeneration
 			for (var i = 0; i < AllRooms.Count; i++)
 			{
 				var room = AllRooms[i];
-				
-#if UNITY_EDITOR
-				// Always reload from disk to get the latest saved data, bypassing Unity's stale in-memory cache
-				var path = UnityEditor.AssetDatabase.GetAssetPath(room);
-				if (!string.IsNullOrEmpty(path))
-				{
-					UnityEditor.AssetDatabase.ImportAsset(path);
-					room = UnityEditor.AssetDatabase.LoadAssetAtPath<RoomDefinition>(path);
-				}
-#endif
-				
 				if (room == null)
 				{
 					Debug.LogError($"RoomRegistry: Room at index {i} is null", this);
