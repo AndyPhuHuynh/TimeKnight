@@ -50,6 +50,7 @@ namespace TimeKnight.Editor.Input
                 DrawFlag("Grapple Stop",         (state.GameplayActions & GameplayActions.GrappleStop) != 0);
                 DrawFlag("Interaction Interact", (state.GameplayActions & GameplayActions.InteractionInteract) != 0);
                 DrawFlag("Interaction Navigate", (state.GameplayActions & GameplayActions.InteractionNavigate) != 0);
+                DrawFlag("Slow Time",            (state.GameplayActions & GameplayActions.SlowTime) != 0);
                 EditorGUI.indentLevel--;
             }
 

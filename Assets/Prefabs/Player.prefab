@@ -166,7 +166,6 @@ Transform:
   - {fileID: 1454893393823989388}
   - {fileID: 4144812076972265265}
   - {fileID: 6651725087338108765}
-  - {fileID: 1325804833885357264}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2744465954188697043
@@ -370,6 +369,8 @@ MonoBehaviour:
   jumpMovement: {fileID: 2670027938769256984}
   grapplingHookMovement: {fileID: 2857255150204042394}
   sword: {fileID: 5134453458329420300}
+  timeManager: {fileID: 3658448055264808980}
+  playerManager: {fileID: 1038622019370413058}
 --- !u!114 &4529869971271536865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,7 +395,7 @@ GameObject:
   - component: {fileID: 6651725087338108765}
   - component: {fileID: 3658448055264808980}
   m_Layer: 8
-  m_Name: TimePowers
+  m_Name: TimeManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -439,7 +440,7 @@ GameObject:
   - component: {fileID: 7590233718306595761}
   - component: {fileID: 1038622019370413058}
   m_Layer: 0
-  m_Name: PlayerManager
+  m_Name: PlayerCombatManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -520,7 +521,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 10
   rb: {fileID: 6837310045875004360}
-  inputReader: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   baseDamage: 2
   critChance: 0.1
   critDamageMultiplier: 2
@@ -664,50 +664,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerGrapplingHookController
   playerBody: {fileID: 6837310045875004360}
   grapplingHook: {fileID: 7141687716842176141}
---- !u!1 &9183594252824692492
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1325804833885357264}
-  - component: {fileID: 4562621451094218696}
-  m_Layer: 8
-  m_Name: TimePowers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1325804833885357264
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9183594252824692492}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2567960917763861338}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4562621451094218696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9183594252824692492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34802d061ea3ab545bad65743d7e5618, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.TimePower.TimeManager
 --- !u!1001 &6693219694085021491
 PrefabInstance:
   m_ObjectHideFlags: 0

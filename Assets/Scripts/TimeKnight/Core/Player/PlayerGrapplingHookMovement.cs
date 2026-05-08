@@ -61,6 +61,18 @@ namespace TimeKnight.Core.Player
             grapplingHook.TransitionTo(HookState.Retracting);
         }
 
+        public void InterruptGrapple()
+        {
+            if (grapplingHook.CurrentState.IsExtending())
+            {
+                grapplingHook.TransitionTo(HookState.Retracting);
+            }
+            else if (grapplingHook.CurrentState.IsStuck())
+            {
+                StopGrappling();
+            }
+        }
+
         private void OnEnterIdle()
         {
             OnGrappleEnterIdle.Invoke();

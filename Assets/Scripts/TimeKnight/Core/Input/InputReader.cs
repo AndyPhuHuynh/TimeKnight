@@ -80,6 +80,7 @@ namespace TimeKnight.Core.Input
             if ((action & GameplayActions.GrappleStop) != 0) op(Actions.Gameplay.GrappleStop);
             if ((action & GameplayActions.InteractionInteract) != 0) op(Actions.Gameplay.InteractionInteract);
             if ((action & GameplayActions.InteractionNavigate) != 0) op(Actions.Gameplay.InteractionNavigate);
+            if ((action & GameplayActions.SlowTime) != 0) op(Actions.Gameplay.SlowTime);
         }
 
         private void SetActionStatus(InputStatus status, DialogueActions action)
@@ -112,6 +113,7 @@ namespace TimeKnight.Core.Input
             if (Actions.Gameplay.GrappleStop.enabled) gameplayActions |= GameplayActions.GrappleStop;
             if (Actions.Gameplay.InteractionInteract.enabled) gameplayActions |= GameplayActions.InteractionInteract;
             if (Actions.Gameplay.InteractionNavigate.enabled) gameplayActions |= GameplayActions.InteractionNavigate;
+            if (Actions.Gameplay.SlowTime.enabled) gameplayActions |= GameplayActions.SlowTime;
             
             if (Actions.Dialogue.Advance.enabled) dialogueActions |= DialogueActions.Advance;
 

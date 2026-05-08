@@ -211,7 +211,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 var colliders = Physics2D.OverlapCircleAll(attackTransform.position, attackHitboxRadius);
                 foreach (var hit in colliders)
                 {
-                    if (hit.gameObject.TryGetComponent(out PlayerManager player))
+                    if (hit.gameObject.TryGetComponent(out PlayerCombatManager player))
                     {
                         _wasPlayerHit = true;
                         Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
@@ -238,7 +238,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         // Player Contact Collision Damage
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (collision.gameObject.TryGetComponent(out PlayerManager player))
+            if (collision.gameObject.TryGetComponent(out PlayerCombatManager player))
             {
                 Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
                 player.Damage(playerCollisionDamage, knockback);
@@ -257,7 +257,6 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private void StartCombatCoroutine(IEnumerator combatCoroutine)
         {
-            _activeCombatCoWrapper.Stop();
             _activeCombatCoWrapper.Start(combatCoroutine);
         }
 
