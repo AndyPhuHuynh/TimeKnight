@@ -2098,7 +2098,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DungeonTiles_87
+      name: DungeonTiles_DoorOpenTop
       rect:
         serializedVersion: 2
         x: 192
@@ -2120,7 +2120,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DungeonTiles_88
+      name: DungeonTiles_DoorClosedTop
       rect:
         serializedVersion: 2
         x: 208
@@ -2296,7 +2296,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DungeonTiles_96
+      name: DungeonTiles_DoorOpenBottom
       rect:
         serializedVersion: 2
         x: 192
@@ -2318,7 +2318,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DungeonTiles_97
+      name: DungeonTiles_DoorClosedBottom
       rect:
         serializedVersion: 2
         x: 208
@@ -3231,8 +3231,6 @@ TextureImporter:
       DungeonTiles_84: 1314399240
       DungeonTiles_85: -1843170272
       DungeonTiles_86: -1417368382
-      DungeonTiles_87: -951428489
-      DungeonTiles_88: 629802885
       DungeonTiles_89: 1688019339
       DungeonTiles_9: -541392806
       DungeonTiles_90: -1975644565
@@ -3241,8 +3239,6 @@ TextureImporter:
       DungeonTiles_93: -1843899997
       DungeonTiles_94: -486932424
       DungeonTiles_95: -1807580556
-      DungeonTiles_96: -740494401
-      DungeonTiles_97: 797295366
       DungeonTiles_98: 856422164
       DungeonTiles_99: -249462703
       DungeonTiles_BrickBottomLeft: 1600597753
@@ -3254,10 +3250,15 @@ TextureImporter:
       DungeonTiles_BrickTopLeft: -931869590
       DungeonTiles_BrickTopMiddle: 1510502026
       DungeonTiles_BrickTopRight: 620373153
+      DungeonTiles_DoorClosedBottom: 797295366
+      DungeonTiles_DoorClosedTop: 629802885
+      DungeonTiles_DoorOpenBottom: -740494401
+      DungeonTiles_DoorOpenTop: -951428489
       DungeonTiles_InnerBottomLeft: 932127091
       DungeonTiles_InnerBottomRight: 393853287
       DungeonTiles_InnerTopLeft: -465103556
       DungeonTiles_InnerTopRight: -2059290624
+      c: 629802885
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

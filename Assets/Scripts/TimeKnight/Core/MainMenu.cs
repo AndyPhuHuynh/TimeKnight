@@ -1,3 +1,4 @@
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Scene;
 using TimeKnight.Utils;
 using UnityEngine;
@@ -8,11 +9,13 @@ namespace TimeKnight.Core
 {
     public class MainMenu : MonoBehaviour
     {
+        [SerializeField] private AudioClip menuMusic = null!;
         [SerializeField] private Button startButton = null!;
         [SerializeField] private SceneReference level = null!;
 
         private void OnValidate()
         {
+            Validation.NotNull(this, menuMusic, nameof(menuMusic));
             Validation.NotNull(this, startButton, nameof(startButton));
             Validation.NotNull(this, level, nameof(level));
         }
@@ -23,6 +26,11 @@ namespace TimeKnight.Core
             {
                 SceneManager.LoadScene(level.SceneName);
             });
+        }
+
+        private void Start()
+        {
+            AudioManager.Instance.FadeInMusic(menuMusic);
         }
     }
 }

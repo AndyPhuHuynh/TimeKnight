@@ -5,6 +5,7 @@ namespace TimeKnight.Core.LevelGeneration
 		None = 0,
 		Start,
 		Enemy,
-		Connection
+		Connection,
+		End
 	}
 }

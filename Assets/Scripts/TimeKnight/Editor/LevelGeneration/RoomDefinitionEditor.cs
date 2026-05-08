@@ -62,7 +62,6 @@ namespace TimeKnight.Editor.LevelGeneration
 
         private void BakeAllConnections()
         {
-            Debug.Log("Baking all connections");
             if (targets == null || targets.Length == 0) return;
             foreach (var room in RoomTargets)
             {

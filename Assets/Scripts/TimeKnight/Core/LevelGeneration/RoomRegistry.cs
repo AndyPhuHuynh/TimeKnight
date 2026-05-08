@@ -26,7 +26,6 @@ namespace TimeKnight.Core.LevelGeneration
 		
 		public void Initialize()
 		{
-			Debug.Log("Initializing RoomRegistry");
 			foreach (var type in _allValidTypes)
 			{
 				if (RoomsOfType.TryGetValue(type, out var rooms))
@@ -69,7 +68,6 @@ namespace TimeKnight.Core.LevelGeneration
 		
 		public static void ReinitializeAllRegistries()
 		{
-			Debug.Log("Reinitializing all registries");
 #if UNITY_EDITOR
 			var guids = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(RoomRegistry)}");
 			foreach (var guid in guids)

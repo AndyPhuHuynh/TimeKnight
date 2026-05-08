@@ -4,3 +4,9 @@ Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pa
 
 hook.png generated with Chat GPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16 bit art style
 chain.png: https://www.shutterstock.com/search/pixelated-chain
+
+Tilesets:
+- https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
+- https://blackspirestudio.itch.io/medieval-pixel-art-asset-free
+
+Main Menu: generated via the dungeon platformer tileset images and asking ChatGPT to change the text to say TimeKnight
