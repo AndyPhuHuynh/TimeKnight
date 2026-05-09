@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using TimeKnight.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -26,6 +28,15 @@ namespace TimeKnight.Utils
 			if (string.IsNullOrEmpty(field))
 			{
 				Debug.LogError($"{fieldName} on {owner.name} is not assigned!", owner);
+			}
+		}
+
+		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		public static void NotEmpty<T>(Object owner, IReadOnlyCollection<T> field, string fieldName)
+		{
+			if (field.IsEmpty())
+			{
+				Debug.LogError($"{fieldName} on {owner.name} is empty!", owner);
 			}
 		}
 		

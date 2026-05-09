@@ -10,3 +10,6 @@ Tilesets:
 - https://blackspirestudio.itch.io/medieval-pixel-art-asset-free
 
 Main Menu: generated via the dungeon platformer tileset images and asking ChatGPT to change the text to say TimeKnight
+
+Sword Swing SFX:
+- https://freesound.org/people/Nomagician/sounds/840716/

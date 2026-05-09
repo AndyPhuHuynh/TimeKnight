@@ -6,12 +6,12 @@ namespace TimeKnight.Core.Audio
 {
 	public class AudioManager : Singleton<AudioManager>
 	{
-		[Header("SFX")]
-		[SerializeField] private AudioSource soundFXSource = null!;
-		
 		[Header("Music")]
 		[SerializeField] private AudioSource musicSource1 = null!;
 		[SerializeField] private AudioSource musicSource2 = null!;
+
+		[Header("SFX")]
+		[SerializeField] private AudioSource sfxPrefab = null!; 
 
 		private AudioSource _current = null!;
 		private AudioSource _other = null!;
@@ -24,9 +24,9 @@ namespace TimeKnight.Core.Audio
 		
 		private void OnValidate()
 		{
-			Validation.NotNull(this, soundFXSource, nameof(soundFXSource));
 			Validation.NotNull(this, musicSource1, nameof(musicSource1));
 			Validation.NotNull(this, musicSource2, nameof(musicSource2));
+			Validation.NotNull(this, sfxPrefab, nameof(sfxPrefab));
 		}
 
 		protected override void Awake()
@@ -88,11 +88,19 @@ namespace TimeKnight.Core.Audio
 			_fadeIn.Start(FadeInMusicCoroutine(_current, clip));
 			_fadeOut.Start(FadeOutMusicCoroutine(_other));
 		}
-		
-		public void PlaySoundEffect(AudioClip clip)
+
+		private IEnumerator PlaySoundEffectCoroutine(AudioClip clip, Vector3 position)
 		{
-			soundFXSource.clip = clip;
-			soundFXSource.Play();
+			var source = Instantiate(sfxPrefab, position, Quaternion.identity);
+			source.clip = clip;
+			source.Play();
+			yield return new WaitForSeconds(clip.length);
+			Destroy(source.gameObject);
+		}
+		
+		public void PlaySoundEffect(AudioClip clip, Vector3 position)
+		{
+			StartCoroutine(PlaySoundEffectCoroutine(clip, position));
 		}
 	}
 }

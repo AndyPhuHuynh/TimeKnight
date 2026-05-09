@@ -305,9 +305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 909a2ab6fa7743d3863ea86b7691bd5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Audio.AudioManager
-  soundFXSource: {fileID: 4556387486718317191}
   musicSource1: {fileID: 3704188468838256221}
   musicSource2: {fileID: 6712608592562782098}
+  sfxPrefab: {fileID: 8703033820136277900, guid: 4c44c58c30dbe482685033daf29158fa, type: 3}
 --- !u!114 &8282832444088252485
 MonoBehaviour:
   m_ObjectHideFlags: 0
