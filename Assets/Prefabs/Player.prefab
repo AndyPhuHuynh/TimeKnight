@@ -213,7 +213,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 201516983
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2311659948842064771, guid: c507c7b053f8d6742b36b57eb70e6df0, type: 3}
@@ -313,6 +313,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.Player.PlayerHorizontalMovement
   maxMoveSpeed: 5
   acceleration: 1
+  moveSounds:
+  - {fileID: 8300000, guid: af0973c1685e845949537fb3d0bd4b90, type: 3}
+  - {fileID: 8300000, guid: d8f3d165c926f4ce29df985d43cb5ea4, type: 3}
+  - {fileID: 8300000, guid: 3d308356fbe26475fb99b254b283a78c, type: 3}
+  - {fileID: 8300000, guid: 6db3c67b1204049e0a8231c0d485399c, type: 3}
+  - {fileID: 8300000, guid: d5e0d551f662943f7bf106a421966f62, type: 3}
+  groundCheck: {fileID: 6841495374549988156}
 --- !u!114 &2670027938769256984
 MonoBehaviour:
   m_ObjectHideFlags: 0

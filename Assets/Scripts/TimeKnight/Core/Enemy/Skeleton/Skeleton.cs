@@ -51,6 +51,12 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private EnemyCombatState _combatState = EnemyCombatState.None;
         private bool _isHitboxActive;
         private Coroutine? _receiveKnockbackCoroutine;
+        
+        // Audio
+        private readonly AudioClipParams _swordSoundParams = new()
+        {
+            PitchVariance = 0.25f
+        };
 
         private void OnValidate()
         {
@@ -189,7 +195,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private IEnumerator AttackPlayer()
         {
-            AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, pitchVariance: 0.25f);
+            StartCoroutine(AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, _swordSoundParams));
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;

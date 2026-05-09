@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using TimeKnight.Utils;
 using UnityEngine;
+using Yarn.Saliency;
 
 namespace TimeKnight.Core.Audio
 {
@@ -89,26 +91,34 @@ namespace TimeKnight.Core.Audio
 			_fadeOut.Start(FadeOutMusicCoroutine(_other));
 		}
 
-		private IEnumerator PlaySoundEffectCoroutine(AudioClip clip, Vector3 position, float pitchVariance)
+		public IEnumerator PlaySoundEffect(AudioClip clip, Vector3 position, AudioClipParams? clipParams = null)
 		{
 			var source = Instantiate(sfxPrefab, position, Quaternion.identity);
 			source.clip = clip;
-			source.Play();
 
-			pitchVariance = Mathf.Abs(pitchVariance);
-			const float basePitch = 1.0f;
-			var pitchMin = basePitch - pitchVariance;
-			var pitchMax = basePitch + pitchVariance;
-			var pitch = Random.Range(pitchMin, pitchMax);
-			source.pitch = pitch;
+			if (clipParams != null)
+			{
+				var pitchVariance = Mathf.Abs(clipParams.PitchVariance);
+				const float basePitch = 1.0f;
+				var pitchMin = basePitch - pitchVariance;
+				var pitchMax = basePitch + pitchVariance;
+				var pitch = Random.Range(pitchMin, pitchMax);
+				source.pitch = pitch;
+				
+				source.volume = clipParams.Volume;
+			}
 			
+			source.Play();
 			yield return new WaitForSeconds(clip.length);
 			Destroy(source.gameObject);
 		}
-		
-		public void PlaySoundEffect(AudioClip clip, Vector3 position, float pitchVariance = 0.0f)
+
+		public IEnumerator PlaySoundEffect(
+			IReadOnlyCollection<AudioClip> clips, 
+			Vector3 position, 
+			AudioClipParams? clipParams = null)
 		{
-			StartCoroutine(PlaySoundEffectCoroutine(clip, position, pitchVariance));
+			yield return PlaySoundEffect(clips.RandomElement(), position, clipParams);
 		}
 	}
 }

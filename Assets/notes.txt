@@ -2,7 +2,7 @@ Just leaving this here so we can have this on the repo.
 
 Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pack
 
-hook.png generated with Chat GPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16 bit art style
+hook.png generated with ChatGPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16-bit art style
 chain.png: https://www.shutterstock.com/search/pixelated-chain
 
 Tilesets:
@@ -16,3 +16,9 @@ Sword Swing SFX:
 - SwordSwing2: https://freesound.org/people/Nomagician/sounds/840715/
 - SwordSwing3: https://freesound.org/people/Nomagician/sounds/840717/
 - SkeletonSword: https://freesound.org/people/XxChr0nosxX/sounds/268227/
+
+- RightGravel1: https://freesound.org/people/Ali_6868/sounds/384877/
+- RightGravel2: https://freesound.org/people/Ali_6868/sounds/384876/
+- RightGravel3: https://freesound.org/people/Ali_6868/sounds/384879/
+- RightGravel4: https://freesound.org/people/Ali_6868/sounds/384878/
+- RightGravel5: https://freesound.org/people/Ali_6868/sounds/384880/
