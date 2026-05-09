@@ -375,6 +375,8 @@ MonoBehaviour:
   jumpMovement: {fileID: 2670027938769256984}
   grapplingHookMovement: {fileID: 2857255150204042394}
   sword: {fileID: 5134453458329420300}
+  grappleChainClip: {fileID: 8300000, guid: a0a7c9dcdcf6d458e86954d02b7f2166, type: 3}
+  grappleHitClip: {fileID: 8300000, guid: e9a45af041e1d435d815f3334a044051, type: 3}
 --- !u!114 &4529869971271536865
 MonoBehaviour:
   m_ObjectHideFlags: 0

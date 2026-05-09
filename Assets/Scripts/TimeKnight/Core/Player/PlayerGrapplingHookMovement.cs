@@ -17,7 +17,11 @@ namespace TimeKnight.Core.Player
         public HookState HookState => grapplingHook.CurrentState;
         public event Action OnGrappleEnterIdle = delegate { };
         public event Action OnGrappleExitIdle = delegate { };
+        public event Action OnGrappleUpdateExtending = delegate { };
         public event Action<Vector3> OnGrappleEnterStuck = delegate { };
+        public event Action OnGrappleUpdateRetracting = delegate { };
+        
+        public Vector3 TipPosition => grapplingHook.TipPosition;
 
         private bool _isBeingPulled;
         private float _prevGravity;
@@ -32,14 +36,18 @@ namespace TimeKnight.Core.Player
         {
             grapplingHook.OnEnterIdle  += OnEnterIdle;
             grapplingHook.OnExitIdle   += OnExitIdle;
+            grapplingHook.OnUpdateExtending += OnUpdateExtending;
             grapplingHook.OnEnterStuck += OnEnterStuck;
+            grapplingHook.OnUpdateRetracting += OnUpdateRetracting;
         }
 
         private void OnDisable()
         {
             grapplingHook.OnEnterIdle  -= OnEnterIdle;
             grapplingHook.OnExitIdle   -= OnExitIdle;
+            grapplingHook.OnUpdateExtending -= OnUpdateExtending;
             grapplingHook.OnEnterStuck -= OnEnterStuck;
+            grapplingHook.OnUpdateRetracting -= OnUpdateRetracting;
         }
 
         public void StartGrappling()
@@ -68,10 +76,20 @@ namespace TimeKnight.Core.Player
             OnGrappleExitIdle.Invoke();
         }
         
+        private void OnUpdateExtending()
+        {
+            OnGrappleUpdateExtending.Invoke();
+        }
+        
         private void OnEnterStuck(Vector3 collisionPoint)
         {
             StartCoroutine(PullPlayer(collisionPoint, grapplingHook.PullSpeed));
             OnGrappleEnterStuck.Invoke(collisionPoint);
+        }
+        
+        private void OnUpdateRetracting()
+        {
+            OnGrappleUpdateRetracting.Invoke();
         }
 
         private IEnumerator PullPlayer(Vector3 targetPosition, float pullSpeed)

@@ -22,3 +22,6 @@ Sword Swing SFX:
 - RightGravel3: https://freesound.org/people/Ali_6868/sounds/384879/
 - RightGravel4: https://freesound.org/people/Ali_6868/sounds/384878/
 - RightGravel5: https://freesound.org/people/Ali_6868/sounds/384880/
+
+- GrappleChain: https://freesound.org/people/richardemoore/sounds/362859/
+- GrappleHit: https://freesound.org/people/Hankof/sounds/655622/
