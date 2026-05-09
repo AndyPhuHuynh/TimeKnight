@@ -89,18 +89,26 @@ namespace TimeKnight.Core.Audio
 			_fadeOut.Start(FadeOutMusicCoroutine(_other));
 		}
 
-		private IEnumerator PlaySoundEffectCoroutine(AudioClip clip, Vector3 position)
+		private IEnumerator PlaySoundEffectCoroutine(AudioClip clip, Vector3 position, float pitchVariance)
 		{
 			var source = Instantiate(sfxPrefab, position, Quaternion.identity);
 			source.clip = clip;
 			source.Play();
+
+			pitchVariance = Mathf.Abs(pitchVariance);
+			const float basePitch = 1.0f;
+			var pitchMin = basePitch - pitchVariance;
+			var pitchMax = basePitch + pitchVariance;
+			var pitch = Random.Range(pitchMin, pitchMax);
+			source.pitch = pitch;
+			
 			yield return new WaitForSeconds(clip.length);
 			Destroy(source.gameObject);
 		}
 		
-		public void PlaySoundEffect(AudioClip clip, Vector3 position)
+		public void PlaySoundEffect(AudioClip clip, Vector3 position, float pitchVariance = 0.0f)
 		{
-			StartCoroutine(PlaySoundEffectCoroutine(clip, position));
+			StartCoroutine(PlaySoundEffectCoroutine(clip, position, pitchVariance));
 		}
 	}
 }

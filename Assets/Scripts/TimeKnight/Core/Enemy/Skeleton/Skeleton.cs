@@ -2,6 +2,7 @@ using UnityEngine;
 using TimeKnight.Core.Player;
 using System;
 using System.Collections;
+using TimeKnight.Core.Audio;
 using TimeKnight.Utils;
 
 namespace TimeKnight.Core.Enemy.Skeleton
@@ -22,7 +23,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [SerializeField] private float horizontalKnockbackForce = 6f;
         [SerializeField] private float verticalKnockbackForce = 4f;
         private float _attackTimer;
-        private bool _attackTimerReady => _attackTimer >= attackCooldown;
+        private bool AttackTimerReady => _attackTimer >= attackCooldown;
 
         [Header("Attack Hitbox Properties")]
         [SerializeField] private float attackPlayerRange = 2f;
@@ -33,6 +34,9 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [SerializeField] private float flashDurationWhenHit = 0.8f;
         [SerializeField] private Color flashColor;
         private Color _baseSpriteColor;
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip swordAttackSound = null!;
 
         // Animation State Management
         private PatrolEnemyMovement _patrolScript = null!;
@@ -45,8 +49,13 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         // Combat State management
         private EnemyCombatState _combatState = EnemyCombatState.None;
-        private bool _isHitboxActive = false;
-        private Coroutine? _receiveKnockbackCoroutine = null;
+        private bool _isHitboxActive;
+        private Coroutine? _receiveKnockbackCoroutine;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, swordAttackSound, nameof(swordAttackSound));
+        }
 
         private void Awake()
         {
@@ -61,7 +70,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private void Update()
         {
-            if (!_attackTimerReady && !_combatState.IsAttacking())
+            if (!AttackTimerReady && !_combatState.IsAttacking())
             {
                 _attackTimer += Time.deltaTime;
             }
@@ -175,21 +184,22 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private bool CanAttackPlayer()
         {
             bool isPlayerInRange = Vector3.Distance(PlayerController.PlayerPosition, transform.position) <= attackPlayerRange;
-            return isPlayerInRange && _attackTimerReady && !_combatState.IsBeingDamaged();
+            return isPlayerInRange && AttackTimerReady && !_combatState.IsBeingDamaged();
         }
 
         private IEnumerator AttackPlayer()
         {
+            AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, pitchVariance: 0.25f);
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;
             _isHitboxActive = false;
-            bool _wasPlayerHit = false;
+            var wasPlayerHit = false;
 
             while (_combatState.IsAttacking())
             {
                 // Don't check physics casts when enemy already hit player or hitbox is inactive.
-                if (_wasPlayerHit || !_isHitboxActive)
+                if (wasPlayerHit || !_isHitboxActive)
                 {
                     yield return null;
                     continue;
@@ -200,7 +210,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 {
                     if (hit.gameObject.TryGetComponent(out PlayerManager player))
                     {
-                        _wasPlayerHit = true;
+                        wasPlayerHit = true;
                         Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
                         player.Damage(attackDamage, knockback);
                     }
