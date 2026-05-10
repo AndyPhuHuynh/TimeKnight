@@ -3,6 +3,7 @@ using TimeKnight.Core.Player;
 using System;
 using System.Collections;
 using TimeKnight.Core.Audio;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 
 namespace TimeKnight.Core.Enemy.Skeleton
@@ -36,7 +37,10 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private Color _baseSpriteColor;
 
         [Header("Audio")]
+        [SerializeField] private AudioSource swordAudioSource = null!;
+        [SerializeField] private AudioSource hurtAudioSource = null!;
         [SerializeField] private AudioClip swordAttackSound = null!;
+        [SerializeField] private AudioClip hurtSound = null!;
 
         // Animation State Management
         private PatrolEnemyMovement _patrolScript = null!;
@@ -58,9 +62,17 @@ namespace TimeKnight.Core.Enemy.Skeleton
             PitchVariance = 0.25f
         };
 
+        private readonly AudioClipParams _hurtSoundParams = new()
+        {
+            PitchVariance = 0.25f
+        };
+
         private void OnValidate()
         {
+            Validation.NotNull(this, swordAudioSource, nameof(swordAudioSource));
+            Validation.NotNull(this, hurtAudioSource, nameof(hurtAudioSource));
             Validation.NotNull(this, swordAttackSound, nameof(swordAttackSound));
+            Validation.NotNull(this, hurtSound, nameof(hurtSound));
         }
 
         private void Awake()
@@ -125,6 +137,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
         #region Receiving Damage From PLayer
         public void Damage(float damage, Vector2? knockback)
         {
+            hurtAudioSource.PlayWithParams(hurtSound, _hurtSoundParams);
+            
             _currentHealth -= (int)Math.Round(damage);
             if (_currentHealth <= 0)
             {
@@ -195,7 +209,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private IEnumerator AttackPlayer()
         {
-            AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, _swordSoundParams);
+            swordAudioSource.PlayWithParams(swordAttackSound, _swordSoundParams);
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;

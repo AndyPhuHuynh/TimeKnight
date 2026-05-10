@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
 using Yarn.Saliency;
@@ -101,25 +102,13 @@ namespace TimeKnight.Core.Audio
 		{
 			var source = Instantiate(sfxPrefab, position, Quaternion.identity);
 			source.clip = clip;
-
-			if (clipParams != null)
-			{
-				var pitchVariance = Mathf.Abs(clipParams.PitchVariance);
-				const float basePitch = 1.0f;
-				var pitchMin = basePitch - pitchVariance;
-				var pitchMax = basePitch + pitchVariance;
-				var pitch = Random.Range(pitchMin, pitchMax);
-				source.pitch = pitch;
-				
-				source.volume = clipParams.Volume;
-			}
-			
+			source.SetParams(clipParams);
 			source.Play();
 			StartCoroutine(DestroyAfterPlayBack(source));
 
 			return new AudioSfxInstance
 			{
-				ClipLengthSeconds = clip.length,
+				ClipLengthSeconds = clip.length
 			};
 		}
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Input;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
 
@@ -25,11 +27,23 @@ namespace TimeKnight.Core.Player
         [SerializeField] private float damageRecoveryTime = 1f;
         [SerializeField] private float knockbackStunTime = 0.5f;
         private bool _isInvincible;
+        
+        [Header("Audio")]
+        [SerializeField] private AudioSource hurtAudioSource = null!;
+        [SerializeField] private AudioClip hurtAudioClip = null!;
+
+        private readonly AudioClipParams _hurtAudioClipParams = new()
+        {
+            PitchVariance = 0.25f,
+            Volume = 1.0f,
+        };
 
         private void OnValidate()
         {
             Validation.NotNull(this, rb, "Rigidbody2D");
             Validation.NotNull(this, inputReader, "Input Reader");
+            Validation.NotNull(this, hurtAudioSource, "AudioSource");
+            Validation.NotNull(this, hurtAudioClip, "AudioClip");
         }
 
         private void Awake()
@@ -70,6 +84,10 @@ namespace TimeKnight.Core.Player
 
         private void ApplyDamage(float damage)
         {
+            hurtAudioSource.clip = hurtAudioClip;
+            hurtAudioSource.SetParams(_hurtAudioClipParams);
+            hurtAudioSource.Play();
+            
             StartCoroutine(DamageInvulnerability());
             Health -= (int)Math.Round(damage * damageResistance);
             HealthChanged.Invoke(Health);
