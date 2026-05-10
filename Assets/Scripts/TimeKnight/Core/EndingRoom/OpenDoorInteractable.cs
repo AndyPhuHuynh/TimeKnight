@@ -18,6 +18,8 @@ namespace TimeKnight.Core.EndingRoom
 		[SerializeField] private SceneReference exitScene = null!;
 		[SerializeField] private AudioClip endSceneMusic = null!;
 
+		[SerializeField] private AudioClip doorOpenClip = null!;
+
 		private bool _doorOpened;
 		
 		private void OnValidate()
@@ -28,6 +30,7 @@ namespace TimeKnight.Core.EndingRoom
 			Validation.NotNull(this, bottomSpriteOpen, nameof(bottomSpriteOpen));
 			Validation.NotNull(this, exitScene, nameof(exitScene));
 			Validation.NotNull(this, endSceneMusic, nameof(endSceneMusic));
+			Validation.NotNull(this, doorOpenClip, nameof(doorOpenClip));
 		}
 
 		public string InteractionName => !_doorOpened ? "Open Door" : "End Demo";
@@ -48,6 +51,10 @@ namespace TimeKnight.Core.EndingRoom
 			_doorOpened = true;
 			topSpriteRenderer.sprite = topSpriteOpen;
 			bottomSpriteRenderer.sprite = bottomSpriteOpen;
+			AudioManager.Instance.PlaySoundEffect(doorOpenClip, transform.position, new AudioClipParams
+			{
+				Volume = 0.5f
+			});
 		}
 
 		private void ExitScene()

@@ -25,3 +25,5 @@ Sword Swing SFX:
 
 - GrappleChain: https://freesound.org/people/richardemoore/sounds/362859/
 - GrappleHit: https://freesound.org/people/Hankof/sounds/655622/
+
+- DoorOpen: https://freesound.org/people/pagancow/sounds/15419/

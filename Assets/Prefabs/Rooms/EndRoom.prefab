@@ -53,6 +53,7 @@ MonoBehaviour:
   bottomSpriteOpen: {fileID: -740494401, guid: 86664c669cbdb46a69d6a52ed7f4f860, type: 3}
   exitScene: {fileID: 11400000, guid: 126a4e35ed5ff4cd58bb34d5aa7180dc, type: 2}
   endSceneMusic: {fileID: 8300000, guid: d5e2658f098fe4ea4a115a84dc895448, type: 3}
+  doorOpenClip: {fileID: 8300000, guid: 622d5034f9bd541f38d188c04afa1712, type: 3}
 --- !u!61 &998457169382884738
 BoxCollider2D:
   m_ObjectHideFlags: 0
