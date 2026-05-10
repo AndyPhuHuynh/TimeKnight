@@ -91,7 +91,13 @@ namespace TimeKnight.Core.Audio
 			_fadeOut.Start(FadeOutMusicCoroutine(_other));
 		}
 
-		public IEnumerator PlaySoundEffect(AudioClip clip, Vector3 position, AudioClipParams? clipParams = null)
+		private static IEnumerator DestroyAfterPlayBack(AudioSource source)
+		{
+			yield return new WaitWhile(() => source.isPlaying);
+			Destroy(source.gameObject);
+		}
+
+		public AudioSfxInstance PlaySoundEffect(AudioClip clip, Vector3 position, AudioClipParams? clipParams = null)
 		{
 			var source = Instantiate(sfxPrefab, position, Quaternion.identity);
 			source.clip = clip;
@@ -109,16 +115,20 @@ namespace TimeKnight.Core.Audio
 			}
 			
 			source.Play();
-			yield return new WaitForSeconds(clip.length);
-			Destroy(source.gameObject);
+			StartCoroutine(DestroyAfterPlayBack(source));
+
+			return new AudioSfxInstance
+			{
+				ClipLengthSeconds = clip.length,
+			};
 		}
 
-		public IEnumerator PlaySoundEffect(
+		public AudioSfxInstance PlaySoundEffect(
 			IReadOnlyCollection<AudioClip> clips, 
 			Vector3 position, 
 			AudioClipParams? clipParams = null)
 		{
-			yield return PlaySoundEffect(clips.RandomElement(), position, clipParams);
+			 return PlaySoundEffect(clips.RandomElement(), position, clipParams);
 		}
 	}
 }

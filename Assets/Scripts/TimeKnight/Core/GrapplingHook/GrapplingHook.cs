@@ -20,7 +20,7 @@ namespace TimeKnight.Core.GrapplingHook
         private const float BaseLength = 0;
         private float CurrentLength => _sr.size.x;
 
-        [Header("Hook TIp")]
+        [Header("Hook Tip")]
         [SerializeField] private GameObject hookTip = null!;
         private SpriteRenderer _hookTipSpriteRenderer = null!;
         private Transform _hookTipTransform = null!;
@@ -28,9 +28,7 @@ namespace TimeKnight.Core.GrapplingHook
         // Callbacks
         public event Action OnEnterIdle =  delegate {};
         public event Action OnExitIdle = delegate {};
-        public event Action OnUpdateExtending = delegate {};
         public event Action<Vector3> OnEnterStuck = delegate {};
-        public event Action OnUpdateRetracting = delegate {};
 
         // Hook Rotation Management
         private Vector3 _collisionPoint;
@@ -40,7 +38,6 @@ namespace TimeKnight.Core.GrapplingHook
         // Properties
         public HookState CurrentState { get; private set; } = HookState.Idle;
         public float PullSpeed => pullSpeed;
-        public Vector3 TipPosition => _hookTipTransform.position;
 
         private void OnValidate()
         {
@@ -130,7 +127,6 @@ namespace TimeKnight.Core.GrapplingHook
 
         private IEnumerator UpdateExtending()
         {   
-            OnUpdateExtending.Invoke();
             var maxGrappleDistance = maxLength * DirectionModifier;
 
             // Find a point in space for the grappling hook to aim towards/rotate around.
@@ -170,7 +166,6 @@ namespace TimeKnight.Core.GrapplingHook
 
         private IEnumerator UpdateRetracting()
         {
-            OnUpdateRetracting.Invoke();
             while (CurrentState.IsRetracting())
             {
                 if (CurrentLength > BaseLength)

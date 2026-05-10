@@ -1,4 +1,3 @@
-using TimeKnight.Core.Audio;
 using TimeKnight.Core.GrapplingHook;
 using TimeKnight.Core.Input;
 using TimeKnight.Utils;
@@ -24,18 +23,6 @@ namespace TimeKnight.Core.Player
 
 		[Header("Attack")]
 		[SerializeField] private Sword.Sword sword = null!;
-
-		[Header("Grappling Hook Audio")]
-		[SerializeField] private AudioClip grappleChainClip = null!;
-		[SerializeField] private AudioClip grappleHitClip = null!;
-
-		private CoWrapper _grappleChainCoWrapper = null!;
-
-		private readonly AudioClipParams _grappleChainParams = new()
-		{
-			PitchVariance = 0.25f,
-			Volume = 0.5f
-		};
 		
 		private void OnValidate()
 		{
@@ -44,17 +31,12 @@ namespace TimeKnight.Core.Player
 			Validation.NotNull(this, jumpMovement, nameof(jumpMovement));
 			Validation.NotNull(this, grapplingHookMovement, nameof(grapplingHookMovement));
 			Validation.NotNull(this, sword, nameof(sword));
-			
-			Validation.NotNull(this, grappleChainClip, nameof(grappleChainClip));
-			Validation.NotNull(this, grappleHitClip, nameof(grappleHitClip));
 		}
 
 		private void Awake()
 		{
 			_playerTransform = transform;
 			_animator = GetComponent<PlayerAnimator>();
-
-			_grappleChainCoWrapper = new CoWrapper(this);
 		}
 
 		private void OnEnable()
@@ -73,9 +55,7 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.GrappleStop.canceled += OnGrappleStopCancelled;
 			grapplingHookMovement.OnGrappleEnterIdle  += OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   += OnGrappleExitIdle;
-			grapplingHookMovement.OnGrappleUpdateExtending += OnGrappleUpdateExtending;
 			grapplingHookMovement.OnGrappleEnterStuck += OnGrappleEnterStuck;
-			grapplingHookMovement.OnGrappleUpdateRetracting += OnGrappleUpdateRetracting;
 		}
 
 		private void OnDisable()
@@ -94,9 +74,7 @@ namespace TimeKnight.Core.Player
 			input.Actions.Gameplay.GrappleStop.canceled -= OnGrappleStopCancelled;
 			grapplingHookMovement.OnGrappleEnterIdle  -= OnGrappleEnterIdle;
 			grapplingHookMovement.OnGrappleExitIdle   -= OnGrappleExitIdle;
-			grapplingHookMovement.OnGrappleUpdateExtending -= OnGrappleUpdateExtending;
 			grapplingHookMovement.OnGrappleEnterStuck -= OnGrappleEnterStuck;
-			grapplingHookMovement.OnGrappleUpdateRetracting -= OnGrappleUpdateRetracting;
 		}
 
 		#region Horizontal Movement
@@ -144,13 +122,6 @@ namespace TimeKnight.Core.Player
 		#endregion
 		
 		#region GrapplingHook
-
-		private void PlayGrappleChainSound()
-		{
-			if (_grappleChainCoWrapper.IsRunning) return;
-			_grappleChainCoWrapper.Start(AudioManager.Instance.PlaySoundEffect(
-				grappleChainClip, grapplingHookMovement.TipPosition, _grappleChainParams));
-		}
 		
 		private void OnGrappleFireStarted(InputAction.CallbackContext _)
 		{
@@ -175,7 +146,6 @@ namespace TimeKnight.Core.Player
 		private void OnGrappleEnterIdle()
 		{
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
-			_grappleChainCoWrapper.Stop();
 		}
 
 		private void OnGrappleExitIdle()
@@ -183,22 +153,10 @@ namespace TimeKnight.Core.Player
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleFire);
 		}
 
-		private void OnGrappleUpdateExtending()
-		{
-			PlayGrappleChainSound();
-		}
-
 		private void OnGrappleEnterStuck(Vector3 _)
 		{
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop);
-			_grappleChainCoWrapper.Stop();
-			StartCoroutine(AudioManager.Instance.PlaySoundEffect(grappleHitClip, grapplingHookMovement.TipPosition));
-		}
-
-		private void OnGrappleUpdateRetracting()
-		{
-			PlayGrappleChainSound();
 		}
 		
 		#endregion

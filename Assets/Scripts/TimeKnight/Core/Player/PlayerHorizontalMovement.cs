@@ -2,15 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using TimeKnight.Core.Audio;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
+using Yarn.Saliency;
 
 namespace TimeKnight.Core.Player
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
     public class PlayerHorizontalMovement : MonoBehaviour
     {
         private Rigidbody2D _rb = null!;
+        private AudioSource _audioSource = null!;
         
         [Header("Movement")]
         [SerializeField] private float maxMoveSpeed = 5;
@@ -22,7 +25,6 @@ namespace TimeKnight.Core.Player
         
         private float _currentMoveSpeed;
         private bool _isMoving;
-        private CoWrapper _soundPlaying = null!;
 
         private readonly AudioClipParams _soundParams = new()
         {
@@ -39,7 +41,10 @@ namespace TimeKnight.Core.Player
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _soundPlaying = new CoWrapper(this);
+            _audioSource = GetComponent<AudioSource>();
+            
+            Validation.NotFound(this, _rb, nameof(_rb));
+            Validation.NotNull(this, _audioSource, nameof(_audioSource));
         }
 
         public void StartMove(Func<float> readInput)
@@ -54,7 +59,7 @@ namespace TimeKnight.Core.Player
             _isMoving = false;
             _currentMoveSpeed = 0;
             _rb.linearVelocityX = 0;
-            _soundPlaying.Stop();
+            _audioSource.Stop();
         }
 
         public void UpdateSpriteDirection(float input)
@@ -69,11 +74,13 @@ namespace TimeKnight.Core.Player
             {
                 if (!groundCheck.IsGrounded)
                 {
-                    _soundPlaying.Stop();
+                    _audioSource.Stop();
                 }
-                else if (!_soundPlaying.IsRunning)
+                else if (!_audioSource.isPlaying)
                 {
-                    _soundPlaying.Start(AudioManager.Instance.PlaySoundEffect(moveSounds, _rb.transform.position, _soundParams));
+                    _audioSource.clip = moveSounds.RandomElement();
+                    _audioSource.SetParams(_soundParams);
+                    _audioSource.Play();
                 }
                 _currentMoveSpeed = Math.Min(_currentMoveSpeed + acceleration, maxMoveSpeed);
                 _rb.linearVelocityX = readInput() * _currentMoveSpeed;

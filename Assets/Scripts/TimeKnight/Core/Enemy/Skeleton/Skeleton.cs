@@ -195,7 +195,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private IEnumerator AttackPlayer()
         {
-            StartCoroutine(AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, _swordSoundParams));
+            AudioManager.Instance.PlaySoundEffect(swordAttackSound, transform.position, _swordSoundParams);
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;

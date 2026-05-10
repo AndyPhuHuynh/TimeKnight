@@ -71,7 +71,7 @@ namespace TimeKnight.Core.Sword
             _isSwordingSwinging = true;
             _swordHitboxCoroutine = StartCoroutine(DamageWhileAttackActive());
             
-            StartCoroutine(AudioManager.Instance.PlaySoundEffect(swingSounds, attackTransform.position));
+            AudioManager.Instance.PlaySoundEffect(swingSounds, attackTransform.position);
         }
 
         public void EndSwing()
