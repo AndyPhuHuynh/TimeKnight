@@ -6,13 +6,15 @@ using UnityEngine;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-	[CreateAssetMenu(fileName = "RoomRegistry", menuName = "Scriptable Objects/RoomRegistry")]
+	[CreateAssetMenu(
+		fileName = ScriptableObjectStrings.RoomRegistryFileName,
+		menuName = ScriptableObjectStrings.RoomRegistryMenuName)]
 	public class RoomRegistry : ScriptableObject
 	{
 		[field: SerializeField] public List<RoomDefinition> AllRooms { get; private set; } = new();
 		public readonly Dictionary<RoomType, List<RoomDefinition>> RoomsOfType = new();
 
-		private readonly RoomType[] allValidTypes = 
+		private readonly RoomType[] _allValidTypes = 
 			EnumUtils.GetEnumValues<RoomType>()
 				.Where(t => t != RoomType.None)
 				.ToArray();
@@ -24,7 +26,7 @@ namespace TimeKnight.Core.LevelGeneration
 		
 		public void Initialize()
 		{
-			foreach (var type in allValidTypes)
+			foreach (var type in _allValidTypes)
 			{
 				if (RoomsOfType.TryGetValue(type, out var rooms))
 				{
@@ -39,17 +41,6 @@ namespace TimeKnight.Core.LevelGeneration
 			for (var i = 0; i < AllRooms.Count; i++)
 			{
 				var room = AllRooms[i];
-				
-#if UNITY_EDITOR
-				// Always reload from disk to get the latest saved data, bypassing Unity's stale in-memory cache
-				var path = UnityEditor.AssetDatabase.GetAssetPath(room);
-				if (!string.IsNullOrEmpty(path))
-				{
-					UnityEditor.AssetDatabase.ImportAsset(path);
-					room = UnityEditor.AssetDatabase.LoadAssetAtPath<RoomDefinition>(path);
-				}
-#endif
-				
 				if (room == null)
 				{
 					Debug.LogError($"RoomRegistry: Room at index {i} is null", this);
@@ -63,7 +54,7 @@ namespace TimeKnight.Core.LevelGeneration
 				RoomsOfType[room.RoomType].Add(room);
 			}
 
-			foreach (var type in allValidTypes)
+			foreach (var type in _allValidTypes)
 			{
 				if (RoomsOfType[type].IsEmpty())
 				{

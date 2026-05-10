@@ -13,7 +13,6 @@ namespace TimeKnight.Core.Player
 		private PlayerAnimator _animator = null!;
 		private static Transform _playerTransform = null!;
 		public static Vector3 PlayerPosition => _playerTransform.position;
-		public static bool IsPlayerFacingLeft => _playerTransform.localScale.x < 0;
 		
 		[Header("Input Reader")]
 		[SerializeField] private InputReader input = null!;
@@ -98,7 +97,7 @@ namespace TimeKnight.Core.Player
 		private void OnHorizontalMoveStarted(InputAction.CallbackContext ctx)
 		{
 			// This lambda is needed because if player changes directions on the same frame OnHorizontalMoveCanceled doesn't get called.
-			horizontalMovement.StartMove(() => {return ctx.ReadValue<float>();});
+			horizontalMovement.StartMove(() => ctx.ReadValue<float>());
 		}
 
 		private void OnHorizontalMovePerformed(InputAction.CallbackContext ctx)
@@ -168,7 +167,7 @@ namespace TimeKnight.Core.Player
 		#endregion
 		
 		#region GrapplingHook
-
+		
 		private void OnGrappleFireStarted(InputAction.CallbackContext _)
 		{
 			// Prevent player from interacting with NPC while grappling.
@@ -208,7 +207,7 @@ namespace TimeKnight.Core.Player
 		private void OnGrappleEnterStuck(Vector3 _)
 		{
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
-			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop); 
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleStop);
 		}
 
 		private void OnGrappleUpdateStuck()

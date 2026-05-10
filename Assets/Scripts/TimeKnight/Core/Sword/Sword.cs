@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Enemy;
 using TimeKnight.Core.Player;
 using TimeKnight.Utils;
@@ -21,8 +22,12 @@ namespace TimeKnight.Core.Sword
         [SerializeField] private float verticalKnockbackForce = 4f;
 
         private bool _isSwordSwinging;
+        [Header("Audio")]
+        [SerializeField] private List<AudioClip> swingSounds = new();
+
+        private bool _isSwordingSwinging;
         private float _attackTimer;
-        private Coroutine? _swordHitboxCoroutine = null;
+        private Coroutine? _swordHitboxCoroutine;
 
         // Collision management
         private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
@@ -30,6 +35,7 @@ namespace TimeKnight.Core.Sword
         private void OnValidate()
         {
             Validation.NotNull(this, attackTransform, nameof(attackTransform));
+            Validation.NotEmpty(this, swingSounds, nameof(swingSounds));
         }
         
         private void Awake()
@@ -65,6 +71,8 @@ namespace TimeKnight.Core.Sword
             _attackTimer = 0;
             _isSwordSwinging = true;
             _swordHitboxCoroutine = StartCoroutine(DamageWhileAttackActive());
+            
+            AudioManager.Instance.PlaySoundEffect(swingSounds, attackTransform.position);
         }
 
         public void EndSwing()

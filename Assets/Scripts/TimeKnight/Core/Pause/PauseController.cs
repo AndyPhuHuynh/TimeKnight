@@ -5,15 +5,21 @@ using UnityEngine.InputSystem;
 
 namespace TimeKnight.Core.Pause
 {
+	[RequireComponent(typeof(PauseMenu))]
 	public class PauseController : MonoBehaviour
 	{
+		private PauseMenu _pauseMenu = null!;
 		[SerializeField] private InputReader input = null!;
-		[SerializeField] private PauseMenu pauseMenu = null!;
 		
 		private void OnValidate()
 		{
 			Validation.NotNull(this, input, nameof(input));
-			Validation.NotNull(this, pauseMenu, nameof(pauseMenu));
+		}
+
+		private void Awake()
+		{
+			_pauseMenu = GetComponent<PauseMenu>();
+			Validation.NotFound(this, _pauseMenu, nameof(_pauseMenu));
 		}
 
 		private void OnEnable()
@@ -30,14 +36,14 @@ namespace TimeKnight.Core.Pause
 
 		private void OnOpenPauseStarted(InputAction.CallbackContext ctx)
 		{
-			pauseMenu.OpenMenu();
+			_pauseMenu.OpenMenu();
 			input.SetActionStatus(InputStatus.Disabled, GlobalActions.OpenPause);
 			input.SetActionStatus(InputStatus.Enabled, GlobalActions.ClosePause);
 		}
 		
 		private void OnClosePauseStarted(InputAction.CallbackContext ctx)
 		{
-			pauseMenu.CloseMenu();
+			_pauseMenu.CloseMenu();
 			input.SetActionStatus(InputStatus.Disabled, GlobalActions.ClosePause);
 			input.SetActionStatus(InputStatus.Enabled, GlobalActions.OpenPause);
 		}

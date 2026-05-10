@@ -1,6 +1,5 @@
 using UnityEngine;
 using TimeKnight.Core.Player;
-using TimeKnight.Utils;
 using UnityEngine.UI;
 
 namespace TimeKnight.Core.HUD
@@ -8,37 +7,43 @@ namespace TimeKnight.Core.HUD
     public class HealthBar : MonoBehaviour
     {
         [SerializeField] private Slider healthFillSlider = null!;
-        private PlayerCombatManager playerManager = null!;
-
-        private void Awake()
-        {
-            // This must be run in awake in order for the syncing to occur in enable correctly; because enable happens after awake.
-            playerManager = GameObject.FindWithTag("Player").GetComponentInChildren<PlayerCombatManager>();
-        }
-
+        private PlayerCombatManager? _playerManager;
+        
         private void OnEnable()
         {
-            Validation.NotNull(this, playerManager, nameof(playerManager));
-            
-            playerManager.MaxHealthChanged += SetMaxHealth;
-            playerManager.HealthChanged += SetHealth;
-
-            // Sync immediately in case the player already initialized.
-            SetMaxHealth(playerManager.maxHealth);
-            SetHealth(playerManager.Health);
+            Subscribe();
         }
 
         private void OnDisable()
         {
-            if (playerManager == null)
-            {
-                return;
-            }
-
-            playerManager.MaxHealthChanged -= SetMaxHealth;
-            playerManager.HealthChanged -= SetHealth;
+            Unsubscribe();
         }
 
+        public void Initialize(PlayerCombatManager player)
+        {
+            _playerManager = player;
+            Subscribe();
+        }
+
+        private void Subscribe()
+        {
+            if (_playerManager == null) return;
+            Unsubscribe();
+            
+            _playerManager.MaxHealthChanged += SetMaxHealth;
+            _playerManager.HealthChanged += SetHealth;
+
+            SetMaxHealth(_playerManager.maxHealth);
+            SetHealth(_playerManager.Health);
+        }
+
+        private void Unsubscribe()
+        {
+            if (_playerManager == null) return;
+            _playerManager.MaxHealthChanged -= SetMaxHealth;
+            _playerManager.HealthChanged -= SetHealth;
+        }
+        
         private void SetHealth(int health)
         {
             healthFillSlider.value = health;

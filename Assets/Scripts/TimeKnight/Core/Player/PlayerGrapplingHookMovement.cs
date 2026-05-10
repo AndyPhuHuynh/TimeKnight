@@ -19,7 +19,7 @@ namespace TimeKnight.Core.Player
         public event Action OnGrappleExitIdle = delegate { };
         public event Action OnGrappleUpdateStuck = delegate { };
         public event Action<Vector3> OnGrappleEnterStuck = delegate { };
-
+        
         private bool _isBeingPulled;
         private float _prevGravity;
 

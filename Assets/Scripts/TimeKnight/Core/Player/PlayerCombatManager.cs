@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Input;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
 
@@ -18,10 +20,11 @@ namespace TimeKnight.Core.Player
         // Actions for PlayerController to handle input
         public event Action OnPlayerStunBegin = delegate { };
         public event Action OnPlayerStunEnd = delegate { };
-
+        
         [Header("Knockback Application")]
         [SerializeField] private Rigidbody2D rb = null!;
-
+        [SerializeField] private InputReader inputReader = null!;
+        
         [Header("Player Stats")]
         [SerializeField] private float baseDamage = 2;
         [SerializeField] private float critChance = 0.1f;
@@ -30,10 +33,23 @@ namespace TimeKnight.Core.Player
         [SerializeField] private float damageRecoveryTime = 1f;
         [SerializeField] private float knockbackStunTime = 0.5f;
         private bool _isInvincible;
+        
+        [Header("Audio")]
+        [SerializeField] private AudioSource hurtAudioSource = null!;
+        [SerializeField] private AudioClip hurtAudioClip = null!;
+
+        private readonly AudioClipParams _hurtAudioClipParams = new()
+        {
+            PitchVariance = 0.25f,
+            Volume = 1.0f,
+        };
 
         private void OnValidate()
         {
             Validation.NotNull(this, rb, "Rigidbody2D");
+            Validation.NotNull(this, inputReader, "Input Reader");
+            Validation.NotNull(this, hurtAudioSource, "AudioSource");
+            Validation.NotNull(this, hurtAudioClip, "AudioClip");
         }
 
         private void Awake()
@@ -60,15 +76,22 @@ namespace TimeKnight.Core.Player
         {
             if (_isInvincible) return;
 
+            ApplyDamage(damage);
+            
+            if (knockback == null) return;
+            StartCoroutine(KnockbackStun());
+            Combat.ApplyKnockback(rb, (Vector2)knockback);
+        }
+
+        private void ApplyDamage(float damage)
+        {
+            hurtAudioSource.clip = hurtAudioClip;
+            hurtAudioSource.SetParams(_hurtAudioClipParams);
+            hurtAudioSource.Play();
+            
             StartCoroutine(DamageInvulnerability());
             Health -= (int)Math.Round(damage * damageResistance);
             HealthChanged.Invoke(Health);
-
-            if (knockback != null)
-            {
-                StartCoroutine(KnockbackStun());
-                Combat.ApplyKnockback(rb, (Vector2)knockback);
-            }
         }
 
         private IEnumerator DamageInvulnerability()
