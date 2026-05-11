@@ -1,0 +1,38 @@
+using System.Collections;
+using TimeKnight.Core.Audio;
+using TimeKnight.Core.Scene;
+using TimeKnight.Utils;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+namespace TimeKnight.Core
+{
+    public class MainMenu : MonoBehaviour
+    {
+        [SerializeField] private AudioClip menuMusic = null!;
+        [SerializeField] private Button startButton = null!;
+        [SerializeField] private SceneReference level = null!;
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, menuMusic, nameof(menuMusic));
+            Validation.NotNull(this, startButton, nameof(startButton));
+            Validation.NotNull(this, level, nameof(level));
+        }
+
+        private void Awake()
+        {
+            startButton.onClick.AddListener(() =>
+            {
+                TransitionCanvas.Instance.StartCoroutine(
+                    TransitionCanvas.Instance.LoadGameScene(level.SceneName));
+            });
+        }
+
+        private void Start()
+        {
+            AudioManager.Instance.FadeInMusic(menuMusic);
+        }
+    }
+}

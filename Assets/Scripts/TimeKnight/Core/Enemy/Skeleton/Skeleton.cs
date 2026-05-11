@@ -2,6 +2,8 @@ using UnityEngine;
 using TimeKnight.Core.Player;
 using System;
 using System.Collections;
+using TimeKnight.Core.Audio;
+using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using TimeKnight.Core.TimePower;
 
@@ -25,7 +27,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [SerializeField] private float horizontalKnockbackForce = 6f;
         [SerializeField] private float verticalKnockbackForce = 4f;
         private float _attackTimer;
-        private bool _attackTimerReady => _attackTimer >= attackCooldown;
+        private bool AttackTimerReady => _attackTimer >= attackCooldown;
 
         [Header("Attack Hitbox Properties")]
         [SerializeField] private float attackPlayerRange = 2f;
@@ -36,6 +38,12 @@ namespace TimeKnight.Core.Enemy.Skeleton
         [SerializeField] private float flashDurationWhenHit = 0.8f;
         [SerializeField] private Color flashColor;
         private Color _baseSpriteColor;
+
+        [Header("Audio")]
+        [SerializeField] private AudioSource swordAudioSource = null!;
+        [SerializeField] private AudioSource hurtAudioSource = null!; 
+        [SerializeField] private AudioClip swordAttackSound = null!;
+        [SerializeField] private AudioClip hurtSound = null!;
 
         // Animation State Management
         private PatrolEnemyMovement _patrolScript = null!;
@@ -48,8 +56,27 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         // Combat State management
         private EnemyCombatState _combatState = EnemyCombatState.None;
-        private bool _isHitboxActive = false;
+        private bool _isHitboxActive;
         private CoWrapper _activeCombatCoWrapper = null!;   // One CoWrapper is used for all combat actions as they are mutually exclusive.
+        
+        // Audio
+        private readonly AudioClipParams _swordSoundParams = new()
+        {
+            PitchVariance = 0.25f
+        };
+
+        private readonly AudioClipParams _hurtSoundParams = new()
+        {
+            PitchVariance = 0.25f
+        };
+
+        private void OnValidate()
+        {
+            Validation.NotNull(this, swordAudioSource, nameof(swordAudioSource));
+            Validation.NotNull(this, hurtAudioSource, nameof(hurtAudioSource));
+            Validation.NotNull(this, swordAttackSound, nameof(swordAttackSound));
+            Validation.NotNull(this, hurtSound, nameof(hurtSound));
+        }
 
         private void Awake()
         {
@@ -67,8 +94,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private void Update()
         {
             HandleTimeDilation();
-            
-            if (!_attackTimerReady)
+            if (!AttackTimerReady && !_combatState.IsAttacking())
             {
                 _attackTimer += TimeManager.CustomDelta;
             }
@@ -119,6 +145,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
         #region Receiving Damage From PLayer
         public void Damage(float damage, Vector2? knockback)
         {
+            hurtAudioSource.PlayWithParams(hurtSound, _hurtSoundParams);
+            
             _currentHealth -= (int)Math.Round(damage);
             if (_currentHealth <= 0)
             {
@@ -155,7 +183,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         {
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_damagedTriggerHash);
-            float _currentKnockbackDuration = 0;
+            float currentKnockbackDuration = 0;
             // Knockback applied after movement AI paused.
             if (knockback != null)
             {
@@ -166,8 +194,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
             while (_combatState.IsBeingDamaged())
             {
                 // This uses regular Time.deltaTime so enemy doesn't slide for super long when time is slowed down.
-                _currentKnockbackDuration += Time.deltaTime;
-                if (_currentKnockbackDuration >= _maxKnockbackDuration)
+                currentKnockbackDuration += Time.deltaTime;
+                if (currentKnockbackDuration >= _maxKnockbackDuration)
                 {
                     _rb.linearVelocity = new Vector2(0, _rb.linearVelocityY);
                 }
@@ -188,21 +216,22 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private bool CanAttackPlayer()
         {
             bool isPlayerInRange = Vector3.Distance(PlayerController.PlayerPosition, transform.position) <= attackPlayerRange;
-            return isPlayerInRange && _attackTimerReady && _combatState.IsNone();
+            return isPlayerInRange && AttackTimerReady && _combatState.IsNone();
         }
 
         private IEnumerator AttackPlayer()
         {
+            swordAudioSource.PlayWithParams(swordAttackSound, _swordSoundParams);
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;
             _isHitboxActive = false;
-            bool _wasPlayerHit = false;
+            var wasPlayerHit = false;
 
             while (_combatState.IsAttacking())
             {
                 // Don't check physics casts when enemy already hit player or hitbox is inactive.
-                if (_wasPlayerHit || !_isHitboxActive)
+                if (wasPlayerHit || !_isHitboxActive)
                 {
                     yield return null;
                     continue;
@@ -213,7 +242,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
                 {
                     if (hit.gameObject.TryGetComponent(out PlayerCombatManager player))
                     {
-                        _wasPlayerHit = true;
+                        wasPlayerHit = true;
                         Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
                         player.Damage(attackDamage, knockback);
                     }
@@ -241,6 +270,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
             if (collision.gameObject.TryGetComponent(out PlayerCombatManager player))
             {
                 Vector2 knockback = Combat.CalculateKnockback(transform.position, PlayerController.PlayerPosition, horizontalKnockbackForce, verticalKnockbackForce);
+
                 player.Damage(playerCollisionDamage, knockback);
             }
         }

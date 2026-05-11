@@ -14,6 +14,7 @@ namespace TimeKnight.Editor.LevelGeneration
     public class RoomDefinitionEditor : UnityEditor.Editor
     {
         private IEnumerable<RoomDefinition> RoomTargets => targets.Select(o => o as RoomDefinition)!;
+        private System.Action? _pendingBaking;
         
         public void OnEnable()
         {
@@ -79,7 +80,6 @@ namespace TimeKnight.Editor.LevelGeneration
             }
             
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
             RoomRegistry.ReinitializeAllRegistries();
         }
     }

@@ -212,6 +212,8 @@ MonoBehaviour:
     Max: 7
   patrolJumpCooldown: 4
   patrolRange: 5
+  wallCheckOffset: {x: 0.5, y: 0.13, z: 0}
+  wallCheckSize: {x: 0.1, y: 0.5}
   chaseRange: 5
   chaseJumpCooldown: 2
   groundLayer:
@@ -330,3 +332,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9add3012f66fc34f8cfdd5822b5a323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.GroundCheck
+  playerAnimator: {fileID: 0}

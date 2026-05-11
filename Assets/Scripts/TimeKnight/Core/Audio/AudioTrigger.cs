@@ -15,7 +15,7 @@ namespace TimeKnight.Core.Audio
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
 			if (!collision.CompareTag("Player")) return;
-			AudioManager.Instance.PlayMusic(clip);
+			AudioManager.Instance.FadeInMusic(clip);	
 		}
 	}
 }

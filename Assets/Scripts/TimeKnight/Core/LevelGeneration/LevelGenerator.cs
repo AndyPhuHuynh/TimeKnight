@@ -106,7 +106,7 @@ namespace TimeKnight.Core.LevelGeneration
             
             var startRoom = new LevelNode("start", RoomType.Start);
             var path1Room1 = new LevelNode("path1room1", RoomType.Enemy);
-            var path1Room2 = new LevelNode("path1room2", RoomType.Start);
+            var path1Room2 = new LevelNode("path1room2", RoomType.End);
             var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
             var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room1ToRoom2", RoomType.Connection);
             

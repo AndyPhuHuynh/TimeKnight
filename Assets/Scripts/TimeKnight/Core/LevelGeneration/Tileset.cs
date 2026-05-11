@@ -4,7 +4,9 @@ using UnityEngine.Tilemaps;
 
 namespace TimeKnight.Core.LevelGeneration
 {
-    [CreateAssetMenu(fileName = "TileSet", menuName = "Scriptable Objects/TileSet")]
+    [CreateAssetMenu(
+        fileName = ScriptableObjectStrings.TilesetFileName, 
+        menuName = ScriptableObjectStrings.TilesetMenuName)]
     public class Tileset : ScriptableObject
     {
         [Header("Connections")]

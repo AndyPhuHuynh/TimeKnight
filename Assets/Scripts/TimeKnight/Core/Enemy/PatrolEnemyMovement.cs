@@ -175,7 +175,7 @@ namespace TimeKnight.Core.Enemy
                 return;
             }
             // If enemy is too close to the player, move into too close state
-            else if (GetSignedHorizontalDistanceTo(_playerPosition) <= minimumPlayerDistance)
+            else if (GetAbsoluteHorizontalDistanceTo(_playerPosition) <= minimumPlayerDistance)
             {
                 TransitionTo(PatrolEnemyState.TooClose);
                 return;
@@ -229,7 +229,7 @@ namespace TimeKnight.Core.Enemy
         {
             // Don't transition back to chasing until the player is a bit past minium distance.
             // This prevents freaking out when player is at edge of minimum distance 
-            if (GetSignedHorizontalDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
+            if (GetAbsoluteHorizontalDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
             {
                 TransitionTo(PatrolEnemyState.Chase);
                 return;
@@ -390,6 +390,8 @@ namespace TimeKnight.Core.Enemy
         }
 
         private float GetSignedHorizontalDistanceTo(Vector3 other) => transform.position.x - other.x;
+
+        private float GetAbsoluteHorizontalDistanceTo(Vector3 other) => Math.Abs(GetSignedHorizontalDistanceTo(other));
 
         private float GetEuclideanDistanceTo(Vector2 other) => Vector2.Distance(transform.position, other);
 

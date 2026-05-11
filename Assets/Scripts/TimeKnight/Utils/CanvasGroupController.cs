@@ -8,8 +8,8 @@ namespace TimeKnight.Utils
 		private readonly MonoBehaviour _owner;
 		private readonly CanvasGroup _canvasGroup;
 		
-		private CoWrapper _fadeInWrapper;
-		private CoWrapper _fadeOutWrapper;
+		private readonly CoWrapper _fadeInWrapper;
+		private readonly CoWrapper _fadeOutWrapper;
 
 		public CanvasGroupController(MonoBehaviour owner, CanvasGroup canvasGroup)
 		{

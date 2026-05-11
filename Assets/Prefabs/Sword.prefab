@@ -80,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 201516983
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3753825769889500098, guid: cb273e2bb5accd943861388f3b647b8b, type: 3}
@@ -112,6 +112,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackCooldown: 1
+  horizontalKnockbackForce: 6
+  verticalKnockbackForce: 4
+  swingSounds:
+  - {fileID: 8300000, guid: d0dcd862d52f14c00b48a120997be68a, type: 3}
+  - {fileID: 8300000, guid: 492f32c3e007544508b28a99d8ca79e0, type: 3}
+  - {fileID: 8300000, guid: edd5a6570143e47bdb640dc43ecd5574, type: 3}
 --- !u!1 &6057171879231415389
 GameObject:
   m_ObjectHideFlags: 0

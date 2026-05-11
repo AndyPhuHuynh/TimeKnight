@@ -17,10 +17,10 @@ namespace TimeKnight.Core.GrapplingHook
         [SerializeField] private float retractSpeed = 10f;
         [SerializeField] private float pullSpeed = 10;
         [field: SerializeField] public LayerMask GrappleSurfaceLayer { get; private set; }
-        private float _baseLength = 0;
-        private float _currentLength => _sr.size.x * GetScaleMultiplier();
+        private const float BaseLength = 0;
+        private float CurrentLength => _sr.size.x * GetScaleMultiplier();
 
-        [Header("Hook TIp")]
+        [Header("Hook Tip")]
         [SerializeField] private GameObject hookTip = null!;
         private SpriteRenderer _hookTipSpriteRenderer = null!;
         private Transform _hookTipTransform = null!;
@@ -34,7 +34,7 @@ namespace TimeKnight.Core.GrapplingHook
         // Hook Rotation Management
         private Vector3 _collisionPoint;
         private Vector3 _firingPoint;
-        private float _directionModifier => IsPlayerFacingLeft() ? -1 : 1;
+        private float DirectionModifier => IsPlayerFacingLeft() ? -1 : 1;
 
         // Properties
         public HookState CurrentState { get; private set; } = HookState.Idle;
@@ -126,26 +126,14 @@ namespace TimeKnight.Core.GrapplingHook
             OnExitIdle.Invoke();
         }
 
-        private void HideSprites()
-        {
-            _sr.enabled = false;
-            _hookTipSpriteRenderer.enabled = false;
-        }
-
-        private void ShowSprites()
-        {
-            _sr.enabled = true;
-            _hookTipSpriteRenderer.enabled = true;
-        }
-
         private IEnumerator UpdateExtending()
         {   
-            float _maxGrappleDistance = maxLength * _directionModifier;
+            var maxGrappleDistance = maxLength * DirectionModifier;
 
             // Find a point in space for the grappling hook to aim towards/rotate around.
-            _firingPoint = transform.position + transform.right * _maxGrappleDistance;
+            _firingPoint = transform.position + transform.right * maxGrappleDistance;
 
-            RaycastHit2D wallHit = Physics2D.Raycast(transform.position, transform.right, _maxGrappleDistance, GrappleSurfaceLayer);
+            RaycastHit2D wallHit = Physics2D.Raycast(transform.position, transform.right, maxGrappleDistance, GrappleSurfaceLayer);
             if (wallHit.collider != null)
             {
                 _collisionPoint = wallHit.point;
@@ -155,16 +143,16 @@ namespace TimeKnight.Core.GrapplingHook
             while (CurrentState.IsExtending())
             {
                 // First check to see if we have reached collision point.
-                if (wallHit.collider != null && _currentLength >= GetDistanceTo(_collisionPoint))
+                if (wallHit.collider != null && CurrentLength >= GetDistanceTo(_collisionPoint))
                 {
                     TransitionTo(HookState.Stuck);
                     yield break;
                 }
 
-                if (_currentLength < GetDistanceTo(_firingPoint))
+                if (CurrentLength < GetDistanceTo(_firingPoint))
                 {
                     RotateGrapplingHook(_firingPoint);  // Keeps grappling hook firing into the same direction regardless of player movement.
-                    float newLength = _currentLength + (fireSpeed * Time.deltaTime);
+                    float newLength = CurrentLength + (fireSpeed * Time.deltaTime);
                     UpdateLength(newLength);
                 }
                 else
@@ -181,16 +169,16 @@ namespace TimeKnight.Core.GrapplingHook
         {
             while (CurrentState.IsRetracting())
             {
-                if (_currentLength > _baseLength)
+                if (CurrentLength > BaseLength)
                 {
                     RotateGrapplingHook(_firingPoint);  // Keeps grappling hook retracting from the same direction it was fired from.
-                    float newLength = _currentLength - (retractSpeed * Time.deltaTime);
+                    float newLength = CurrentLength - (retractSpeed * Time.deltaTime);
                     UpdateLength(newLength);
                     yield return null;
                 }
                 else
                 {
-                    UpdateLength(_baseLength); // There might be some variance when subtracting length on last frame due to Time.deltaTime, this resets it to base length. 
+                    UpdateLength(BaseLength); // There might be some variance when subtracting length on last frame due to Time.deltaTime, this resets it to base length. 
                     TransitionTo(HookState.Idle);
                 }
             }
@@ -267,6 +255,18 @@ namespace TimeKnight.Core.GrapplingHook
         {
             float scaleX = Mathf.Abs(transform.lossyScale.x);
             return Mathf.Approximately(scaleX, 0f) ? 1f : scaleX;
+        }
+        
+        private void HideSprites()
+        {
+            _sr.enabled = false;
+            _hookTipSpriteRenderer.enabled = false;
+        }
+
+        private void ShowSprites()
+        {
+            _sr.enabled = true;
+            _hookTipSpriteRenderer.enabled = true;
         }
     }
 }

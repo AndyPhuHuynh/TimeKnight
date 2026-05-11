@@ -20,15 +20,17 @@ namespace TimeKnight.Utils
 			}
 		}
 
-		protected void Awake()
+		protected virtual void Awake()
 		{
-			if (_instance != null && _instance != this)
+			var self = this as T;
+			
+			if (_instance != null && _instance != self)
 			{
 				Destroy(gameObject);
 				return;
 			}
 			
-			_instance = this as T;
+			_instance = self;
 			DontDestroyOnLoad(gameObject);
 		}
 	}

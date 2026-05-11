@@ -50,6 +50,8 @@ namespace TimeKnight.Core.Enemy
         [Header("Patrol Properties")]
         [SerializeField] private float patrolJumpCooldown = 4f;
         [SerializeField] private float patrolRange = 10f;
+        [SerializeField] private Vector3 wallCheckOffset = new Vector3(1f, 0f, 0f);
+        [SerializeField] private Vector2 wallCheckSize = new Vector2(0.5f, 1f);
         private bool _readyToPatrolJump => _jumpTimer >= patrolJumpCooldown;
         private Vector3 _patrolAnchor;
         private float _teleportReturnTime = 10f;
@@ -205,8 +207,12 @@ namespace TimeKnight.Core.Enemy
                 case JumpEnemyState.Falling:
                     _airtimeTimer = 0;
                     break;
-                case JumpEnemyState.ChaseJump:
-                case JumpEnemyState.PatrolJump:
+                case JumpEnemyState.ChaseJumpWindup:
+                case JumpEnemyState.PatrolJumpWindup:
+                    if (IsHittingWall())
+                    {
+                        FlipEnemyDirection();
+                    }
                     break;
             }
 
@@ -221,7 +227,7 @@ namespace TimeKnight.Core.Enemy
             float yForce = UnityEngine.Random.Range(verticalJumpForceRange.Min, verticalJumpForceRange.Max) * TimeManager.CurrentTimeModifier;
             return new Vector2(xForce, yForce);
         }
-        
+
         // TODO: shift the jump to be a bit more horizontal again
         private Vector2 GetChaseJumpForce()
         {
@@ -326,6 +332,19 @@ namespace TimeKnight.Core.Enemy
 
             // Only returns true if a collision was made and it was on the player layer.
             return hit.collider != null && ((1 << hit.collider.gameObject.layer) & playerLayer) != 0;
+        }
+        private Vector2 GetWallCheckPosition() => transform.position + new Vector3(wallCheckOffset.x * _directionModifier, wallCheckOffset.y, wallCheckOffset.z);
+        private bool IsHittingWall()
+        {
+            Vector2 wallCheckPosition = GetWallCheckPosition();
+            bool isHittingWall = Physics2D.OverlapBox(wallCheckPosition, wallCheckSize, 0f, groundLayer);
+            return isHittingWall;
+        }
+        private void OnDrawGizmosSelected()
+        {
+            Vector2 wallCheckPosition = GetWallCheckPosition();
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(wallCheckPosition, wallCheckSize);
         }
     }
 }
