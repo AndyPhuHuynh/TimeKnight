@@ -1,9 +1,7 @@
-using System.Collections;
 using TimeKnight.Core.Audio;
 using TimeKnight.Core.Scene;
 using TimeKnight.Utils;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace TimeKnight.Core
