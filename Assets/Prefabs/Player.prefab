@@ -867,6 +867,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
+      propertyPath: attackRadius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862045560312117195, guid: 0cc39e30a40e63f4c8d7a3880f835fb4, type: 3}
       propertyPath: playerManager
       value: 
       objectReference: {fileID: 1038622019370413058}
