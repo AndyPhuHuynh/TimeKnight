@@ -18,7 +18,7 @@ namespace TimeKnight.Core.Interaction
             Text = button.GetComponentInChildren<TextMeshProUGUI>();
         }
 
-        public bool Equals(SelectorButton other)
+        public bool Equals(SelectorButton? other)
         {
             return other != null && ReferenceEquals(other.Button, Button);
         }

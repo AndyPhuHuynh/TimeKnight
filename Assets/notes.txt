@@ -1,0 +1,34 @@
+Just leaving this here so we can have this on the repo.
+
+Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pack
+
+hook.png generated with ChatGPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16-bit art style
+chain.png: https://www.shutterstock.com/search/pixelated-chain
+
+Tilesets:
+- https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
+- https://blackspirestudio.itch.io/medieval-pixel-art-asset-free
+
+Main Menu: generated via the dungeon platformer tileset images and asking ChatGPT to change the text to say TimeKnight
+
+Sword Swing SFX:
+- SwordSwing1: https://freesound.org/people/Nomagician/sounds/840716/
+- SwordSwing2: https://freesound.org/people/Nomagician/sounds/840715/
+- SwordSwing3: https://freesound.org/people/Nomagician/sounds/840717/
+- SkeletonSword: https://freesound.org/people/XxChr0nosxX/sounds/268227/
+
+- RightGravel1: https://freesound.org/people/Ali_6868/sounds/384877/
+- RightGravel2: https://freesound.org/people/Ali_6868/sounds/384876/
+- RightGravel3: https://freesound.org/people/Ali_6868/sounds/384879/
+- RightGravel4: https://freesound.org/people/Ali_6868/sounds/384878/
+- RightGravel5: https://freesound.org/people/Ali_6868/sounds/384880/
+
+- GrappleChain: https://freesound.org/people/richardemoore/sounds/362859/
+- GrappleHit: https://freesound.org/people/Hankof/sounds/655622/
+
+- DoorOpen: https://freesound.org/people/pagancow/sounds/15419/
+
+- PlayerHurt: https://freesound.org/people/Raclure/sounds/458867/
+- SkeletonHurt: https://freesound.org/people/CaptainYulef/sounds/641236/
+Hourglass: https://pngtree.com/freepng/hourglass-sandglass-pixel-art-vector_17240782.html
+Player: https://monopixelart.itch.io/character-pack

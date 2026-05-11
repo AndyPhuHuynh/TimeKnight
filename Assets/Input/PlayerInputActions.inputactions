@@ -3,11 +3,11 @@
     "name": "PlayerInputActions",
     "maps": [
         {
-            "name": "Player",
+            "name": "Gameplay",
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
-                    "name": "HorizontalMove",
+                    "name": "MoveHorizontal",
                     "type": "Value",
                     "id": "351f2ccd-1f9f-44bf-9bec-d62ac5c5f408",
                     "expectedControlType": "Axis",
@@ -16,9 +16,63 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "MoveJump",
                     "type": "Button",
                     "id": "f1ba0d36-48eb-4cd5-b651-1c94a6531f70",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "bb6f6bbc-bb76-4e70-8e2b-5d5376372bd4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GrappleFire",
+                    "type": "Button",
+                    "id": "9c637e22-6083-4c22-a088-c4793a1b6e60",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GrappleStop",
+                    "type": "Button",
+                    "id": "4eba09da-c812-4d0c-bf62-4738c2f5ff24",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "InteractionInteract",
+                    "type": "Button",
+                    "id": "11612d92-0589-4a2e-9a09-3889d25f010f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "InteractionNavigate",
+                    "type": "Button",
+                    "id": "ae4bf687-5d54-4a6c-827f-0852affc74fc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlowTime",
+                    "type": "Button",
+                    "id": "e6c35141-41a5-4916-a4b6-e7810b372615",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -33,7 +87,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Jump",
+                    "action": "MoveJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -44,7 +98,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "HorizontalMove",
+                    "action": "MoveHorizontal",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -54,8 +108,8 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HorizontalMove",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "MoveHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -65,113 +119,131 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HorizontalMove",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "MoveHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
-                }
-            ]
-        },
-        {
-            "name": "Interaction",
-            "id": "929c8d3b-20d2-4aba-a56f-33cd21c61679",
-            "actions": [
-                {
-                    "name": "Interact",
-                    "type": "Button",
-                    "id": "a4bc4070-51c1-4f64-a9e1-3cbf2ebea4aa",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
-                    "name": "Navigate",
-                    "type": "Button",
-                    "id": "641ca8af-db6d-4d29-94e0-34323671c955",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
                     "name": "",
-                    "id": "7314b9fd-5a83-40fc-b46c-222a25b5eead",
-                    "path": "<Keyboard>/e",
+                    "id": "7588b10a-ad43-4482-a1cb-a2a5cc012530",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Interact",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "Scroll",
-                    "id": "c9bb12ae-87a0-4507-8aca-f3e76189ea32",
+                    "id": "09d1b06c-b866-4e75-9aef-2de52135cd02",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Navigate",
+                    "action": "InteractionNavigate",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "negative",
-                    "id": "ce5333d1-82fa-4835-934c-6907c9221932",
+                    "id": "5a5c5a6b-4ca9-4003-8080-4dbf01512bc7",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Navigate",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "InteractionNavigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "positive",
-                    "id": "122f3643-6777-4382-8f3d-899327b2fd28",
+                    "id": "e044d65b-6e16-4937-95e2-440034675ed8",
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Navigate",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "InteractionNavigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "Arrows",
-                    "id": "f3d54c5a-5727-49ab-9cbb-07df9521a155",
+                    "id": "df780d99-e7f1-47df-a6db-f5b0312df0d8",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Navigate",
+                    "action": "InteractionNavigate",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "negative",
-                    "id": "6c286e2d-6c1e-4e04-aab3-e83a04eb3df8",
+                    "id": "da8c2668-186f-4ac4-95b3-cbd9d9bb21c7",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Navigate",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "InteractionNavigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "positive",
-                    "id": "072fb4b2-650f-4191-8609-7d5837d9110e",
+                    "id": "0e4eeda9-6c6a-4002-bbed-7740a423ce82",
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Navigate",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "InteractionNavigate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "4ccf5fb4-e4c0-4686-a911-9ba241493b81",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "InteractionInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fefcc559-794f-4a0d-a87a-6a25b35d428a",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "GrappleStop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4e958e5-e23b-4522-9275-6491818918aa",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "GrappleFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f8b0dff-c9a0-40b7-b4a7-6dbe8f279c71",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SlowTime",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -196,7 +268,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Advance",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -204,22 +276,22 @@
             ]
         },
         {
-            "name": "Grappling Hook",
-            "id": "159288e2-b32c-4ecf-ad49-ada84d9750f0",
+            "name": "Global",
+            "id": "ec9fd0ff-f389-4629-8d96-e3b8809cf02a",
             "actions": [
                 {
-                    "name": "Primary Fire",
+                    "name": "OpenPauseMenu",
                     "type": "Button",
-                    "id": "0a8a178e-f157-4d7d-a3bd-35acc55f45a4",
+                    "id": "fa10069a-8592-424c-9c2c-887c1369614c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "StopGrapple",
+                    "name": "ClosePauseMenu",
                     "type": "Button",
-                    "id": "8df1a48c-cd3f-4a67-a24c-3dc1c8a883dd",
+                    "id": "a92d93f3-b897-4c9e-85db-e0cd4064f906",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -229,23 +301,23 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "2a203e2f-f5ec-44cc-9789-fd9436ebca74",
-                    "path": "<Mouse>/leftButton",
+                    "id": "91c68ab4-cc6f-4fe0-b76c-d18d6ab4956f",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Primary Fire",
+                    "action": "OpenPauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "70690565-6917-47d3-96d6-f181ff1a20de",
-                    "path": "<Keyboard>/space",
+                    "id": "0d42adec-2a92-406d-b0de-214bc7dbe39d",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "StopGrapple",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ClosePauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

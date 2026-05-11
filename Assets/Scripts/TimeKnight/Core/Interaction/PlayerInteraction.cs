@@ -4,7 +4,6 @@ namespace TimeKnight.Core.Interaction
 {
     public class PlayerInteraction : MonoBehaviour
     {
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             var interactable = other.GetComponentInParent<IInteractable>();

@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
-using TimeKnight.Core.Input;
+﻿using TimeKnight.Core.Input;
+using TimeKnight.Utils;
 using UnityEngine;
 using Yarn.Unity;
 
 namespace TimeKnight.Core.Dialogue
 {
+    [RequireComponent(typeof(DialogueRunner))]
     public class DialogueManager : MonoBehaviour
     {
-        public static DialogueManager Instance { get; private set; }
+        public static DialogueManager Instance { get; private set; } = null!;
 
         [Header("Input")]
-        [SerializeField] private InputReader input;
+        [SerializeField] private InputReader input = null!;
         
-        private DialogueRunner _dialogueRunner;
-        private List<PreviousMapState> _previousInputMapStates;
+        private DialogueRunner _dialogueRunner = null!;
+        private InputState? _previousInputState;
         
         private void Awake()
         {
@@ -24,7 +25,6 @@ namespace TimeKnight.Core.Dialogue
             Instance = this;
             
             _dialogueRunner = GetComponent<DialogueRunner>();
-            if (_dialogueRunner == null) Debug.LogError("Dialogue runner is null!");
         }
 
         private void Start()
@@ -35,13 +35,14 @@ namespace TimeKnight.Core.Dialogue
 
         private void OnValidate()
         {
-            Debug.Assert(input != null, $"Missing {nameof(input)}", this);
+            Validation.NotNull(this, input, nameof(input));
         }
 
         private void OnDialogueStartFunc()
         {
-            _previousInputMapStates = input.GetMapStates();
-            input.EnableOnly(input.Actions.Dialogue);
+            _previousInputState = input.SaveState();
+            input.SetMapStatus(InputStatus.Disabled, ActionMaps.Every);
+            input.SetMapStatus(InputStatus.Enabled, ActionMaps.Dialogue);
             
             DialogueEvents.RaiseStart();
         }
@@ -50,8 +51,7 @@ namespace TimeKnight.Core.Dialogue
         {
             DialogueEvents.RaiseComplete();
             
-            InputReader.RestoreMapStates(_previousInputMapStates);
-            _previousInputMapStates = null;
+            input.RestoreState(_previousInputState ?? default);
         }
 
         public void PlayDialogue(string dialogue)
