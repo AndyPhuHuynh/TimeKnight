@@ -241,6 +241,8 @@ MonoBehaviour:
   verticalKnockbackForce: 6
   knockbackDurationWhenHit: 0.3
   flashColor: {r: 0.1474976, g: 0.546, b: 0.12679619, a: 1}
+  slimeJumpClip: {fileID: 8300000, guid: bd0060df2f4c34b3a80d69bd8a0743ee, type: 3}
+  slimeLandClip: {fileID: 8300000, guid: 83b225cb10fd8484f8fd4435ca12a1fd, type: 3}
 --- !u!1 &5298958098067131795
 GameObject:
   m_ObjectHideFlags: 0

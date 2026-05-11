@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TimeKnight.Core.Audio;
 using TimeKnight.Core.Player;
 using TimeKnight.Core.TimePower;
 using TimeKnight.Utils;
@@ -32,6 +33,28 @@ namespace TimeKnight.Core.Enemy.Slime
         [SerializeField] private Color flashColor;
         private Color _baseSpriteColor;
         private CoWrapper _knockbackCoWrapper = null!;
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip slimeJumpClip = null!;
+        [SerializeField] private AudioClip slimeLandClip = null!;
+
+        private readonly AudioClipParams _slimeJumpParams = new()
+        {
+            PitchVariance = 0.25f,
+            Volume = 0.5f,
+        };
+
+        private readonly AudioClipParams _slimeLandParams = new()
+        {
+            PitchVariance = 0.25f,
+            Volume = 0.5f,
+        };
+        
+        private void OnValidate()
+        {
+            Validation.NotNull(this, slimeJumpClip, nameof(slimeJumpClip));
+            Validation.NotNull(this, slimeLandClip, nameof(slimeLandClip));
+        }
 
         private void Awake()
         {
@@ -72,6 +95,19 @@ namespace TimeKnight.Core.Enemy.Slime
                 case JumpEnemyState.PatrolJumpWindup:
                     _slimeAnimator.SetTrigger(_jumpTriggerHash);
                     break;
+                case JumpEnemyState.PatrolJump:
+                case JumpEnemyState.ChaseJump:
+                    var distance = Mathf.Abs(Vector2.Distance(transform.position, PlayerController.PlayerPosition));
+                    if (distance <= 10.0f)
+                    {
+                        AudioManager.Instance.PlaySoundEffect(slimeJumpClip, transform.position, _slimeJumpParams);
+                    }
+                    break;
+                case JumpEnemyState.Idle:
+                case JumpEnemyState.Falling:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
             }
         }
 
@@ -81,7 +117,20 @@ namespace TimeKnight.Core.Enemy.Slime
             {
                 case JumpEnemyState.Falling:
                     _slimeAnimator.SetTrigger(_fallTriggerHash);
+                    var distance = Mathf.Abs(Vector2.Distance(transform.position, PlayerController.PlayerPosition));
+                    if (distance <= 10.0f)
+                    {
+                        AudioManager.Instance.PlaySoundEffect(slimeLandClip, transform.position, _slimeLandParams);
+                    }
                     break;
+                case JumpEnemyState.Idle:
+                case JumpEnemyState.PatrolJumpWindup:
+                case JumpEnemyState.PatrolJump:
+                case JumpEnemyState.ChaseJumpWindup:
+                case JumpEnemyState.ChaseJump:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(oldState), oldState, null);
             }
         }
 
