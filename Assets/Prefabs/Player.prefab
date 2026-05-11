@@ -428,6 +428,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34802d061ea3ab545bad65743d7e5618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.TimePower.TimeManager
+  timeModifier: 0.5
+  slowTimeDuration: 5
+  slowTimeCooldown: 10
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0

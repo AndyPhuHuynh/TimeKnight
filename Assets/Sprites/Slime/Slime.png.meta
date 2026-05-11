@@ -296,6 +296,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Slime_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 93373f6bbf0137f439f3a38ca53ee3f4
+      internalID: 1848602955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -320,6 +342,7 @@ TextureImporter:
       Slime_5: -1066590377825042928
       Slime_6: 5262606648162847603
       Slime_7: -3373964639730116074
+      Slime_8: 1848602955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
