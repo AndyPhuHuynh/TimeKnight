@@ -110,24 +110,10 @@ namespace TimeKnight.Core.LevelGeneration
             var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
             var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room1ToRoom2", RoomType.Connection);
             
-            var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
-            var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
-            var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
-            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
-            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room1ToRoom2", RoomType.Connection);
-            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room2ToRoom3", RoomType.Connection);
-            
             LevelNode.Connect(startRoom, connectionStartToPath1Room1);
             LevelNode.Connect(connectionStartToPath1Room1, path1Room1);
             LevelNode.Connect(path1Room1, connectionPath1Room1ToRoom2);
             LevelNode.Connect(connectionPath1Room1ToRoom2, path1Room2);
-            
-            LevelNode.Connect(startRoom, connectionStartToPath2Room1);
-            LevelNode.Connect(connectionStartToPath2Room1, path2Room1);
-            LevelNode.Connect(path2Room1, connectionPath2Room1ToRoom2);
-            LevelNode.Connect(connectionPath2Room1ToRoom2, path2Room2);
-            LevelNode.Connect(path2Room2, connectionPath2Room2ToRoom3);
-            LevelNode.Connect(connectionPath2Room2ToRoom3, path2Room3);
             
             var success = GenerateGraph(startRoom);
             if (!success)
