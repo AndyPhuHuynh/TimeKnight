@@ -1651,11 +1651,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.99
+      value: -13.81
       objectReference: {fileID: 0}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.95
+      value: -0.57
       objectReference: {fileID: 0}
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1688,10 +1688,6 @@ PrefabInstance:
     - target: {fileID: 2567960917763861338, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3658448055264808980, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
-      propertyPath: slowTimeCooldown
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7994627178333564736, guid: 4f68d1f9e1df81a42a9f9de9deb7d149, type: 3}
       propertyPath: m_Name

@@ -21,6 +21,7 @@ namespace TimeKnight.Core.Player
 
         [Header("Knockback Application")]
         [SerializeField] private Rigidbody2D rb = null!;
+        [SerializeField] private PlayerAnimator playerAnimator = null!;
 
         [Header("Player Stats")]
         [SerializeField] private float baseDamage = 2;
@@ -34,6 +35,7 @@ namespace TimeKnight.Core.Player
         private void OnValidate()
         {
             Validation.NotNull(this, rb, "Rigidbody2D");
+            Validation.NotNull(this, playerAnimator, nameof(playerAnimator));
         }
 
         private void Awake()
@@ -86,6 +88,7 @@ namespace TimeKnight.Core.Player
         private IEnumerator KnockbackStun()
         {
             OnPlayerStunBegin.Invoke();
+            playerAnimator.SetTrigger(playerAnimator.HurtTriggerHash);
             float timePassed = 0;
             while (timePassed < knockbackStunTime)
             {

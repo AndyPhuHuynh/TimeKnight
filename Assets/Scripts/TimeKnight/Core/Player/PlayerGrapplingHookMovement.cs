@@ -8,12 +8,16 @@ namespace TimeKnight.Core.Player
 {
     public class PlayerGrapplingHookMovement : MonoBehaviour
     {
-        [Header("Player")] 
+        [Header("Player")]
         [SerializeField] private Rigidbody2D playerBody = null!;
+        [SerializeField] private PlayerHorizontalMovement playerHorizontalMovement = null!;
 
         [Header("Grappling Hook")]
         [SerializeField] private GrapplingHook.GrapplingHook grapplingHook = null!;
-        
+
+        [Header("Animator")]
+        [SerializeField] private PlayerAnimator playerAnimator = null!;
+
         public HookState HookState => grapplingHook.CurrentState;
         public event Action OnGrappleEnterIdle = delegate { };
         public event Action OnGrappleExitIdle = delegate { };
@@ -27,20 +31,22 @@ namespace TimeKnight.Core.Player
         {
             Validation.NotNull(this, playerBody, nameof(playerBody));
             Validation.NotNull(this, grapplingHook, nameof(grapplingHook));
+            Validation.NotNull(this, playerAnimator, nameof(playerAnimator));
+            Validation.NotNull(this, playerHorizontalMovement, nameof(playerHorizontalMovement));
         }
 
         private void OnEnable()
         {
-            grapplingHook.OnEnterIdle  += OnEnterIdle;
-            grapplingHook.OnExitIdle   += OnExitIdle;
+            grapplingHook.OnEnterIdle += OnEnterIdle;
+            grapplingHook.OnExitIdle += OnExitIdle;
             grapplingHook.OnEnterStuck += OnEnterStuck;
             grapplingHook.OnUpdateStuck += OnUpdateStuck;
         }
 
         private void OnDisable()
         {
-            grapplingHook.OnEnterIdle  -= OnEnterIdle;
-            grapplingHook.OnExitIdle   -= OnExitIdle;
+            grapplingHook.OnEnterIdle -= OnEnterIdle;
+            grapplingHook.OnExitIdle -= OnExitIdle;
             grapplingHook.OnEnterStuck -= OnEnterStuck;
             grapplingHook.OnUpdateStuck -= OnUpdateStuck;
         }
@@ -57,7 +63,7 @@ namespace TimeKnight.Core.Player
 
             playerBody.gravityScale = _prevGravity;
             playerBody.linearVelocity = Vector2.zero;
-            
+
             grapplingHook.TransitionTo(HookState.Retracting);
         }
 
@@ -82,7 +88,7 @@ namespace TimeKnight.Core.Player
         {
             OnGrappleExitIdle.Invoke();
         }
-        
+
         private void OnEnterStuck(Vector3 collisionPoint)
         {
             StartCoroutine(PullPlayer(collisionPoint, grapplingHook.PullSpeed));
@@ -98,10 +104,23 @@ namespace TimeKnight.Core.Player
         {
             _prevGravity = playerBody.gravityScale;
             playerBody.gravityScale = 0;
-
+            playerAnimator.SetTrigger(playerAnimator.GrappleTriggerHash);
             _isBeingPulled = true;
             while (_isBeingPulled)
             {
+                // -0.3 offset to get to players feet
+                bool isTargetBelowPlayer = targetPosition.y < transform.position.y - 0.35;
+                if (Vector2.Distance(targetPosition, transform.position) < 2.5 && !isTargetBelowPlayer)
+                {
+                    playerAnimator.SetTrigger(playerAnimator.CloseToGrappleWallTriggerHash);
+                    bool isWallToLeftOfPlayer = targetPosition.x < transform.position.x;
+                    playerHorizontalMovement.UpdateSpriteDirection(isWallToLeftOfPlayer ? -1 : 1);
+                }
+                else if (isTargetBelowPlayer && Math.Abs(transform.position.x - targetPosition.x) < 0.3 && Vector2.Distance(targetPosition, transform.position) < 2)
+                {
+                    playerAnimator.SetTrigger(playerAnimator.CloseToGrappleFloorTriggerHash);
+                }
+
                 var pullVelocity = ((Vector2)(targetPosition - transform.position)).normalized * pullSpeed;
                 playerBody.linearVelocity = pullVelocity;
                 yield return null;

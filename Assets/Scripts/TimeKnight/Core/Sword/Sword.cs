@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TimeKnight.Core.Enemy;
@@ -23,6 +24,7 @@ namespace TimeKnight.Core.Sword
         private bool _isSwordSwinging;
         private float _attackTimer;
         private Coroutine? _swordHitboxCoroutine = null;
+        public event Action OnSwordSwingEnd = delegate { };
 
         // Collision management
         private readonly HashSet<IDamageable> _previouslyDamagedThisAttack = new();
@@ -70,6 +72,7 @@ namespace TimeKnight.Core.Sword
         public void EndSwing()
         {
             _isSwordSwinging = false;
+            OnSwordSwingEnd.Invoke();
         }
 
         private IEnumerator DamageWhileAttackActive()

@@ -15,10 +15,12 @@ namespace TimeKnight.Core.Player
         
         private float _currentMoveSpeed;
         private bool _isMoving;
+        private float _baseXScale;
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _baseXScale = transform.localScale.x;
         }
 
         public void StartMove(Func<float> readInput)
@@ -38,7 +40,7 @@ namespace TimeKnight.Core.Player
         public void UpdateSpriteDirection(float input)
         {
             var isFacingLeft = input < 0;
-            transform.localScale = isFacingLeft ?  new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
+            transform.localScale = isFacingLeft ?  new Vector3(-_baseXScale, transform.localScale.y, transform.localScale.z) : new Vector3(_baseXScale, transform.localScale.y, transform.localScale.z);
         }
         
         private IEnumerator MoveCoroutine(Func<float> readInput)

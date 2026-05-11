@@ -18,7 +18,7 @@ namespace TimeKnight.Core.GrapplingHook
         [SerializeField] private float pullSpeed = 10;
         [field: SerializeField] public LayerMask GrappleSurfaceLayer { get; private set; }
         private float _baseLength = 0;
-        private float _currentLength => _sr.size.x;
+        private float _currentLength => _sr.size.x * GetScaleMultiplier();
 
         [Header("Hook TIp")]
         [SerializeField] private GameObject hookTip = null!;
@@ -216,8 +216,11 @@ namespace TimeKnight.Core.GrapplingHook
 
         private void UpdateLength(float newLength)
         {
-            _sr.size = new Vector2(newLength, _sr.size.y);
-            _hookTipTransform.localPosition = new Vector3(newLength, 0f, 0f);
+            float scaleMultiplier = GetScaleMultiplier();
+            float localLength = newLength / scaleMultiplier;
+
+            _sr.size = new Vector2(localLength, _sr.size.y);
+            _hookTipTransform.localPosition = new Vector3(localLength, 0f, 0f);
         }
 
         private static bool IsMouseInbounds(Vector2 mousePosition)
@@ -258,6 +261,12 @@ namespace TimeKnight.Core.GrapplingHook
                 angle += 180f;
             }
             return angle;
+        }
+
+        private float GetScaleMultiplier()
+        {
+            float scaleX = Mathf.Abs(transform.lossyScale.x);
+            return Mathf.Approximately(scaleX, 0f) ? 1f : scaleX;
         }
     }
 }
