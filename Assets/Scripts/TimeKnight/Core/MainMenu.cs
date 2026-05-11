@@ -1,3 +1,4 @@
+using System.Collections;
 using TimeKnight.Core.Audio;
 using TimeKnight.Core.Scene;
 using TimeKnight.Utils;
@@ -24,7 +25,8 @@ namespace TimeKnight.Core
         {
             startButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene(level.SceneName);
+                TransitionCanvas.Instance.StartCoroutine(
+                    TransitionCanvas.Instance.LoadGameScene(level.SceneName));
             });
         }
 

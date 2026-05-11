@@ -59,7 +59,8 @@ namespace TimeKnight.Core.EndingRoom
 
 		private void ExitScene()
 		{
-			SceneManager.LoadScene(exitScene.SceneName);
+			TransitionCanvas.Instance.StartCoroutine(
+				TransitionCanvas.Instance.LoadGameScene(exitScene.SceneName));
 			AudioManager.Instance.FadeInMusic(endSceneMusic);
 		}
 	}

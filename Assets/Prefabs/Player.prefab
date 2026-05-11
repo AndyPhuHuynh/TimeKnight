@@ -662,6 +662,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34802d061ea3ab545bad65743d7e5618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeKnight.Core.TimePower.TimeManager
+  timeModifier: 0.5
+  slowTimeDuration: 5
+  slowTimeCooldown: 10
 --- !u!1 &8265779240154675640
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,7 +695,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: [{fileID: 4422173414600876810}]
+  m_Children:
+  - {fileID: 4422173414600876810}
   m_Father: {fileID: 2567960917763861338}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &7590233718306595761
@@ -755,6 +759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 10
   rb: {fileID: 6837310045875004360}
+  inputReader: {fileID: 11400000, guid: c3e4fa65dbef27c47873ffe2fd84900f, type: 2}
   baseDamage: 2
   critChance: 0.1
   critDamageMultiplier: 2

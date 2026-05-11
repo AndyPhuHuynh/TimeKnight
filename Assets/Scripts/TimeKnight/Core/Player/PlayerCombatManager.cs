@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TimeKnight.Core.Audio;
-using TimeKnight.Core.Input;
 using TimeKnight.Extensions;
 using TimeKnight.Utils;
 using UnityEngine;
@@ -23,7 +22,6 @@ namespace TimeKnight.Core.Player
         
         [Header("Knockback Application")]
         [SerializeField] private Rigidbody2D rb = null!;
-        [SerializeField] private InputReader inputReader = null!;
         
         [Header("Player Stats")]
         [SerializeField] private float baseDamage = 2;
@@ -46,10 +44,9 @@ namespace TimeKnight.Core.Player
 
         private void OnValidate()
         {
-            Validation.NotNull(this, rb, "Rigidbody2D");
-            Validation.NotNull(this, inputReader, "Input Reader");
-            Validation.NotNull(this, hurtAudioSource, "AudioSource");
-            Validation.NotNull(this, hurtAudioClip, "AudioClip");
+            Validation.NotNull(this, rb, nameof(rb));
+            Validation.NotNull(this, hurtAudioSource, nameof(hurtAudioSource));
+            Validation.NotNull(this, hurtAudioClip, nameof(hurtAudioClip));
         }
 
         private void Awake()

@@ -41,7 +41,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         [Header("Audio")]
         [SerializeField] private AudioSource swordAudioSource = null!;
-        [SerializeField] private AudioSource hurtAudioSource = null!;
+        [SerializeField] private AudioSource hurtAudioSource = null!; 
         [SerializeField] private AudioClip swordAttackSound = null!;
         [SerializeField] private AudioClip hurtSound = null!;
 
@@ -58,7 +58,6 @@ namespace TimeKnight.Core.Enemy.Skeleton
         private EnemyCombatState _combatState = EnemyCombatState.None;
         private bool _isHitboxActive;
         private CoWrapper _activeCombatCoWrapper = null!;   // One CoWrapper is used for all combat actions as they are mutually exclusive.
-        private Coroutine? _receiveKnockbackCoroutine;
         
         // Audio
         private readonly AudioClipParams _swordSoundParams = new()
@@ -184,7 +183,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
         {
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_damagedTriggerHash);
-            float _currentKnockbackDuration = 0;
+            float currentKnockbackDuration = 0;
             // Knockback applied after movement AI paused.
             if (knockback != null)
             {
@@ -195,8 +194,8 @@ namespace TimeKnight.Core.Enemy.Skeleton
             while (_combatState.IsBeingDamaged())
             {
                 // This uses regular Time.deltaTime so enemy doesn't slide for super long when time is slowed down.
-                _currentKnockbackDuration += Time.deltaTime;
-                if (_currentKnockbackDuration >= _maxKnockbackDuration)
+                currentKnockbackDuration += Time.deltaTime;
+                if (currentKnockbackDuration >= _maxKnockbackDuration)
                 {
                     _rb.linearVelocity = new Vector2(0, _rb.linearVelocityY);
                 }
@@ -205,7 +204,6 @@ namespace TimeKnight.Core.Enemy.Skeleton
             }
 
             _patrolScript.ResumeAI();
-            _receiveKnockbackCoroutine = null;
         }
 
         private void Die()
@@ -223,6 +221,7 @@ namespace TimeKnight.Core.Enemy.Skeleton
 
         private IEnumerator AttackPlayer()
         {
+            swordAudioSource.PlayWithParams(swordAttackSound, _swordSoundParams);
             _patrolScript.PauseAI();
             _skeletonAnimator.SetTrigger(_attackTriggerHash);
             _attackTimer = 0;
