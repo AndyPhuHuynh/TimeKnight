@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using TimeKnight.Core.Player;
 using TimeKnight.Core.TimePower;
 using TimeKnight.Utils;
@@ -5,9 +7,10 @@ using UnityEngine;
 
 namespace TimeKnight.Core.Enemy.Slime
 {
-    public class Slime : MonoBehaviour
+    public class Slime : MonoBehaviour, IDamageable
     {
         private Rigidbody2D _rb = null!;
+        private SpriteRenderer _sr = null!;
         private Animator _slimeAnimator = null!;
         private JumpEnemyMovement _slimeMovement = null!;
 
@@ -25,17 +28,21 @@ namespace TimeKnight.Core.Enemy.Slime
         [SerializeField] private float verticalKnockbackForce = 6f;
 
         [Header("Hit While Attacking Properties")]
-        [SerializeField] private float flashDurationWhenHit = 0.8f;
+        [SerializeField] private float knockbackDurationWhenHit = 0.3f;
         [SerializeField] private Color flashColor;
         private Color _baseSpriteColor;
+        private CoWrapper _knockbackCoWrapper = null!;
 
         private void Awake()
         {
             _slimeAnimator = GetComponent<Animator>();
             _slimeMovement = GetComponent<JumpEnemyMovement>();
             _rb = GetComponent<Rigidbody2D>();
+            _sr = GetComponent<SpriteRenderer>();
+            _baseSpriteColor = _sr.color;
             _baseGravity = _rb.gravityScale;
             _currentHealth = maxHealth;
+            _knockbackCoWrapper = new CoWrapper(this);
         }
 
         private void OnEnable()
@@ -87,6 +94,40 @@ namespace TimeKnight.Core.Enemy.Slime
         private void SlowVelocity()
         {
             _rb.linearVelocity = new Vector2(_rb.linearVelocityX * TimeManager.CurrentTimeModifier, _rb.linearVelocityY * TimeManager.CurrentTimeModifier);
+        }
+
+        public void Damage(float damage, Vector2? knockback)
+        {
+            _currentHealth -= (int)Math.Round(damage);
+            if (_currentHealth <= 0)
+            {
+                Die();
+                return;
+            }
+
+            _knockbackCoWrapper.Start(ReceiveKnockbackWhenHit(knockback));
+        }
+
+        private IEnumerator ReceiveKnockbackWhenHit(Vector2? knockback)
+        {
+            float knockbackTimer = 0f;
+
+            _sr.color = flashColor;
+            if (knockback != null) 
+            {
+                Combat.ApplyKnockback(_rb, (Vector2)knockback);
+            }
+            while (knockbackTimer < knockbackDurationWhenHit)
+            {
+                knockbackTimer += TimeManager.CustomDelta;
+                yield return null;
+            }
+            _sr.color = _baseSpriteColor;
+        }
+
+        private void Die()
+        {
+            Destroy(gameObject);
         }
 
 

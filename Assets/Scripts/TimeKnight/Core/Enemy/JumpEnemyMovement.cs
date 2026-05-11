@@ -222,20 +222,24 @@ namespace TimeKnight.Core.Enemy
             return new Vector2(xForce, yForce);
         }
         
-        // Note: Include in notes file this function was made by Copilot
+        // TODO: shift the jump to be a bit more horizontal again
         private Vector2 GetChaseJumpForce()
         {
-            // Estimate horizontal force based on distance to player, clamped to horizontalJumpRange.
+            // Estimate horizontal force based on distance to player, clamped to chase range.
             float horizontalDistance = _playerPosition.x - transform.position.x;
             float absHoriz = Mathf.Abs(horizontalDistance);
             float horizRatio = Mathf.Clamp01(absHoriz / chaseRange);
-            float xMag = Mathf.Lerp(horizontalJumpForceRange.Min, horizontalJumpForceRange.Max * 0.65f, horizRatio);
-            float xForce = xMag * TimeManager.CurrentTimeModifier * _directionModifier;
 
-            // Bias the chase jump upward so the enemy arcs over the player instead of directly toward them.
+            // Favor a more horizontal arc for chase jumps by increasing horizontal magnitude
+            // and reducing the upward bias compared to earlier behavior.
+            float xMag = Mathf.Lerp(horizontalJumpForceRange.Min, horizontalJumpForceRange.Max * 1.05f, horizRatio);
+            float xForce = xMag * TimeManager.CurrentTimeModifier * Mathf.Sign(horizontalDistance);
+
+            // Reduce vertical bias so enemy jumps flatter when chasing. Use vertical distance
+            // to slightly increase height when the player is significantly above.
             float verticalDistance = _playerPosition.y - transform.position.y;
             float vertRatio = Mathf.Clamp01(verticalDistance / chaseRange);
-            float yMag = Mathf.Lerp(verticalJumpForceRange.Min * 1.35f, verticalJumpForceRange.Max * 1.8f, vertRatio);
+            float yMag = Mathf.Lerp(verticalJumpForceRange.Min * 1.05f, verticalJumpForceRange.Max * 1.35f, vertRatio);
             float yForce = yMag * TimeManager.CurrentTimeModifier;
 
             return new Vector2(xForce, yForce);
