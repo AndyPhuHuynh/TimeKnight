@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TimeKnight.Utils;
 using UnityEngine;
 
@@ -28,12 +29,13 @@ namespace TimeKnight.Core.Player
         {
             _rb = GetComponent<Rigidbody2D>();
         }
-
-        public void StartJump(bool checkGround)
+        
+        public void StartJump(bool checkGround, Action? animatorCallback = null)
         {
             if (_isJumping) return;
             if (checkGround && !groundCheck.IsGrounded) return; 
             _isJumping = true;
+            animatorCallback?.Invoke();
             StartCoroutine(JumpCoroutine());
         }
 

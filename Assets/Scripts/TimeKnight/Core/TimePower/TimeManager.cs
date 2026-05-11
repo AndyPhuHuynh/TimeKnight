@@ -11,7 +11,10 @@ namespace TimeKnight.Core.TimePower
         public static float CurrentTimeModifier { get; private set; }  = 1f;
         public static float CustomDelta => Time.deltaTime * CurrentTimeModifier;
         // Reference for UI element to update as cooldown changes.
-        public event Action<float> OnCooldownChange = delegate { };
+        public static event Action<float> OnCooldownChange = delegate { };
+        // Reference for enemies who need to do a specific action on time slow start or end.
+        public static event Action OnTimeSlowActivate = delegate { };
+        public static event Action OnTimeSlowDeactivate = delegate { };
 
         [Header("Slow Time Properties")]
         [SerializeField] private float timeModifier = 0.5f;
@@ -47,12 +50,14 @@ namespace TimeKnight.Core.TimePower
             UpdateCooldown(slowTimeCooldown);
             float timer = 0f;
             CurrentTimeModifier = timeModifier;
+            OnTimeSlowActivate.Invoke();
             while (timer < slowTimeDuration)
             {
                 timer += Time.deltaTime;
                 yield return null;
             }
             CurrentTimeModifier = 1;
+            OnTimeSlowDeactivate.Invoke();
         }
 
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TimeKnight.Core.Enemy
 {
-    public enum EnemyPatrolState
+    public enum PatrolEnemyState
     {
         Patrol,
         Chase,
@@ -19,13 +19,13 @@ namespace TimeKnight.Core.Enemy
     {
         private Rigidbody2D _rb = null!;
 
-        public EnemyPatrolState CurrentState { get; private set; } = EnemyPatrolState.Patrol;
+        private PatrolEnemyState _currentState = PatrolEnemyState.Patrol;
         private Vector3 _playerPosition => PlayerController.PlayerPosition;
 
         // AI Management from enemy script. Actions allow enemy script to react when enemy state changes.
         private bool _isAiPaused = false;
-        public event Action<EnemyPatrolState> OnEnemyStateExit = delegate { };
-        public event Action<EnemyPatrolState> OnEnemyStateEnter = delegate { };
+        public event Action<PatrolEnemyState> OnEnemyStateExit = delegate { };
+        public event Action<PatrolEnemyState> OnEnemyStateEnter = delegate { };
 
         [Header("Patrol Properties")]
         [SerializeField] private float patrolWalkSpeed = 3f;
@@ -67,7 +67,7 @@ namespace TimeKnight.Core.Enemy
         private void Start()
         {
             // This is called in Start deliberately to give time for OnEnable subscriptions to activate.
-            OnEnemyStateEnter.Invoke(CurrentState);
+            OnEnemyStateEnter.Invoke(_currentState);
         }
 
         # region AI Logic / State Management
@@ -77,24 +77,24 @@ namespace TimeKnight.Core.Enemy
 
             IsPlayerChaseable = CheckIsPlayerChaseable();
 
-            switch (CurrentState)
+            switch (_currentState)
             {
-                case EnemyPatrolState.Patrol:
+                case PatrolEnemyState.Patrol:
                     Patrol();
                     break;
-                case EnemyPatrolState.PatrolStuck:
+                case PatrolEnemyState.PatrolStuck:
                     PatrolStuck();
                     break;
-                case EnemyPatrolState.Chase:
+                case PatrolEnemyState.Chase:
                     Chase();
                     break;
-                case EnemyPatrolState.ChaseStuck:
+                case PatrolEnemyState.ChaseStuck:
                     ChaseStuck();
                     break;
-                case EnemyPatrolState.LostSight:
+                case PatrolEnemyState.LostSight:
                     LostSight();
                     break;
-                case EnemyPatrolState.TooClose:
+                case PatrolEnemyState.TooClose:
                     TooClose();
                     break;
             }
@@ -104,7 +104,7 @@ namespace TimeKnight.Core.Enemy
         {
             if (IsPlayerChaseable)
             {
-                TransitionTo(EnemyPatrolState.Chase);
+                TransitionTo(PatrolEnemyState.Chase);
                 return;
             }
 
@@ -121,7 +121,7 @@ namespace TimeKnight.Core.Enemy
             // 1.
             if (_isMovingOutOfPatrolRange || !_isOutOfPatrolRange && (IsHittingWall() || IsNearLedge()))
             {
-                FlipPatrolDirection();
+                FlipEnemyDirection();
             }
 
             // 2.
@@ -142,7 +142,7 @@ namespace TimeKnight.Core.Enemy
             // 3.
             if (_isOutOfPatrolRange && (IsHittingWall() || IsNearLedge()))
             {
-                TransitionTo(EnemyPatrolState.PatrolStuck);
+                TransitionTo(PatrolEnemyState.PatrolStuck);
                 return;
             }
 
@@ -154,12 +154,12 @@ namespace TimeKnight.Core.Enemy
             if (_timeAwayFromPatrol >= _teleportReturnTime)
             {
                 transform.position = _patrolAnchor;
-                TransitionTo(EnemyPatrolState.Patrol);
+                TransitionTo(PatrolEnemyState.Patrol);
                 return;
             }
             else if (IsPlayerChaseable)
             {
-                TransitionTo(EnemyPatrolState.Chase);
+                TransitionTo(PatrolEnemyState.Chase);
                 return;
             }
 
@@ -171,18 +171,18 @@ namespace TimeKnight.Core.Enemy
         {
             if (!IsPlayerChaseable)
             {
-                TransitionTo(EnemyPatrolState.LostSight);
+                TransitionTo(PatrolEnemyState.LostSight);
                 return;
             }
             // If enemy is too close to the player, move into too close state
-            else if (GetEuclideanDistanceTo(_playerPosition) <= minimumPlayerDistance)
+            else if (GetAbsoluteHorizontalDistanceTo(_playerPosition) <= minimumPlayerDistance)
             {
-                TransitionTo(EnemyPatrolState.TooClose);
+                TransitionTo(PatrolEnemyState.TooClose);
                 return;
             }
             else if (IsNearLedge() || IsHittingWall())
             {
-                TransitionTo(EnemyPatrolState.ChaseStuck);
+                TransitionTo(PatrolEnemyState.ChaseStuck);
                 return;  
             }
 
@@ -194,12 +194,12 @@ namespace TimeKnight.Core.Enemy
         {
             if (!IsPlayerChaseable)
             {
-                TransitionTo(EnemyPatrolState.LostSight);
+                TransitionTo(PatrolEnemyState.LostSight);
                 return;
             }
             else if (!IsNearLedge() && !IsHittingWall())
             {
-                TransitionTo(EnemyPatrolState.Chase);
+                TransitionTo(PatrolEnemyState.Chase);
                 return;
             }
 
@@ -212,12 +212,12 @@ namespace TimeKnight.Core.Enemy
             // Chase player if sight is returned, but otherwise wait for cooldown before returning to patrol.
             if (IsPlayerChaseable)
             {
-                TransitionTo(EnemyPatrolState.Chase);
+                TransitionTo(PatrolEnemyState.Chase);
                 return;
             }
             else if (_lostSightTimer >= lostSightPatrolCooldown)
             {
-                TransitionTo(EnemyPatrolState.Patrol);
+                TransitionTo(PatrolEnemyState.Patrol);
                 return;
             }
 
@@ -229,9 +229,14 @@ namespace TimeKnight.Core.Enemy
         {
             // Don't transition back to chasing until the player is a bit past minium distance.
             // This prevents freaking out when player is at edge of minimum distance 
-            if (GetEuclideanDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
+            if (GetAbsoluteHorizontalDistanceTo(_playerPosition) > minimumPlayerDistance + 0.5)
             {
-                TransitionTo(EnemyPatrolState.Chase);
+                TransitionTo(PatrolEnemyState.Chase);
+                return;
+            }
+            else if (!IsPlayerChaseable)
+            {
+                TransitionTo(PatrolEnemyState.LostSight);
                 return;
             }
 
@@ -239,27 +244,27 @@ namespace TimeKnight.Core.Enemy
             _rb.linearVelocityX = 0;
         }
 
-        private void TransitionTo(EnemyPatrolState newState)
+        private void TransitionTo(PatrolEnemyState newState)
         {
-            if (CurrentState == newState) return;
+            if (_currentState == newState) return;
 
-            OnEnemyStateExit.Invoke(CurrentState);
+            OnEnemyStateExit.Invoke(_currentState);
 
             // Perform actions needed for entering new state, then enter new state;
             switch (newState)
             {
-                case EnemyPatrolState.Patrol: _timeAwayFromPatrol = 0f; break;
-                case EnemyPatrolState.LostSight: _lostSightTimer = 0f; break;
-                case EnemyPatrolState.Chase:
-                case EnemyPatrolState.TooClose:
-                case EnemyPatrolState.PatrolStuck:
-                case EnemyPatrolState.ChaseStuck:
+                case PatrolEnemyState.Patrol: _timeAwayFromPatrol = 0f; break;
+                case PatrolEnemyState.LostSight: _lostSightTimer = 0f; break;
+                case PatrolEnemyState.Chase:
+                case PatrolEnemyState.TooClose:
+                case PatrolEnemyState.PatrolStuck:
+                case PatrolEnemyState.ChaseStuck:
                     break;
             }
 
             OnEnemyStateEnter.Invoke(newState);
 
-            CurrentState = newState;
+            _currentState = newState;
         }
         #endregion
 
@@ -268,12 +273,12 @@ namespace TimeKnight.Core.Enemy
         {
             _rb.linearVelocityX = 0;
             _isAiPaused = true;
-            OnEnemyStateExit.Invoke(CurrentState);
+            OnEnemyStateExit.Invoke(_currentState);
         }
 
         public void ResumeAI()
         {
-            OnEnemyStateEnter.Invoke(CurrentState);
+            OnEnemyStateEnter.Invoke(_currentState);
             _isAiPaused = false;
         }
         #endregion
@@ -293,7 +298,7 @@ namespace TimeKnight.Core.Enemy
                 FaceLeft();
             }
         }
-        private void FlipPatrolDirection()
+        private void FlipEnemyDirection()
         {
             if (_isFacingLeft)
             {
@@ -385,6 +390,8 @@ namespace TimeKnight.Core.Enemy
         }
 
         private float GetSignedHorizontalDistanceTo(Vector3 other) => transform.position.x - other.x;
+
+        private float GetAbsoluteHorizontalDistanceTo(Vector3 other) => Math.Abs(GetSignedHorizontalDistanceTo(other));
 
         private float GetEuclideanDistanceTo(Vector2 other) => Vector2.Distance(transform.position, other);
 

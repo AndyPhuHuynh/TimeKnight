@@ -13,7 +13,6 @@ namespace TimeKnight.Utils
 
         public static void ApplyKnockback(Rigidbody2D rb, Vector2 knockback)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             rb.AddForce(knockback, ForceMode2D.Impulse);
         }
     }
