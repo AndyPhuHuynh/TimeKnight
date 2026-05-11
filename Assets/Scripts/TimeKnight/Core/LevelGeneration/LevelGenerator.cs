@@ -38,11 +38,16 @@ namespace TimeKnight.Core.LevelGeneration
             RoomType = roomType;
         }
         
-        public static void Connect(LevelNode first, LevelNode second)
+        public static void Connect(params LevelNode[] nodes)
         {
-            var edge = new LevelNodeEdge(first, second);
-            first.Edges.Add(edge);
-            second.Edges.Add(edge);
+            for (var i = 1; i < nodes.Length; i++)
+            {
+                var first = nodes[i - 1];
+                var second = nodes[i];
+                var edge = new LevelNodeEdge(first, second);
+                first.Edges.Add(edge);
+                second.Edges.Add(edge);
+            }
         }
     }
 
@@ -105,29 +110,16 @@ namespace TimeKnight.Core.LevelGeneration
             _random = new Random(seed);
             
             var startRoom = new LevelNode("start", RoomType.Start);
-            var path1Room1 = new LevelNode("path1room1", RoomType.Enemy);
-            var path1Room2 = new LevelNode("path1room2", RoomType.End);
-            var connectionStartToPath1Room1 = new LevelNode("connectionStartToPath1Room1", RoomType.Connection);
-            var connectionPath1Room1ToRoom2 = new LevelNode("connectionPath1Room1ToRoom2", RoomType.Connection);
+            var enemyRoom1 = new LevelNode("enemy1", RoomType.Enemy);
+            var enemyRoom2 = new LevelNode("enemy1", RoomType.Enemy);
+            var endRoom = new LevelNode("end", RoomType.End);
+            var connectionStartRoomToEnemyRoom1  = new LevelNode("connectionStartRoomToEnemyRoom1", RoomType.Connection);
+            var connectionEnemyRoom1ToEnemyRoom2 = new LevelNode("connectionEnemyRoom1ToEnemyRoom2", RoomType.Connection);
+            var connectionEnemyRoom2ToEndRoom    = new LevelNode("connectionEnemyRoom2ToEndRoom", RoomType.Connection);
             
-            var path2Room1 = new LevelNode("path2room1", RoomType.Enemy);
-            var path2Room2 = new LevelNode("path2room2", RoomType.Enemy);
-            var path2Room3 = new LevelNode("path2room3", RoomType.Enemy);
-            var connectionStartToPath2Room1 = new LevelNode("connectionStartToPath2Room1", RoomType.Connection);
-            var connectionPath2Room1ToRoom2 = new LevelNode("connectionPath2Room1ToRoom2", RoomType.Connection);
-            var connectionPath2Room2ToRoom3 = new LevelNode("connectionPath2Room2ToRoom3", RoomType.Connection);
-            
-            LevelNode.Connect(startRoom, connectionStartToPath1Room1);
-            LevelNode.Connect(connectionStartToPath1Room1, path1Room1);
-            LevelNode.Connect(path1Room1, connectionPath1Room1ToRoom2);
-            LevelNode.Connect(connectionPath1Room1ToRoom2, path1Room2);
-            
-            LevelNode.Connect(startRoom, connectionStartToPath2Room1);
-            LevelNode.Connect(connectionStartToPath2Room1, path2Room1);
-            LevelNode.Connect(path2Room1, connectionPath2Room1ToRoom2);
-            LevelNode.Connect(connectionPath2Room1ToRoom2, path2Room2);
-            LevelNode.Connect(path2Room2, connectionPath2Room2ToRoom3);
-            LevelNode.Connect(connectionPath2Room2ToRoom3, path2Room3);
+            LevelNode.Connect(startRoom, connectionStartRoomToEnemyRoom1, enemyRoom1);
+            LevelNode.Connect(enemyRoom1, connectionEnemyRoom1ToEnemyRoom2, enemyRoom2);
+            LevelNode.Connect(enemyRoom2, connectionEnemyRoom2ToEndRoom, endRoom);
             
             var success = GenerateGraph(startRoom);
             if (!success)
