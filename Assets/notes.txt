@@ -31,3 +31,4 @@ Sword Swing SFX:
 - PlayerHurt: https://freesound.org/people/Raclure/sounds/458867/
 - SkeletonHurt: https://freesound.org/people/CaptainYulef/sounds/641236/
 Hourglass: https://pngtree.com/freepng/hourglass-sandglass-pixel-art-vector_17240782.html
+Player: https://monopixelart.itch.io/character-pack

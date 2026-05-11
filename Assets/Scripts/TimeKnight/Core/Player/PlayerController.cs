@@ -63,6 +63,7 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleExitIdle   += OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck += OnGrappleEnterStuck;
 			grapplingHookMovement.OnGrappleUpdateStuck += OnGrappleUpdateStuck;
+			sword.OnSwordSwingEnd += OnAttackEnd;
 
 			playerManager.OnPlayerStunBegin += OnPlayerStunBegin;
 			playerManager.OnPlayerStunEnd += OnPlayerStunEnd;
@@ -87,6 +88,7 @@ namespace TimeKnight.Core.Player
 			grapplingHookMovement.OnGrappleExitIdle   -= OnGrappleExitIdle;
 			grapplingHookMovement.OnGrappleEnterStuck -= OnGrappleEnterStuck;
 			grapplingHookMovement.OnGrappleUpdateStuck -= OnGrappleUpdateStuck;
+			sword.OnSwordSwingEnd -= OnAttackEnd;
 
 			playerManager.OnPlayerStunBegin -= OnPlayerStunBegin;
 			playerManager.OnPlayerStunEnd -= OnPlayerStunEnd;
@@ -96,6 +98,7 @@ namespace TimeKnight.Core.Player
 		
 		private void OnHorizontalMoveStarted(InputAction.CallbackContext ctx)
 		{
+			_animator.SetBool(_animator.RunningBoolHash, true);
 			// This lambda is needed because if player changes directions on the same frame OnHorizontalMoveCanceled doesn't get called.
 			horizontalMovement.StartMove(() => ctx.ReadValue<float>());
 		}
@@ -107,6 +110,7 @@ namespace TimeKnight.Core.Player
 
 		private void OnHorizontalMoveCanceled(InputAction.CallbackContext _)
 		{
+			_animator.SetBool(_animator.RunningBoolHash, false);
 			horizontalMovement.StopMove();
 		}
 		
@@ -116,7 +120,7 @@ namespace TimeKnight.Core.Player
 
 		private void OnJumpStarted(InputAction.CallbackContext ctx)
 		{
-			jumpMovement.StartJump(checkGround: true);
+			jumpMovement.StartJump(checkGround: true, () => _animator.SetTrigger(_animator.JumpTriggerHash));
 		}
 
 		private void OnJumpCanceled(InputAction.CallbackContext ctx)
@@ -132,6 +136,20 @@ namespace TimeKnight.Core.Player
 		{
 			if (!sword.CanAttack()) return;
 			_animator.SetTrigger(_animator.AttackTriggerHash);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.GrappleFire);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Move);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Attack);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionInteract);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionNavigate);
+		}
+
+		private void OnAttackEnd()
+		{
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.Move);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.Attack);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionInteract);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionNavigate);
 		}
 
 		private void OnSlowTimeStarted(InputAction.CallbackContext _)
@@ -170,9 +188,13 @@ namespace TimeKnight.Core.Player
 		
 		private void OnGrappleFireStarted(InputAction.CallbackContext _)
 		{
-			// Prevent player from interacting with NPC while grappling.
+			// Prevent player from interacting with NPC or attacking while grappling.
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionInteract);
 			input.SetActionStatus(InputStatus.Disabled, GameplayActions.InteractionNavigate);
+			input.SetActionStatus(InputStatus.Disabled, GameplayActions.Attack);
+			_animator.ResetTrigger(_animator.EndGrappleTriggerHash);
+			_animator.ResetTrigger(_animator.CloseToGrappleWallTriggerHash);
+            _animator.ResetTrigger(_animator.CloseToGrappleFloorTriggerHash);
 			grapplingHookMovement.StartGrappling();
 		}
 
@@ -180,7 +202,7 @@ namespace TimeKnight.Core.Player
 		{
 			grapplingHookMovement.StopGrappling();
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.Move);
-			jumpMovement.StartJump(checkGround: false);
+			jumpMovement.StartJump(checkGround: false, () => _animator.SetTrigger(_animator.EndGrappleTriggerHash));
 		}
 
 		private void OnGrappleStopCancelled(InputAction.CallbackContext _)
@@ -197,6 +219,7 @@ namespace TimeKnight.Core.Player
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionInteract);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.InteractionNavigate);
 			input.SetActionStatus(InputStatus.Enabled, GameplayActions.GrappleFire);
+			input.SetActionStatus(InputStatus.Enabled, GameplayActions.Attack);
 		}
 
 		private void OnGrappleExitIdle()

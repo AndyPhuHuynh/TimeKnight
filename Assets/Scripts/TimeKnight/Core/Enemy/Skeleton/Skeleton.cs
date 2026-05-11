@@ -116,20 +116,20 @@ namespace TimeKnight.Core.Enemy.Skeleton
         }
 
         #region Animation State Management
-        private void UpdateAnimation(EnemyPatrolState newState)
+        private void UpdateAnimation(PatrolEnemyState newState)
         {
             switch (newState)
             {
-                case EnemyPatrolState.LostSight:
+                case PatrolEnemyState.LostSight:
                     _skeletonAnimator.SetTrigger(_lostSightTriggerHash);
                     break;
-                case EnemyPatrolState.PatrolStuck:
-                case EnemyPatrolState.ChaseStuck:
-                case EnemyPatrolState.TooClose:
+                case PatrolEnemyState.PatrolStuck:
+                case PatrolEnemyState.ChaseStuck:
+                case PatrolEnemyState.TooClose:
                     _skeletonAnimator.SetTrigger(_idleTriggerHash);
                     break;
-                case EnemyPatrolState.Chase:
-                case EnemyPatrolState.Patrol:
+                case PatrolEnemyState.Chase:
+                case PatrolEnemyState.Patrol:
                     _skeletonAnimator.SetTrigger(_walkingTriggerHash);
                     break;
             }

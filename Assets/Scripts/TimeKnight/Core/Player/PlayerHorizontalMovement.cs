@@ -37,6 +37,7 @@ namespace TimeKnight.Core.Player
             Validation.NotEmpty(this, moveSounds, nameof(moveSounds));
             Validation.NotNull(this, groundCheck, nameof(groundCheck));
         }
+        private float _baseXScale;
 
         private void Awake()
         {
@@ -45,6 +46,7 @@ namespace TimeKnight.Core.Player
             
             Validation.NotFound(this, _rb, nameof(_rb));
             Validation.NotNull(this, _audioSource, nameof(_audioSource));
+            _baseXScale = transform.localScale.x;
         }
 
         public void StartMove(Func<float> readInput)
@@ -65,7 +67,7 @@ namespace TimeKnight.Core.Player
         public void UpdateSpriteDirection(float input)
         {
             var isFacingLeft = input < 0;
-            transform.localScale = isFacingLeft ?  new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
+            transform.localScale = isFacingLeft ?  new Vector3(-_baseXScale, transform.localScale.y, transform.localScale.z) : new Vector3(_baseXScale, transform.localScale.y, transform.localScale.z);
         }
         
         private IEnumerator MoveCoroutine(Func<float> readInput)
