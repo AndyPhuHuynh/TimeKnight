@@ -1,9 +1,12 @@
-Just leaving this here so we can have this on the repo.
+Credits for art assets in final project:
 
-Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pack
-
-hook.png generated with ChatGPT: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16-bit art style
-chain.png: https://www.shutterstock.com/search/pixelated-chain
+Sprites:
+- Skeleton Sprite asset downloaded from: https://monopixelart.itch.io/skeletons-pack
+- chain.png: https://www.shutterstock.com/search/pixelated-chain
+- Hourglass: https://pngtree.com/freepng/hourglass-sandglass-pixel-art-vector_17240782.html
+- Player: https://monopixelart.itch.io/character-pack
+- hook.png generated with ChatGPT Prompt: make a 2d sprite for a grappling hook tip for a side-scroller. I just need the tip, this is a 16-bit art style
+- Slime.png/Slimeball.png: Made by us! (Andy and Jason)
 
 Tilesets:
 - https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
@@ -30,9 +33,6 @@ Sword Swing SFX:
 
 - PlayerHurt: https://freesound.org/people/Raclure/sounds/458867/
 - SkeletonHurt: https://freesound.org/people/CaptainYulef/sounds/641236/
-
-Hourglass: https://pngtree.com/freepng/hourglass-sandglass-pixel-art-vector_17240782.html
-Player: https://monopixelart.itch.io/character-pack
 
 - SlimeJump: https://pixabay.com/sound-effects/film-special-effects-slimejump-6913/
 - SlimeLand: https://pixabay.com/sound-effects/film-special-effects-slime-splatter-1-220262/
