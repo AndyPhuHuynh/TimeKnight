@@ -9,7 +9,7 @@ namespace TimeKnight.Core.Interaction
 
         public void Interact()
         {
-            DialogueManager.Instance!.PlayDialogue("Start");
+            DialogueManager.Instance.PlayDialogue("Start");
         }
     }
 }
